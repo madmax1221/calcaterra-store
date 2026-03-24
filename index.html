@@ -389,7 +389,12 @@ footer{background:#141210;padding:80px 52px 48px;}
         .select('first_name, last_name, id')
         .eq('auth_user_id', session.user.id)
         .single()
-      const name = customer ? `${customer.first_name} ${customer.last_name || ''}`.trim() : 'Member'
+
+      const metaFirst = session.user.user_metadata?.first_name || ''
+      const metaLast = session.user.user_metadata?.last_name || ''
+      const firstName = customer?.first_name || metaFirst || session.user.email?.split('@')[0] || 'Member'
+      const lastName = customer?.last_name || metaLast || ''
+      const name = `${firstName} ${lastName}`.trim()
       const memberId = 'CRRM\u2013' + (customer?.id?.slice(0,4) || '0000').toUpperCase()
       document.getElementById('accountContent').innerHTML = `
         <div class="acct-in">
