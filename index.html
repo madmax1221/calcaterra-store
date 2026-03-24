@@ -9,9 +9,9 @@
 <style>
 
   /* ─── ACCOUNT DRAWER ─── */
-#account-overlay{position:fixed;top:96px;left:0;right:0;bottom:0;z-index:999;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
-#account-overlay.open{background:rgba(26,24,20,0.5);pointer-events:all;}
-#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:380px;background:#f2efe9;z-index:1000;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-top:1px solid rgba(26,24,20,0.07);}
+#account-overlay{position:fixed;top:96px;left:0;right:0;bottom:0;z-index:999;background:rgba(26,24,20,0);pointer-events:none;transition:background .6s;}
+#account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
+#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f5f2ec;z-index:1000;transform:translateX(100%);transition:transform .55s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.08);}
 #account-drawer.open{transform:translateX(0);}
 .account-logged-out{padding:52px 40px;display:flex;flex-direction:column;gap:28px;}
 .account-lo-eyebrow{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.4);display:block;}
@@ -22,9 +22,27 @@
 .account-lo-btn-primary{background:#1a1814;color:#f2efe9;border:1px solid #1a1814;}
 .account-lo-btn-primary:hover{background:#2a2620;}
 .account-lo-btn-secondary{background:none;color:rgba(26,24,20,0.6);border:1px solid rgba(26,24,20,0.2);}
-.account-lo-btn-secondary:hover{border-color:rgba(26,24,20,0.4);color:#1a1814;}
+.account-lo-btn-secondary:hover{border-color:rgba(26,24,20,0.5);color:#1a1814;}
 .account-drawer-footer{padding:20px 40px;border-top:1px solid rgba(26,24,20,0.06);flex-shrink:0;margin-top:auto;}
-.account-drawer-footer span{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.3);}
+.account-drawer-footer span{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.25);}
+/* ── Logged in state ── */
+.acct-header{padding:44px 40px 32px;border-bottom:1px solid rgba(26,24,20,0.07);position:relative;}
+.acct-member-id{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.2);position:absolute;top:44px;right:40px;}
+.acct-eyebrow{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.3);display:block;margin-bottom:16px;}
+.acct-name{font-family:'Times New Roman',Times,serif;font-size:clamp(28px,3vw,36px);font-weight:300;letter-spacing:0.03em;color:#1a1814;display:block;margin-bottom:6px;}
+.acct-sub{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.3);display:block;}
+.acct-profile-btn{display:block;margin:28px 40px 0;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.5em;color:#1a1814;text-decoration:none;border:1px solid rgba(26,24,20,0.25);padding:15px;text-align:center;transition:background .3s,color .3s,border-color .3s;}
+.acct-profile-btn:hover{background:#1a1814;color:#f5f2ec;border-color:#1a1814;}
+.acct-nav{display:flex;flex-direction:column;padding:8px 0;flex:1;}
+.acct-nav-item{display:flex;justify-content:space-between;align-items:center;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.55);text-decoration:none;padding:17px 40px;border-bottom:1px solid rgba(26,24,20,0.05);transition:color .25s,padding-left .25s;}
+.acct-nav-item:hover{color:#1a1814;padding-left:46px;}
+.acct-nav-arrow{opacity:0;font-size:10px;transition:opacity .25s;letter-spacing:0;}
+.acct-nav-item:hover .acct-nav-arrow{opacity:1;}
+.acct-footer{padding:24px 40px;border-top:1px solid rgba(26,24,20,0.06);display:flex;justify-content:space-between;align-items:center;margin-top:auto;flex-shrink:0;}
+.acct-watches-count{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.3);}
+.acct-watches-count span{color:rgba(26,24,20,0.6);}
+.acct-signout{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.22);cursor:pointer;transition:color .25s;padding:0;}
+.acct-signout:hover{color:rgba(26,24,20,0.6);}
 
   
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -141,22 +159,7 @@ footer{background:#141210;padding:80px 52px 48px;}
 .fade-d1{transition-delay:.12s;}
 .fade-d2{transition-delay:.24s;}
 .fade-d3{transition-delay:.36s;}
-#account-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:999;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
-#account-overlay.open{background:rgba(26,24,20,0.5);pointer-events:all;}
-#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:380px;background:#f2efe9;z-index:1000;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-top:1px solid rgba(26,24,20,0.07);}
-#account-drawer.open{transform:translateX(0);}
-.account-logged-out{padding:52px 40px;display:flex;flex-direction:column;gap:28px;}
-.account-lo-eyebrow{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.4);display:block;}
-.account-lo-heading{font-size:clamp(26px,3vw,34px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;}
-.account-lo-heading em{font-style:italic;color:rgba(26,24,20,0.4);}
-.account-lo-body{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;line-height:2;color:rgba(26,24,20,0.5);}
-.account-lo-btn{display:block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;padding:18px;text-align:center;text-decoration:none;transition:background .3s,color .3s,border-color .3s;}
-.account-lo-btn-primary{background:#1a1814;color:#f2efe9;border:1px solid #1a1814;}
-.account-lo-btn-primary:hover{background:#2a2620;}
-.account-lo-btn-secondary{background:none;color:rgba(26,24,20,0.6);border:1px solid rgba(26,24,20,0.2);}
-.account-lo-btn-secondary:hover{border-color:rgba(26,24,20,0.4);color:#1a1814;}
-.account-drawer-footer{padding:20px 40px;border-top:1px solid rgba(26,24,20,0.06);flex-shrink:0;margin-top:auto;}
-.account-drawer-footer span{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.3);}
+  
 #cal-search-overlay{position:fixed;inset:0;z-index:600;background:rgba(242,239,233,0.98);backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity 0.35s ease;display:flex;flex-direction:column;align-items:center;padding-top:120px;}
 #cal-search-overlay.open{opacity:1;pointer-events:all;}
 .cal-search-wrap{width:100%;max-width:640px;padding:0 24px;}
@@ -369,10 +372,9 @@ footer{background:#141210;padding:80px 52px 48px;}
   </footer>
 </div>
 
-<div id="account-overlay"></div>
 <div id="account-drawer">
-  <div style="display:flex;flex-direction:column;flex:1;">
-    <div class="account-logged-out" id="accountContent">
+  <div style="display:flex;flex-direction:column;flex:1;overflow-y:auto;">
+    <div id="accountContent" class="account-logged-out">
       <span class="account-lo-eyebrow">MEMBERS</span>
       <h2 class="account-lo-heading">Your decisions.<br><em>Your record.</em></h2>
       <p class="account-lo-body">Sign in to access your orders, warranty registration, and watch history.</p>
@@ -530,8 +532,52 @@ footer{background:#141210;padding:80px 52px 48px;}
   }
 
   // ── Event Listeners ──
-  document.addEventListener('DOMContentLoaded', () => {
-    initAuth()
+  async function initAuth() {
+    const { data: { session } } = await _supabase.auth.getSession()
+    if (session) {
+      const { data: customer } = await _supabase
+        .from('customers')
+        .select('first_name, id')
+        .eq('auth_user_id', session.user.id)
+        .single()
+
+      const { count: watchCount } = await _supabase
+        .from('watch_registrations')
+        .select('id', { count: 'exact', head: true })
+        .eq('customer_id', customer?.id)
+
+      const name = customer ? customer.first_name : 'Member'
+      const memberId = 'CRRM-' + (customer?.id?.slice(0,4) || '0000').toUpperCase()
+
+      document.getElementById('accountContent').innerHTML = `
+        <div class="acct-header">
+          <span class="acct-member-id">${memberId}</span>
+          <span class="acct-eyebrow">CALCATERRA PRIVATE</span>
+          <span class="acct-name">${name}.</span>
+          <span class="acct-sub">Managed with precision.</span>
+        </div>
+        <a href="/calcaterra-dashboard-21.html" class="acct-profile-btn">VIEW PROFILE</a>
+        <nav class="acct-nav">
+          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">ORDERS <span class="acct-nav-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">COLLECTION <span class="acct-nav-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">WARRANTY <span class="acct-nav-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">ADDRESSES <span class="acct-nav-arrow">→</span></a>
+        </nav>
+        <div class="acct-footer">
+          <span class="acct-watches-count">REGISTERED TIMEPIECES: <span>${watchCount || 0}</span></span>
+          <button id="signOutBtn" class="acct-signout">SIGN OUT</button>
+        </div>
+      `
+
+      setTimeout(() => {
+        const btn = document.getElementById('signOutBtn')
+        if (btn) btn.addEventListener('click', async function() {
+          await _supabase.auth.signOut()
+          window.location.reload()
+        })
+      }, 100)
+    }
+  }
 
     // Menu
     document.getElementById('menuToggle').addEventListener('click', toggleMenu)
