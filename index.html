@@ -9,12 +9,12 @@
 <style>
 
   #account-overlay{position:fixed;top:96px;left:0;right:0;bottom:0;z-index:999;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
-#account-overlay.open{background:rgba(26,24,20,0.5);pointer-events:all;}
-.account-nav-links{display:flex;flex-direction:column;margin-top:8px;}
-.account-nav-links a{font-family:'Times New Roman',Times,serif;font-size:26px;font-weight:300;letter-spacing:0.03em;color:#1a1814;text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(26,24,20,0.07);transition:color .2s;}
-.account-nav-links a:hover{color:rgba(26,24,20,0.4);}
-.account-signout-btn{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.35);cursor:pointer;padding:20px 0 0;text-align:left;transition:color .2s;}
-.account-signout-btn:hover{color:#1a1814;}
+#account-overlay.open{background:rgba(26,24,20,0.3);pointer-events:all;}
+.account-nav-links{display:flex;flex-direction:column;margin-top:4px;}
+.account-nav-links a{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.55);text-decoration:none;padding:18px 0;border-bottom:1px solid rgba(26,24,20,0.06);transition:color .25s;}
+.account-nav-links a:hover{color:#1a1814;}
+.account-signout-btn{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.25);cursor:pointer;padding:24px 0 0;text-align:left;transition:color .2s;display:block;}
+.account-signout-btn:hover{color:rgba(26,24,20,0.6);}
   
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -404,10 +404,11 @@ footer{background:#141210;padding:80px 52px 48px;}
         .select('first_name')
         .eq('auth_user_id', session.user.id)
         .single()
+      
       const name = customer ? customer.first_name.toUpperCase() : 'MEMBER'
       document.getElementById('accountContent').innerHTML = `
         <span class="account-lo-eyebrow">WELCOME BACK</span>
-        <h2 class="account-lo-heading">${name}.<br><em>Good to have you.</em></h2>
+        <h2 class="account-lo-heading">${name}.</h2>
         <nav class="account-nav-links">
           <a href="/calcaterra-dashboard-21.html">My Orders</a>
           <a href="/calcaterra-dashboard-21.html">My Watches</a>
@@ -416,6 +417,7 @@ footer{background:#141210;padding:80px 52px 48px;}
         </nav>
         <button id="signOutBtn" class="account-signout-btn">SIGN OUT</button>
       `
+      
      setTimeout(() => {
         const btn = document.getElementById('signOutBtn')
         if (btn) btn.addEventListener('click', async function() {
