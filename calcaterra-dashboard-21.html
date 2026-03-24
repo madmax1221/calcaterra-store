@@ -563,8 +563,9 @@ footer{background:#141210;padding:80px 52px 48px;}
       // Update display immediately
       updateDisplay(firstName, lastName, email)
 
-      const emailChanged = email !== currentSession.user.email
-
+      const originalEmail = currentSession.user.email || currentCustomer?.email || ''
+      const emailChanged = email.toLowerCase() !== originalEmail.toLowerCase()
+      
       // Update auth user
       const authUpdate = {}
       if (emailChanged) authUpdate.email = email
