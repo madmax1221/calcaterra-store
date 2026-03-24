@@ -8,13 +8,24 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 
-  #account-overlay{position:fixed;top:96px;left:0;right:0;bottom:0;z-index:999;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
-#account-overlay.open{background:rgba(26,24,20,0.3);pointer-events:all;}
-.account-nav-links{display:flex;flex-direction:column;margin-top:4px;}
-.account-nav-links a{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.55);text-decoration:none;padding:18px 0;border-bottom:1px solid rgba(26,24,20,0.06);transition:color .25s;}
-.account-nav-links a:hover{color:#1a1814;}
-.account-signout-btn{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.25);cursor:pointer;padding:24px 0 0;text-align:left;transition:color .2s;display:block;}
-.account-signout-btn:hover{color:rgba(26,24,20,0.6);}
+  /* ─── ACCOUNT DRAWER ─── */
+#account-overlay{position:fixed;top:96px;left:0;right:0;bottom:0;z-index:999;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
+#account-overlay.open{background:rgba(26,24,20,0.5);pointer-events:all;}
+#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:380px;background:#f2efe9;z-index:1000;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-top:1px solid rgba(26,24,20,0.07);}
+#account-drawer.open{transform:translateX(0);}
+.account-logged-out{padding:52px 40px;display:flex;flex-direction:column;gap:28px;}
+.account-lo-eyebrow{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.4);display:block;}
+.account-lo-heading{font-size:clamp(26px,3vw,34px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;}
+.account-lo-heading em{font-style:italic;color:rgba(26,24,20,0.4);}
+.account-lo-body{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;line-height:2;color:rgba(26,24,20,0.5);}
+.account-lo-btn{display:block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;padding:18px;text-align:center;text-decoration:none;transition:background .3s,color .3s,border-color .3s;}
+.account-lo-btn-primary{background:#1a1814;color:#f2efe9;border:1px solid #1a1814;}
+.account-lo-btn-primary:hover{background:#2a2620;}
+.account-lo-btn-secondary{background:none;color:rgba(26,24,20,0.6);border:1px solid rgba(26,24,20,0.2);}
+.account-lo-btn-secondary:hover{border-color:rgba(26,24,20,0.4);color:#1a1814;}
+.account-drawer-footer{padding:20px 40px;border-top:1px solid rgba(26,24,20,0.06);flex-shrink:0;margin-top:auto;}
+.account-drawer-footer span{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.3);}
+
   
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
