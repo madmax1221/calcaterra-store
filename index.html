@@ -123,10 +123,12 @@ footer{background:#141210;padding:80px 52px 48px;}
 .fade-d3{transition-delay:.36s;}
 /* ─── ACCOUNT DRAWER ─── */
 #account-overlay{position:fixed;top:96px;left:0;right:0;bottom:0;z-index:999;background:rgba(26,24,20,0);pointer-events:none;transition:background .6s;}
-#account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
-#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f5f2ec;z-index:1000;transform:translateX(100%);transition:transform .55s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.08);}
+#account-overlay.open{background:rgba(26,24,20,0.25);pointer-events:all;}
+#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f5f2ec;z-index:1000;transform:translateX(100%);transition:transform .55s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.07);}
 #account-drawer.open{transform:translateX(0);}
-.account-logged-out{padding:52px 40px;display:flex;flex-direction:column;gap:28px;}
+#account-drawer.open #accountContent{animation:drawerFadeIn .5s ease .15s both;}
+@keyframes drawerFadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.account-logged-out{padding:52px 44px;display:flex;flex-direction:column;gap:32px;flex:1;}
 .account-lo-eyebrow{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.4);display:block;}
 .account-lo-heading{font-size:clamp(26px,3vw,34px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;}
 .account-lo-heading em{font-style:italic;color:rgba(26,24,20,0.4);}
@@ -136,25 +138,27 @@ footer{background:#141210;padding:80px 52px 48px;}
 .account-lo-btn-primary:hover{background:#2a2620;}
 .account-lo-btn-secondary{background:none;color:rgba(26,24,20,0.6);border:1px solid rgba(26,24,20,0.2);}
 .account-lo-btn-secondary:hover{border-color:rgba(26,24,20,0.5);color:#1a1814;}
-.account-drawer-footer{padding:20px 40px;border-top:1px solid rgba(26,24,20,0.06);flex-shrink:0;margin-top:auto;}
-.account-drawer-footer span{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.25);}
-.acct-header{padding:44px 40px 32px;border-bottom:1px solid rgba(26,24,20,0.07);position:relative;}
-.acct-member-id{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.2);position:absolute;top:44px;right:40px;}
-.acct-eyebrow{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.3);display:block;margin-bottom:16px;}
-.acct-name{font-family:'Times New Roman',Times,serif;font-size:clamp(28px,3vw,36px);font-weight:300;letter-spacing:0.03em;color:#1a1814;display:block;margin-bottom:6px;}
-.acct-sub{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.3);display:block;}
-.acct-profile-btn{display:block;margin:28px 40px 0;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.5em;color:#1a1814;text-decoration:none;border:1px solid rgba(26,24,20,0.25);padding:15px;text-align:center;transition:background .3s,color .3s,border-color .3s;}
+/* logged in */
+.acct-header{padding:44px 44px 36px;border-bottom:1px solid rgba(26,24,20,0.07);position:relative;}
+.acct-header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+.acct-label{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.35);}
+.acct-member-id{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.18);}
+.acct-name{font-family:'Times New Roman',Times,serif;font-size:clamp(30px,3.5vw,38px);font-weight:300;letter-spacing:0.02em;color:#1a1814;display:block;margin-bottom:8px;line-height:1.1;}
+.acct-sub{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.35);display:block;margin-bottom:10px;}
+.acct-archive{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.2);display:block;font-style:italic;}
+.acct-profile-btn{display:block;margin:32px 44px 0;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.6em;color:#1a1814;text-decoration:none;border:1px solid rgba(26,24,20,0.3);padding:17px;text-align:center;transition:background .25s ease,color .25s ease,border-color .25s ease;}
 .acct-profile-btn:hover{background:#1a1814;color:#f5f2ec;border-color:#1a1814;}
-.acct-nav{display:flex;flex-direction:column;padding:8px 0;flex:1;}
-.acct-nav-item{display:flex;justify-content:space-between;align-items:center;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.55);text-decoration:none;padding:17px 40px;border-bottom:1px solid rgba(26,24,20,0.05);transition:color .25s,padding-left .25s;}
-.acct-nav-item:hover{color:#1a1814;padding-left:46px;}
-.acct-nav-arrow{opacity:0;font-size:10px;transition:opacity .25s;letter-spacing:0;}
-.acct-nav-item:hover .acct-nav-arrow{opacity:1;}
-.acct-footer{padding:24px 40px;border-top:1px solid rgba(26,24,20,0.06);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-.acct-watches-count{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.3);}
-.acct-watches-count span{color:rgba(26,24,20,0.6);}
-.acct-signout{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.22);cursor:pointer;transition:color .25s;padding:0;}
-.acct-signout:hover{color:rgba(26,24,20,0.6);}
+.acct-nav{display:flex;flex-direction:column;padding:12px 0;flex:1;}
+.acct-nav-item{display:flex;justify-content:space-between;align-items:center;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.45);text-decoration:none;padding:19px 44px;border-bottom:1px solid rgba(26,24,20,0.05);transition:color .25s ease,letter-spacing .25s ease;}
+.acct-nav-item:hover{color:#1a1814;letter-spacing:0.5em;}
+.acct-nav-arrow{opacity:0;font-size:11px;transition:opacity .25s ease,transform .25s ease;transform:translateX(-4px);letter-spacing:0;}
+.acct-nav-item:hover .acct-nav-arrow{opacity:0.5;transform:translateX(0);}
+.acct-bottom{padding:32px 44px 40px;border-top:1px solid rgba(26,24,20,0.06);display:flex;justify-content:space-between;align-items:flex-end;flex-shrink:0;}
+.acct-timepieces{}
+.acct-timepieces-label{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.28);display:block;margin-bottom:6px;}
+.acct-timepieces-count{font-family:'Times New Roman',Times,serif;font-size:32px;font-weight:300;color:rgba(26,24,20,0.55);display:block;line-height:1;}
+.acct-signout{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.18);cursor:pointer;transition:color .25s ease;padding:0;display:block;margin-bottom:2px;}
+.acct-signout:hover{color:rgba(26,24,20,0.55);}
 /* ─── SEARCH ─── */
 #cal-search-overlay{position:fixed;inset:0;z-index:600;background:rgba(242,239,233,0.98);backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity 0.35s ease;display:flex;flex-direction:column;align-items:center;padding-top:120px;}
 #cal-search-overlay.open{opacity:1;pointer-events:all;}
@@ -386,7 +390,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
   )
 
-  async function initAuth() {
+ async function initAuth() {
     const { data: { session } } = await _supabase.auth.getSession()
     if (session) {
       const { data: customer } = await _supabase
@@ -401,14 +405,17 @@ footer{background:#141210;padding:80px 52px 48px;}
         .eq('customer_id', customer?.id)
 
       const name = customer ? customer.first_name : 'Member'
-      const memberId = 'CRRM-' + (customer?.id?.slice(0,4) || '0000').toUpperCase()
+      const memberId = 'CRRM\u20140' + (customer?.id?.slice(0,3) || '000').toUpperCase()
 
       document.getElementById('accountContent').innerHTML = `
         <div class="acct-header">
-          <span class="acct-member-id">${memberId}</span>
-          <span class="acct-eyebrow">CALCATERRA PRIVATE</span>
-          <span class="acct-name">${name}.</span>
+          <div class="acct-header-top">
+            <span class="acct-label">CALCATERRA PRIVATE</span>
+            <span class="acct-member-id">${memberId}</span>
+          </div>
+          <span class="acct-name">Your Collection.</span>
           <span class="acct-sub">Managed with precision.</span>
+          <span class="acct-archive">Registered under Calcaterra archive</span>
         </div>
         <a href="/calcaterra-dashboard-21.html" class="acct-profile-btn">VIEW PROFILE</a>
         <nav class="acct-nav">
@@ -417,8 +424,11 @@ footer{background:#141210;padding:80px 52px 48px;}
           <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">WARRANTY <span class="acct-nav-arrow">→</span></a>
           <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">ADDRESSES <span class="acct-nav-arrow">→</span></a>
         </nav>
-        <div class="acct-footer">
-          <span class="acct-watches-count">REGISTERED TIMEPIECES: <span>${watchCount || 0}</span></span>
+        <div class="acct-bottom">
+          <div class="acct-timepieces">
+            <span class="acct-timepieces-label">REGISTERED TIMEPIECES</span>
+            <span class="acct-timepieces-count">${watchCount || 0}</span>
+          </div>
           <button id="signOutBtn" class="acct-signout">SIGN OUT</button>
         </div>
       `
@@ -431,6 +441,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       }, 100)
     }
   }
+  
 
   async function doNotify() {
     const email = document.getElementById('nEmail').value.trim()
