@@ -7,44 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-
-  /* ─── ACCOUNT DRAWER ─── */
-#account-overlay{position:fixed;top:96px;left:0;right:0;bottom:0;z-index:999;background:rgba(26,24,20,0);pointer-events:none;transition:background .6s;}
-#account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
-#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f5f2ec;z-index:1000;transform:translateX(100%);transition:transform .55s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.08);}
-#account-drawer.open{transform:translateX(0);}
-.account-logged-out{padding:52px 40px;display:flex;flex-direction:column;gap:28px;}
-.account-lo-eyebrow{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.4);display:block;}
-.account-lo-heading{font-size:clamp(26px,3vw,34px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;}
-.account-lo-heading em{font-style:italic;color:rgba(26,24,20,0.4);}
-.account-lo-body{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;line-height:2;color:rgba(26,24,20,0.5);}
-.account-lo-btn{display:block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;padding:18px;text-align:center;text-decoration:none;transition:background .3s,color .3s,border-color .3s;}
-.account-lo-btn-primary{background:#1a1814;color:#f2efe9;border:1px solid #1a1814;}
-.account-lo-btn-primary:hover{background:#2a2620;}
-.account-lo-btn-secondary{background:none;color:rgba(26,24,20,0.6);border:1px solid rgba(26,24,20,0.2);}
-.account-lo-btn-secondary:hover{border-color:rgba(26,24,20,0.5);color:#1a1814;}
-.account-drawer-footer{padding:20px 40px;border-top:1px solid rgba(26,24,20,0.06);flex-shrink:0;margin-top:auto;}
-.account-drawer-footer span{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.25);}
-/* ── Logged in state ── */
-.acct-header{padding:44px 40px 32px;border-bottom:1px solid rgba(26,24,20,0.07);position:relative;}
-.acct-member-id{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.2);position:absolute;top:44px;right:40px;}
-.acct-eyebrow{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.3);display:block;margin-bottom:16px;}
-.acct-name{font-family:'Times New Roman',Times,serif;font-size:clamp(28px,3vw,36px);font-weight:300;letter-spacing:0.03em;color:#1a1814;display:block;margin-bottom:6px;}
-.acct-sub{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.3);display:block;}
-.acct-profile-btn{display:block;margin:28px 40px 0;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.5em;color:#1a1814;text-decoration:none;border:1px solid rgba(26,24,20,0.25);padding:15px;text-align:center;transition:background .3s,color .3s,border-color .3s;}
-.acct-profile-btn:hover{background:#1a1814;color:#f5f2ec;border-color:#1a1814;}
-.acct-nav{display:flex;flex-direction:column;padding:8px 0;flex:1;}
-.acct-nav-item{display:flex;justify-content:space-between;align-items:center;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.55);text-decoration:none;padding:17px 40px;border-bottom:1px solid rgba(26,24,20,0.05);transition:color .25s,padding-left .25s;}
-.acct-nav-item:hover{color:#1a1814;padding-left:46px;}
-.acct-nav-arrow{opacity:0;font-size:10px;transition:opacity .25s;letter-spacing:0;}
-.acct-nav-item:hover .acct-nav-arrow{opacity:1;}
-.acct-footer{padding:24px 40px;border-top:1px solid rgba(26,24,20,0.06);display:flex;justify-content:space-between;align-items:center;margin-top:auto;flex-shrink:0;}
-.acct-watches-count{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.3);}
-.acct-watches-count span{color:rgba(26,24,20,0.6);}
-.acct-signout{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.22);cursor:pointer;transition:color .25s;padding:0;}
-.acct-signout:hover{color:rgba(26,24,20,0.6);}
-
-  
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;overflow-x:hidden;}
@@ -159,7 +121,41 @@ footer{background:#141210;padding:80px 52px 48px;}
 .fade-d1{transition-delay:.12s;}
 .fade-d2{transition-delay:.24s;}
 .fade-d3{transition-delay:.36s;}
-  
+/* ─── ACCOUNT DRAWER ─── */
+#account-overlay{position:fixed;top:96px;left:0;right:0;bottom:0;z-index:999;background:rgba(26,24,20,0);pointer-events:none;transition:background .6s;}
+#account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
+#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f5f2ec;z-index:1000;transform:translateX(100%);transition:transform .55s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.08);}
+#account-drawer.open{transform:translateX(0);}
+.account-logged-out{padding:52px 40px;display:flex;flex-direction:column;gap:28px;}
+.account-lo-eyebrow{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.4);display:block;}
+.account-lo-heading{font-size:clamp(26px,3vw,34px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;}
+.account-lo-heading em{font-style:italic;color:rgba(26,24,20,0.4);}
+.account-lo-body{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;line-height:2;color:rgba(26,24,20,0.5);}
+.account-lo-btn{display:block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;padding:18px;text-align:center;text-decoration:none;transition:background .3s,color .3s,border-color .3s;}
+.account-lo-btn-primary{background:#1a1814;color:#f2efe9;border:1px solid #1a1814;}
+.account-lo-btn-primary:hover{background:#2a2620;}
+.account-lo-btn-secondary{background:none;color:rgba(26,24,20,0.6);border:1px solid rgba(26,24,20,0.2);}
+.account-lo-btn-secondary:hover{border-color:rgba(26,24,20,0.5);color:#1a1814;}
+.account-drawer-footer{padding:20px 40px;border-top:1px solid rgba(26,24,20,0.06);flex-shrink:0;margin-top:auto;}
+.account-drawer-footer span{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.25);}
+.acct-header{padding:44px 40px 32px;border-bottom:1px solid rgba(26,24,20,0.07);position:relative;}
+.acct-member-id{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.2);position:absolute;top:44px;right:40px;}
+.acct-eyebrow{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.3);display:block;margin-bottom:16px;}
+.acct-name{font-family:'Times New Roman',Times,serif;font-size:clamp(28px,3vw,36px);font-weight:300;letter-spacing:0.03em;color:#1a1814;display:block;margin-bottom:6px;}
+.acct-sub{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.3);display:block;}
+.acct-profile-btn{display:block;margin:28px 40px 0;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.5em;color:#1a1814;text-decoration:none;border:1px solid rgba(26,24,20,0.25);padding:15px;text-align:center;transition:background .3s,color .3s,border-color .3s;}
+.acct-profile-btn:hover{background:#1a1814;color:#f5f2ec;border-color:#1a1814;}
+.acct-nav{display:flex;flex-direction:column;padding:8px 0;flex:1;}
+.acct-nav-item{display:flex;justify-content:space-between;align-items:center;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.55);text-decoration:none;padding:17px 40px;border-bottom:1px solid rgba(26,24,20,0.05);transition:color .25s,padding-left .25s;}
+.acct-nav-item:hover{color:#1a1814;padding-left:46px;}
+.acct-nav-arrow{opacity:0;font-size:10px;transition:opacity .25s;letter-spacing:0;}
+.acct-nav-item:hover .acct-nav-arrow{opacity:1;}
+.acct-footer{padding:24px 40px;border-top:1px solid rgba(26,24,20,0.06);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.acct-watches-count{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.3);}
+.acct-watches-count span{color:rgba(26,24,20,0.6);}
+.acct-signout{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.22);cursor:pointer;transition:color .25s;padding:0;}
+.acct-signout:hover{color:rgba(26,24,20,0.6);}
+/* ─── SEARCH ─── */
 #cal-search-overlay{position:fixed;inset:0;z-index:600;background:rgba(242,239,233,0.98);backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity 0.35s ease;display:flex;flex-direction:column;align-items:center;padding-top:120px;}
 #cal-search-overlay.open{opacity:1;pointer-events:all;}
 .cal-search-wrap{width:100%;max-width:640px;padding:0 24px;}
@@ -267,9 +263,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       </blockquote>
     </div>
   </section>
-
   <div class="hairline"></div>
-
   <section>
     <div class="pillars">
       <div class="pillar fade">
@@ -289,7 +283,6 @@ footer{background:#141210;padding:80px 52px 48px;}
       </div>
     </div>
   </section>
-
   <section class="manifesto">
     <img class="mani-mark" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt=""/>
     <div class="mani-inner">
@@ -299,7 +292,6 @@ footer{background:#141210;padding:80px 52px 48px;}
       <a href="/calcaterra-our-story.html" class="mani-link fade fade-d3">READ THE PHILOSOPHY</a>
     </div>
   </section>
-
   <section class="split" id="split">
     <div class="split-img"></div>
     <div class="split-text fade">
@@ -309,26 +301,12 @@ footer{background:#141210;padding:80px 52px 48px;}
       <a href="/calcaterra-roma-collection-page.html" class="s-link">DISCOVER THE ROMA</a>
     </div>
   </section>
-
   <section class="numbers fade">
-    <div class="num-item">
-      <span class="num-val">I</span>
-      <span class="num-label">COLLECTION</span>
-    </div>
-    <div class="num-item">
-      <span class="num-val">III</span>
-      <span class="num-label">REFERENCES</span>
-    </div>
-    <div class="num-item">
-      <span class="num-val">329</span>
-      <span class="num-label">EUR</span>
-    </div>
-    <div class="num-item">
-      <span class="num-val">&infin;</span>
-      <span class="num-label">DESIGNED TO LAST</span>
-    </div>
+    <div class="num-item"><span class="num-val">I</span><span class="num-label">COLLECTION</span></div>
+    <div class="num-item"><span class="num-val">III</span><span class="num-label">REFERENCES</span></div>
+    <div class="num-item"><span class="num-val">329</span><span class="num-label">EUR</span></div>
+    <div class="num-item"><span class="num-val">&infin;</span><span class="num-label">DESIGNED TO LAST</span></div>
   </section>
-
   <section class="notify-sec" id="notify-sec">
     <span class="n-ey fade">THE NEXT REFERENCE</span>
     <h2 class="n-h fade fade-d1">Know before it's announced.</h2>
@@ -339,7 +317,6 @@ footer{background:#141210;padding:80px 52px 48px;}
     </div>
     <p class="n-thanks" id="nThanks">YOU WILL HEAR FROM US.</p>
   </section>
-
   <footer>
     <div class="foot-grid">
       <div>
@@ -372,6 +349,7 @@ footer{background:#141210;padding:80px 52px 48px;}
   </footer>
 </div>
 
+<div id="account-overlay"></div>
 <div id="account-drawer">
   <div style="display:flex;flex-direction:column;flex:1;overflow-y:auto;">
     <div id="accountContent" class="account-logged-out">
@@ -408,32 +386,43 @@ footer{background:#141210;padding:80px 52px 48px;}
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
   )
 
-  // ── Auth ──
   async function initAuth() {
     const { data: { session } } = await _supabase.auth.getSession()
     if (session) {
       const { data: customer } = await _supabase
         .from('customers')
-        .select('first_name')
+        .select('first_name, id')
         .eq('auth_user_id', session.user.id)
         .single()
-      
-      const name = customer ? customer.first_name.toUpperCase() : 'MEMBER'
+
+      const { count: watchCount } = await _supabase
+        .from('watch_registrations')
+        .select('id', { count: 'exact', head: true })
+        .eq('customer_id', customer?.id)
+
+      const name = customer ? customer.first_name : 'Member'
+      const memberId = 'CRRM-' + (customer?.id?.slice(0,4) || '0000').toUpperCase()
+
       document.getElementById('accountContent').innerHTML = `
-        <span class="account-lo-eyebrow">MEMBERS</span>
-        <h2 class="account-lo-heading">${name}.<br><em>Good to have you.</em></h2>
-        <div style="display:flex;flex-direction:column;gap:0;margin-top:8px;">
-          <a href="/calcaterra-dashboard-21.html" class="account-lo-btn account-lo-btn-primary">MY ACCOUNT</a>
-          <div style="height:12px;"></div>
-          <a href="/calcaterra-dashboard-21.html" style="display:block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;padding:14px 0;text-align:left;text-decoration:none;color:rgba(26,24,20,0.5);border-bottom:1px solid rgba(26,24,20,0.07);transition:color .2s;">MY ORDERS</a>
-          <a href="/calcaterra-dashboard-21.html" style="display:block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;padding:14px 0;text-align:left;text-decoration:none;color:rgba(26,24,20,0.5);border-bottom:1px solid rgba(26,24,20,0.07);transition:color .2s;">MY WATCHES</a>
-          <a href="/calcaterra-dashboard-21.html" style="display:block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;padding:14px 0;text-align:left;text-decoration:none;color:rgba(26,24,20,0.5);border-bottom:1px solid rgba(26,24,20,0.07);transition:color .2s;">WARRANTY</a>
-          <a href="/calcaterra-dashboard-21.html" style="display:block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;padding:14px 0;text-align:left;text-decoration:none;color:rgba(26,24,20,0.5);border-bottom:1px solid rgba(26,24,20,0.07);transition:color .2s;">ADDRESSES</a>
+        <div class="acct-header">
+          <span class="acct-member-id">${memberId}</span>
+          <span class="acct-eyebrow">CALCATERRA PRIVATE</span>
+          <span class="acct-name">${name}.</span>
+          <span class="acct-sub">Managed with precision.</span>
         </div>
-        <button id="signOutBtn" style="background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.25);cursor:pointer;padding:24px 0 0;text-align:left;transition:color .2s;">SIGN OUT</button>
+        <a href="/calcaterra-dashboard-21.html" class="acct-profile-btn">VIEW PROFILE</a>
+        <nav class="acct-nav">
+          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">ORDERS <span class="acct-nav-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">COLLECTION <span class="acct-nav-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">WARRANTY <span class="acct-nav-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">ADDRESSES <span class="acct-nav-arrow">→</span></a>
+        </nav>
+        <div class="acct-footer">
+          <span class="acct-watches-count">REGISTERED TIMEPIECES: <span>${watchCount || 0}</span></span>
+          <button id="signOutBtn" class="acct-signout">SIGN OUT</button>
+        </div>
       `
-      
-     setTimeout(() => {
+      setTimeout(() => {
         const btn = document.getElementById('signOutBtn')
         if (btn) btn.addEventListener('click', async function() {
           await _supabase.auth.signOut()
@@ -443,7 +432,6 @@ footer{background:#141210;padding:80px 52px 48px;}
     }
   }
 
-  // ── Notify Me ──
   async function doNotify() {
     const email = document.getElementById('nEmail').value.trim()
     if (!email) return
@@ -452,7 +440,6 @@ footer{background:#141210;padding:80px 52px 48px;}
     document.getElementById('nThanks').style.display = 'block'
   }
 
-  // ── Menu Drawer ──
   function toggleMenu() {
     const toggle = document.getElementById('menuToggle')
     const drawer = document.getElementById('menu-drawer')
@@ -461,14 +448,10 @@ footer{background:#141210;padding:80px 52px 48px;}
     toggle.classList.toggle('open')
     drawer.classList.toggle('open')
     overlay.classList.toggle('open')
-    if (drawer.classList.contains('open')) {
-      nav.classList.add('solid')
-    } else {
-      if (window.scrollY <= window.innerHeight * 0.6) nav.classList.remove('solid')
-    }
+    if (drawer.classList.contains('open')) { nav.classList.add('solid') }
+    else { if (window.scrollY <= window.innerHeight * 0.6) nav.classList.remove('solid') }
   }
 
-  // ── Account Drawer ──
   function openAccount() {
     document.getElementById('account-drawer').classList.add('open')
     document.getElementById('account-overlay').classList.add('open')
@@ -480,14 +463,12 @@ footer{background:#141210;padding:80px 52px 48px;}
     if (window.scrollY <= window.innerHeight * 0.6) document.getElementById('nav').classList.remove('solid')
   }
 
-  // ── Scroll & Reveal ──
   function reveal() {
     document.querySelectorAll('.fade:not(.in)').forEach(el => {
       if (el.getBoundingClientRect().top < window.innerHeight - 60) el.classList.add('in')
     })
   }
 
-  // ── Search ──
   function openSearch() {
     document.getElementById('cal-search-overlay').classList.add('open')
     document.body.style.overflow = 'hidden'
@@ -531,59 +512,12 @@ footer{background:#141210;padding:80px 52px 48px;}
     document.getElementById('cal-search-results').innerHTML = html
   }
 
-  // ── Event Listeners ──
-  async function initAuth() {
-    const { data: { session } } = await _supabase.auth.getSession()
-    if (session) {
-      const { data: customer } = await _supabase
-        .from('customers')
-        .select('first_name, id')
-        .eq('auth_user_id', session.user.id)
-        .single()
+  document.addEventListener('DOMContentLoaded', () => {
+    initAuth()
 
-      const { count: watchCount } = await _supabase
-        .from('watch_registrations')
-        .select('id', { count: 'exact', head: true })
-        .eq('customer_id', customer?.id)
-
-      const name = customer ? customer.first_name : 'Member'
-      const memberId = 'CRRM-' + (customer?.id?.slice(0,4) || '0000').toUpperCase()
-
-      document.getElementById('accountContent').innerHTML = `
-        <div class="acct-header">
-          <span class="acct-member-id">${memberId}</span>
-          <span class="acct-eyebrow">CALCATERRA PRIVATE</span>
-          <span class="acct-name">${name}.</span>
-          <span class="acct-sub">Managed with precision.</span>
-        </div>
-        <a href="/calcaterra-dashboard-21.html" class="acct-profile-btn">VIEW PROFILE</a>
-        <nav class="acct-nav">
-          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">ORDERS <span class="acct-nav-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">COLLECTION <span class="acct-nav-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">WARRANTY <span class="acct-nav-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-nav-item">ADDRESSES <span class="acct-nav-arrow">→</span></a>
-        </nav>
-        <div class="acct-footer">
-          <span class="acct-watches-count">REGISTERED TIMEPIECES: <span>${watchCount || 0}</span></span>
-          <button id="signOutBtn" class="acct-signout">SIGN OUT</button>
-        </div>
-      `
-
-      setTimeout(() => {
-        const btn = document.getElementById('signOutBtn')
-        if (btn) btn.addEventListener('click', async function() {
-          await _supabase.auth.signOut()
-          window.location.reload()
-        })
-      }, 100)
-    }
-  }
-
-    // Menu
     document.getElementById('menuToggle').addEventListener('click', toggleMenu)
     document.getElementById('menu-overlay').addEventListener('click', toggleMenu)
 
-    // Account
     document.getElementById('accountToggle').addEventListener('click', e => {
       e.stopPropagation()
       const drawer = document.getElementById('account-drawer')
@@ -591,13 +525,12 @@ footer{background:#141210;padding:80px 52px 48px;}
     })
     document.getElementById('account-overlay').addEventListener('click', closeAccount)
 
-    // Notify
     document.getElementById('nBtn').addEventListener('click', doNotify)
 
-    // Search
     document.getElementById('calSearchBtn').addEventListener('click', e => { e.stopPropagation(); openSearch() })
     document.getElementById('cal-search-close').addEventListener('click', closeSearch)
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch() })
+
     let debounceTimer
     document.getElementById('cal-search-input').addEventListener('input', function() {
       clearTimeout(debounceTimer)
@@ -606,7 +539,6 @@ footer{background:#141210;padding:80px 52px 48px;}
       debounceTimer = setTimeout(() => fetchSearchResults(query), 250)
     })
 
-    // Scroll
     window.addEventListener('scroll', () => {
       const nav = document.getElementById('nav')
       if (window.scrollY > window.innerHeight * 0.6) { nav.classList.add('solid') }
@@ -614,7 +546,6 @@ footer{background:#141210;padding:80px 52px 48px;}
       reveal()
     }, { passive: true })
 
-    // Init hero
     setTimeout(() => {
       document.getElementById('heroCopy').classList.add('show')
       document.getElementById('heroScroll').classList.add('show')
