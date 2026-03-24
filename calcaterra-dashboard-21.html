@@ -115,6 +115,687 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .msg-box.info{color:rgba(26,24,20,0.6);border:1px solid rgba(26,24,20,0.1);background:rgba(26,24,20,0.02);}
 .verified-banner{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:#1a1814;border:1px solid rgba(26,24,20,0.2);background:rgba(26,24,20,0.03);padding:14px 20px;margin-bottom:32px;display:none;}
 .verified-banner.show{display:block;}
+.addr-select{width:100%;background:#f2efe9;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='rgba(26,24,20,0.4)' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 4px center;}
+footer{background:#141210;padding:80px 52px 48px;}
+.foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
+.foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
+.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;letter-spacing:0.04em;color:rgba(242,239,233,0.2);line-height:1.9;max-width:250px;}
+.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;}
+.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.3);text-decoration:none;margin-bottom:12px;transition:color .25s;}
+.foot-col a:hover{color:rgba(242,239,233,0.72);}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;}
+.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.14);}
+@media(max-width:860px){
+  #nav{padding:0 24px;}
+  .dashboard{grid-template-columns:1fr;}
+  .dash-sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid rgba(26,24,20,0.07);padding:40px 24px;}
+  .dash-main{padding:40px 24px;}
+  .details-grid{grid-template-columns:1fr;}
+  footer{padding:48px 24px 36px;}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-l">
+    <button class="nav-hamburger" id="menuToggle" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-center">
+    <a href="/index.html">
+      <img class="nav-logo-img" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/>
+    </a>
+  </div>
+  <div class="nav-r">
+    <a href="#" class="nav-icon-btn" aria-label="Search">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+    </a>
+    <div class="cart-wrap">
+      <a href="#" class="nav-icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div id="menu-overlay" onclick="toggleMenu()"></div>
+<div id="menu-drawer">
+  <nav class="drawer-nav">
+    <a href="/calcaterra-collections-2-2.html">Collection</a>
+    <a href="/calcaterra-our-story.html">About</a>
+    <a href="#">Contact</a>
+    <a href="#">Notify Me</a>
+    <a href="#">Stockists</a>
+  </nav>
+  <span class="drawer-footer">CALCATERRA</span>
+</div>
+
+<div class="dashboard">
+  <aside class="dash-sidebar">
+    <span class="dash-welcome-label">WELCOME BACK</span>
+    <div class="dash-welcome-name" id="sidebarName">—</div>
+    <nav class="dash-nav">
+      <a class="dash-nav-item active" onclick="showSection('orders'); return false;" href="#">MY ORDERS <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
+      <a class="dash-nav-item" onclick="showSection('watches'); return false;" href="#">MY WATCHES <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
+      <a class="dash-nav-item" onclick="showSection('register'); return false;" href="#">REGISTER A WATCH <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
+      <a class="dash-nav-item" onclick="showSection('details'); return false;" href="#">ACCOUNT DETAILS <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
+      <a class="dash-nav-item" onclick="showSection('addresses'); return false;" href="#">ADDRESSES <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
+    </nav>
+    <button class="dash-signout" id="signOutBtn">SIGN OUT</button>
+  </aside>
+
+  <main class="dash-main">
+
+    <!-- ORDERS -->
+    <div class="dash-section active" id="section-orders">
+      <span class="dash-section-eyebrow">YOUR HISTORY</span>
+      <h2 class="dash-section-title">My <em>Orders.</em></h2>
+      <div id="orders-content">
+        <div class="order-empty">
+          <div class="order-empty-text">Nothing <em>yet.</em></div>
+          <p class="order-empty-sub">YOUR ORDERS WILL APPEAR HERE</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY WATCHES -->
+    <div class="dash-section" id="section-watches">
+      <span class="dash-section-eyebrow">REGISTERED TIMEPIECES</span>
+      <h2 class="dash-section-title">My <em>Watches.</em></h2>
+      <div id="watches-content">
+        <div class="order-empty">
+          <div class="order-empty-text">Nothing <em>registered.</em></div>
+          <p class="order-empty-sub">YOUR WATCHES WILL APPEAR HERE</p>
+          <a class="dash-cta" onclick="showSection('register'); return false;" href="#">REGISTER YOUR WATCH</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER A WATCH -->
+    <div class="dash-section" id="section-register">
+      <span class="dash-section-eyebrow">OWNERSHIP RECORD</span>
+      <h2 class="dash-section-title">Register your <em>timepiece.</em></h2>
+      <div style="background:rgba(26,24,20,0.03);border:1px solid rgba(26,24,20,0.07);padding:28px 32px;margin-bottom:40px;max-width:520px;">
+        <span style="font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);display:block;margin-bottom:14px;">WHERE TO FIND YOUR SERIAL NUMBER</span>
+        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.07em;line-height:2;color:rgba(26,24,20,0.5);">Your serial number is printed on the card included with your Calcaterra timepiece. It begins with <span style="font-weight:400;color:#1a1814;letter-spacing:0.1em;">CAL-</span></p>
+      </div>
+      <div id="reg-msg" class="msg-box"></div>
+      <form class="reg-form" id="reg-form" onsubmit="handleWatchReg(event)">
+        <div class="form-group">
+          <label class="form-label">SERIAL NUMBER *</label>
+          <input type="text" id="reg-serial" class="form-input" placeholder="e.g. CAL-2026-001" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">DATE OF PURCHASE</label>
+          <input type="date" id="reg-date" class="form-input" required>
+        </div>
+        <button type="submit" class="reg-submit" id="reg-btn">REGISTER MY WATCH</button>
+        <p class="reg-note">Registration activates your 2 year international warranty.</p>
+      </form>
+      <div id="reg-thanks" style="display:none;padding:60px 0;text-align:center;">
+        <span class="dash-section-eyebrow" style="display:block;margin-bottom:16px;">REGISTRATION COMPLETE</span>
+        <h3 style="font-size:clamp(24px,2.5vw,34px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:12px;">Your watch is <em style="font-style:italic;color:rgba(26,24,20,0.4);">registered.</em></h3>
+        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.1em;color:rgba(26,24,20,0.4);margin-bottom:40px;">Your 2 year warranty is now active.</p>
+        <a class="dash-cta" onclick="showSection('watches'); return false;" href="#">VIEW MY WATCHES</a>
+      </div>
+    </div>
+
+    <!-- ACCOUNT DETAILS -->
+    <div class="dash-section" id="section-details">
+      <span class="dash-section-eyebrow">YOUR PROFILE</span>
+      <h2 class="dash-section-title">Account <em>Details.</em></h2>
+      <div id="verified-banner" class="verified-banner">EMAIL ADDRESS VERIFIED SUCCESSFULLY.</div>
+      <div class="details-grid">
+        <div class="details-field">
+          <span class="details-label">FIRST NAME</span>
+          <span class="details-value" id="disp-first">—</span>
+        </div>
+        <div class="details-field">
+          <span class="details-label">LAST NAME</span>
+          <span class="details-value" id="disp-last">—</span>
+        </div>
+        <div class="details-field" style="grid-column:1/-1;">
+          <span class="details-label">EMAIL ADDRESS</span>
+          <span class="details-value" id="disp-email">—</span>
+        </div>
+        <div class="details-field" style="grid-column:1/-1;">
+          <span class="details-label">PASSWORD</span>
+          <span class="details-value">••••••••••</span>
+        </div>
+      </div>
+      <button class="details-edit" id="edit-toggle-btn" onclick="toggleEditForm()">EDIT DETAILS</button>
+      <div id="edit-form-wrap" style="display:none;margin-top:40px;max-width:520px;">
+        <div style="border-top:1px solid rgba(26,24,20,0.07);padding-top:40px;">
+          <span style="font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.35);display:block;margin-bottom:28px;">EDIT YOUR DETAILS</span>
+          <div id="edit-msg" class="msg-box"></div>
+          <form style="display:flex;flex-direction:column;gap:24px;" onsubmit="saveDetails(event)">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <label class="details-label">FIRST NAME *</label>
+                <input type="text" id="edit-first" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" placeholder="First name" required>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <label class="details-label">LAST NAME *</label>
+                <input type="text" id="edit-last" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" placeholder="Last name" required>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <label class="details-label">EMAIL ADDRESS *</label>
+              <input type="email" id="edit-email" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" placeholder="your@email.com" required>
+            </div>
+            <div style="border-top:1px solid rgba(26,24,20,0.06);padding-top:24px;">
+              <span style="font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.35);display:block;margin-bottom:24px;">CHANGE PASSWORD <span style="color:rgba(26,24,20,0.3);font-size:7px;">OPTIONAL</span></span>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <label class="details-label">NEW PASSWORD</label>
+                <input type="password" id="edit-pass-new" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" placeholder="Min. 8 characters" minlength="8">
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;">
+              <button type="submit" id="save-btn" class="reg-submit">SAVE CHANGES</button>
+              <button type="button" onclick="toggleEditForm()" style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.5);background:none;border:1px solid rgba(26,24,20,0.15);cursor:pointer;padding:20px;text-align:center;">CANCEL</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADDRESSES -->
+    <div class="dash-section" id="section-addresses">
+      <span class="dash-section-eyebrow">DELIVERY</span>
+      <h2 class="dash-section-title">My <em>Addresses.</em></h2>
+      <div id="addresses-content">
+        <div class="order-empty">
+          <div class="order-empty-text">No addresses <em>saved.</em></div>
+          <p class="order-empty-sub">ADD YOUR DELIVERY ADDRESS BELOW</p>
+        </div>
+      </div>
+      <a class="dash-cta" id="add-address-btn" onclick="toggleAddressForm(); return false;" href="#" style="margin-top:24px;display:inline-block;">ADD NEW ADDRESS</a>
+      <div id="address-form-wrap" style="display:none;margin-top:40px;max-width:400px;">
+        <div style="border-top:1px solid rgba(26,24,20,0.07);padding-top:40px;">
+          <span style="font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.35);display:block;margin-bottom:28px;">NEW ADDRESS</span>
+          <div id="addr-msg" class="msg-box"></div>
+          <form style="display:flex;flex-direction:column;gap:24px;" onsubmit="addAddress(event)">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <label class="details-label">FIRST NAME *</label>
+                <input type="text" id="addr-first" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" required>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <label class="details-label">LAST NAME *</label>
+                <input type="text" id="addr-last" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" required>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <label class="details-label">ADDRESS LINE 1 *</label>
+              <input type="text" id="addr-line1" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" required>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <label class="details-label">ADDRESS LINE 2 <span style="color:rgba(26,24,20,0.3);font-size:7px;">OPTIONAL</span></label>
+              <input type="text" id="addr-line2" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <label class="details-label">CITY *</label>
+                <input type="text" id="addr-city" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" required>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <label class="details-label">POSTAL CODE *</label>
+                <input type="text" id="addr-zip" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" required>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <label class="details-label">COUNTRY *</label>
+              <select id="addr-country" class="addr-select" onchange="updateProvinceField()" required>
+                <option value="" disabled selected>Select country</option>
+                <optgroup label="EUROPE">
+                  <option value="United Kingdom">United Kingdom</option>
+                  <option value="Italy">Italy</option>
+                  <option value="France">France</option>
+                  <option value="Germany">Germany</option>
+                  <option value="Spain">Spain</option>
+                  <option value="Netherlands">Netherlands</option>
+                  <option value="Belgium">Belgium</option>
+                  <option value="Switzerland">Switzerland</option>
+                  <option value="Sweden">Sweden</option>
+                  <option value="Norway">Norway</option>
+                  <option value="Denmark">Denmark</option>
+                  <option value="Portugal">Portugal</option>
+                  <option value="Greece">Greece</option>
+                  <option value="Poland">Poland</option>
+                  <option value="Austria">Austria</option>
+                </optgroup>
+                <optgroup label="NORTH AMERICA">
+                  <option value="United States">United States</option>
+                  <option value="Canada">Canada</option>
+                  <option value="Mexico">Mexico</option>
+                </optgroup>
+                <optgroup label="MIDDLE EAST">
+                  <option value="United Arab Emirates">United Arab Emirates</option>
+                  <option value="Saudi Arabia">Saudi Arabia</option>
+                  <option value="Qatar">Qatar</option>
+                  <option value="Kuwait">Kuwait</option>
+                  <option value="Bahrain">Bahrain</option>
+                </optgroup>
+                <optgroup label="AFRICA">
+                  <option value="South Africa">South Africa</option>
+                  <option value="Nigeria">Nigeria</option>
+                  <option value="Kenya">Kenya</option>
+                  <option value="Egypt">Egypt</option>
+                  <option value="Ghana">Ghana</option>
+                </optgroup>
+                <optgroup label="ASIA PACIFIC">
+                  <option value="Australia">Australia</option>
+                  <option value="Japan">Japan</option>
+                  <option value="Singapore">Singapore</option>
+                  <option value="Hong Kong">Hong Kong</option>
+                  <option value="China">China</option>
+                  <option value="India">India</option>
+                  <option value="South Korea">South Korea</option>
+                  <option value="New Zealand">New Zealand</option>
+                </optgroup>
+              </select>
+            </div>
+            <div id="province-wrap" style="display:none;flex-direction:column;gap:10px;">
+              <label class="details-label" id="province-label">STATE / PROVINCE</label>
+              <select id="addr-province" class="addr-select">
+                <option value="" disabled selected>Select</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:16px;margin-top:8px;">
+              <button type="submit" class="reg-submit" style="flex:1;">SAVE ADDRESS</button>
+              <button type="button" onclick="toggleAddressForm()" style="flex:1;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.5);background:none;border:1px solid rgba(26,24,20,0.15);cursor:pointer;padding:20px;text-align:center;">CANCEL</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <img class="foot-logo" style="filter:invert(1) brightness(0.6);" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117" alt="Calcaterra"/>
+      <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
+      <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
+    </div>
+    <div class="foot-col"><h5>THE HOUSE</h5><a href="/calcaterra-our-story.html">Our Story</a><a href="#">Philosophy</a><a href="#">Terms of Service</a><a href="#">Privacy Policy</a></div>
+    <div class="foot-col"><h5>COLLECTIONS</h5><a href="/calcaterra-roma-collection-page.html">Roma</a></div>
+    <div class="foot-col"><h5>SUPPORT</h5><a href="#">Contact</a><a href="#">Warranty</a><a href="#">Shipping</a><a href="#">Returns</a></div>
+  </div>
+  <div class="foot-bottom"><span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span></div>
+</footer>
+
+<script>
+  const { createClient } = supabase
+  const _supabase = createClient(
+    'https://tnjuxcdcwcxoipbsowih.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
+  )
+
+  let currentCustomer = null
+  let currentSession = null
+
+  const provinceData = {
+    'United States': { label: 'STATE', options: ['Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington','West Virginia','Wisconsin','Wyoming'] },
+    'Canada': { label: 'PROVINCE', options: ['Alberta','British Columbia','Manitoba','New Brunswick','Newfoundland and Labrador','Northwest Territories','Nova Scotia','Nunavut','Ontario','Prince Edward Island','Quebec','Saskatchewan','Yukon'] },
+    'Australia': { label: 'STATE', options: ['Australian Capital Territory','New South Wales','Northern Territory','Queensland','South Australia','Tasmania','Victoria','Western Australia'] },
+    'United Kingdom': { label: 'COUNTY', options: ['England','Scotland','Wales','Northern Ireland'] },
+    'Germany': { label: 'STATE', options: ['Baden-Württemberg','Bavaria','Berlin','Brandenburg','Bremen','Hamburg','Hesse','Lower Saxony','Mecklenburg-Vorpommern','North Rhine-Westphalia','Rhineland-Palatinate','Saarland','Saxony','Saxony-Anhalt','Schleswig-Holstein','Thuringia'] },
+    'Italy': { label: 'REGION', options: ['Abruzzo','Basilicata','Calabria','Campania','Emilia-Romagna','Friuli-Venezia Giulia','Lazio','Liguria','Lombardy','Marche','Molise','Piedmont','Puglia','Sardinia','Sicily','Trentino-Alto Adige','Tuscany','Umbria','Aosta Valley','Veneto'] },
+    'France': { label: 'REGION', options: ['Auvergne-Rhône-Alpes','Bourgogne-Franche-Comté','Brittany','Centre-Val de Loire','Corsica','Grand Est','Hauts-de-France','Île-de-France','Normandy','Nouvelle-Aquitaine','Occitanie','Pays de la Loire','Provence-Alpes-Côte d\'Azur'] },
+    'Spain': { label: 'REGION', options: ['Andalusia','Aragon','Asturias','Balearic Islands','Basque Country','Canary Islands','Cantabria','Castile and León','Castilla-La Mancha','Catalonia','Extremadura','Galicia','La Rioja','Community of Madrid','Region of Murcia','Navarre','Valencian Community'] },
+    'South Africa': { label: 'PROVINCE', options: ['Eastern Cape','Free State','Gauteng','KwaZulu-Natal','Limpopo','Mpumalanga','North West','Northern Cape','Western Cape'] },
+    'United Arab Emirates': { label: 'EMIRATE', options: ['Abu Dhabi','Ajman','Dubai','Fujairah','Ras Al Khaimah','Sharjah','Umm Al Quwain'] },
+    'Saudi Arabia': { label: 'REGION', options: ['Riyadh','Mecca','Medina','Eastern Province','Asir','Tabuk','Hail','Northern Borders','Jazan','Najran','Al Bahah','Al Jawf','Qassim'] },
+    'India': { label: 'STATE', options: ['Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal','Delhi'] },
+    'China': { label: 'PROVINCE', options: ['Anhui','Beijing','Chongqing','Fujian','Gansu','Guangdong','Guangxi','Guizhou','Hainan','Hebei','Heilongjiang','Henan','Hubei','Hunan','Inner Mongolia','Jiangsu','Jiangxi','Jilin','Liaoning','Ningxia','Qinghai','Shaanxi','Shandong','Shanghai','Shanxi','Sichuan','Tianjin','Tibet','Xinjiang','Yunnan','Zhejiang'] },
+    'Mexico': { label: 'STATE', options: ['Aguascalientes','Baja California','Baja California Sur','Campeche','Chiapas','Chihuahua','Coahuila','Colima','Durango','Guanajuato','Guerrero','Hidalgo','Jalisco','Mexico City','México','Michoacán','Morelos','Nayarit','Nuevo León','Oaxaca','Puebla','Querétaro','Quintana Roo','San Luis Potosí','Sinaloa','Sonora','Tabasco','Tamaulipas','Tlaxcala','Veracruz','Yucatán','Zacatecas'] },
+    'Nigeria': { label: 'STATE', options: ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara','FCT Abuja'] }
+  }
+
+  function updateProvinceField() {
+    const country = document.getElementById('addr-country').value
+    const wrap = document.getElementById('province-wrap')
+    const label = document.getElementById('province-label')
+    const select = document.getElementById('addr-province')
+    if (provinceData[country]) {
+      const data = provinceData[country]
+      label.textContent = data.label
+      select.innerHTML = '<option value="" disabled selected>Select ' + data.label.toLowerCase() + '</option>'
+      data.options.forEach(o => {
+        const opt = document.createElement('option')
+        opt.value = o; opt.textContent = o
+        select.appendChild(opt)
+      })
+      wrap.style.display = 'flex'
+    } else {
+      wrap.style.display = 'none'
+      select.innerHTML = '<option value="" disabled selected>Select</option>'
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    const hash = window.location.hash
+    const params = new URLSearchParams(window.location.search)
+    if (hash.includes('type=email_change') || params.get('type') === 'email_change') {
+      showSection('details')
+      const banner = document.getElementById('verified-banner')
+      banner.classList.add('show')
+      setTimeout(() => banner.classList.remove('show'), 6000)
+      window.history.replaceState({}, '', window.location.pathname)
+    }
+
+    const { data: { session } } = await _supabase.auth.getSession()
+    if (!session) { window.location.href = '/calcaterra-signin.html'; return }
+    currentSession = session
+
+    const { data: customer, error } = await _supabase
+      .from('customers').select('*').eq('auth_user_id', session.user.id).single()
+    if (error) console.error('Customer fetch error:', error)
+    currentCustomer = customer
+
+    const firstName = customer?.first_name || session.user.user_metadata?.first_name || ''
+    const lastName = customer?.last_name || session.user.user_metadata?.last_name || ''
+    const email = customer?.email || session.user.email || ''
+
+    updateDisplay(firstName, lastName, email)
+    loadOrders(customer?.id)
+    loadWatches(customer?.id)
+    loadAddresses(customer?.id)
+
+    document.getElementById('signOutBtn').addEventListener('click', async () => {
+      await _supabase.auth.signOut()
+      window.location.href = '/index.html'
+    })
+  })
+
+  function updateDisplay(firstName, lastName, email) {
+    document.getElementById('sidebarName').innerHTML = firstName + (lastName ? ' <em>' + lastName + '.</em>' : (firstName ? '.' : '—'))
+    document.getElementById('disp-first').textContent = firstName || '—'
+    document.getElementById('disp-last').textContent = lastName || '—'
+    document.getElementById('disp-email').textContent = email || '—'
+    document.getElementById('edit-first').value = firstName
+    document.getElementById('edit-last').value = lastName
+    document.getElementById('edit-email').value = email
+  }
+
+  async function loadOrders(customerId) {
+    if (!customerId) return
+    const { data: orders } = await _supabase.from('orders').select('*').eq('customer_id', customerId).order('created_at', { ascending: false })
+    if (!orders || orders.length === 0) return
+    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+    let html = ''
+    orders.forEach(o => {
+      const d = new Date(o.created_at)
+      html += `<div class="order-card">
+        <div class="order-card-header">
+          <div><span class="order-number">ORDER #${o.id.slice(0,8).toUpperCase()}</span><div class="order-product">Calcaterra <em>Roma.</em></div></div>
+          <span class="order-status">${(o.status||'PENDING').toUpperCase()}</span>
+        </div>
+        <div class="order-meta">
+          <div><span class="order-meta-label">DATE</span><span class="order-meta-value">${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}</span></div>
+          <div><span class="order-meta-label">TOTAL</span><span class="order-meta-value">€${o.total||'—'}</span></div>
+        </div>
+      </div>`
+    })
+    document.getElementById('orders-content').innerHTML = html
+  }
+
+  async function loadWatches(customerId) {
+    if (!customerId) return
+    const { data: regs } = await _supabase.from('watch_registrations').select('*').eq('customer_id', customerId).order('registered_at', { ascending: false })
+    if (!regs || regs.length === 0) return
+    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+    let html = ''
+    regs.forEach(r => {
+      const d = new Date(r.registered_at)
+      let warrantyExpiry = 'ACTIVE'
+      if (r.purchase_date) {
+        const exp = new Date(r.purchase_date)
+        exp.setFullYear(exp.getFullYear() + 2)
+        warrantyExpiry = 'UNTIL ' + months[exp.getMonth()] + ' ' + exp.getFullYear()
+      }
+      html += `<div class="watch-card">
+        <div class="watch-card-img"><div style="width:100%;height:100%;background:#e9e5de;"></div></div>
+        <div>
+          <span class="watch-card-ref">CALCATERRA ROMA</span>
+          <div class="watch-card-name">Roma <em>Collection.</em></div>
+          <span class="watch-card-serial">SERIAL · ${r.serial_number||'—'}</span>
+          <span class="watch-warranty-badge active"><span class="watch-warranty-dot active"></span>WARRANTY ACTIVE · ${warrantyExpiry}</span>
+        </div>
+        <span class="watch-reg-date">REGISTERED<br>${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}</span>
+      </div>`
+    })
+    html += `<div style="margin-top:40px;"><a class="dash-cta" onclick="showSection('register'); return false;" href="#">REGISTER ANOTHER WATCH</a></div>`
+    document.getElementById('watches-content').innerHTML = html
+  }
+
+  async function loadAddresses(customerId) {
+    if (!customerId) return
+    const { data: addresses } = await _supabase.from('addresses').select('*').eq('customer_id', customerId).order('created_at', { ascending: false })
+    if (!addresses || addresses.length === 0) return
+    let html = ''
+    addresses.forEach((a, i) => {
+      html += `<div class="address-card" id="addr-card-${a.id}">
+        <span class="address-label">${i === 0 ? 'DEFAULT ADDRESS' : 'SAVED ADDRESS'}</span>
+        <button class="address-remove" onclick="removeAddress('${a.id}')">REMOVE</button>
+        <div class="address-name">${a.line1}</div>
+        <div class="address-line">${a.line2 ? a.line2 + '<br>' : ''}${a.city}${a.province ? ', ' + a.province : ''} ${a.postal_code}<br>${a.country}</div>
+      </div>`
+    })
+    document.getElementById('addresses-content').innerHTML = html
+  }
+
+  async function removeAddress(id) {
+    const { error } = await _supabase.from('addresses').delete().eq('id', id)
+    if (!error) { const card = document.getElementById('addr-card-' + id); if (card) card.remove() }
+  }
+
+  async function saveDetails(e) {
+    e.preventDefault()
+    const firstName = document.getElementById('edit-first').value.trim()
+    const lastName = document.getElementById('edit-last').value.trim()
+    const email = document.getElementById('edit-email').value.trim()
+    const newPass = document.getElementById('edit-pass-new').value
+    const btn = document.getElementById('save-btn')
+    const msg = document.getElementById('edit-msg')
+    btn.disabled = true; btn.textContent = 'SAVING...'
+    msg.className = 'msg-box'; msg.style.display = 'none'
+    try {
+      const { error: custError } = await _supabase.from('customers')
+        .update({ first_name: firstName, last_name: lastName, email })
+        .eq('auth_user_id', currentSession.user.id)
+      if (custError) throw custError
+      if (currentCustomer) { currentCustomer.first_name = firstName; currentCustomer.last_name = lastName; currentCustomer.email = email }
+      updateDisplay(firstName, lastName, email)
+      const originalEmail = currentSession.user.email || currentCustomer?.email || ''
+      const emailChanged = email.toLowerCase() !== originalEmail.toLowerCase()
+      const authUpdate = {}
+      if (emailChanged) authUpdate.email = email
+      if (newPass && newPass.length >= 8) authUpdate.password = newPass
+      if (Object.keys(authUpdate).length > 0) {
+        const { error: authError } = await _supabase.auth.updateUser(authUpdate)
+        if (authError) throw authError
+      }
+      if (emailChanged) {
+        msg.textContent = 'DETAILS SAVED. CHECK YOUR NEW EMAIL TO CONFIRM THE ADDRESS CHANGE.'
+        msg.className = 'msg-box info show'; msg.style.display = 'block'
+      } else {
+        msg.textContent = 'DETAILS SAVED.'
+        msg.className = 'msg-box success show'; msg.style.display = 'block'
+        setTimeout(() => { toggleEditForm() }, 1200)
+      }
+    } catch(err) {
+      msg.textContent = (err.message || 'SOMETHING WENT WRONG.').toUpperCase()
+      msg.className = 'msg-box error show'; msg.style.display = 'block'
+    }
+    btn.disabled = false; btn.textContent = 'SAVE CHANGES'
+  }
+
+  async function handleWatchReg(e) {
+    e.preventDefault()
+    const serial = document.getElementById('reg-serial').value.trim()
+    const date = document.getElementById('reg-date').value
+    const btn = document.getElementById('reg-btn')
+    const msg = document.getElementById('reg-msg')
+    btn.disabled = true; btn.textContent = 'REGISTERING...'
+    try {
+      const { error } = await _supabase.from('watch_registrations').insert({
+        customer_id: currentCustomer?.id, serial_number: serial, purchase_date: date || null
+      })
+      if (error) throw error
+      document.getElementById('reg-form').style.display = 'none'
+      document.getElementById('reg-thanks').style.display = 'block'
+      loadWatches(currentCustomer?.id)
+    } catch(err) {
+      msg.textContent = (err.message || 'SOMETHING WENT WRONG.').toUpperCase()
+      msg.className = 'msg-box error show'; msg.style.display = 'block'
+      btn.disabled = false; btn.textContent = 'REGISTER MY WATCH'
+    }
+  }
+
+  async function addAddress(e) {
+    e.preventDefault()
+    const msg = document.getElementById('addr-msg')
+    const provinceVisible = document.getElementById('province-wrap').style.display !== 'none'
+    try {
+      const { error } = await _supabase.from('addresses').insert({
+        customer_id: currentCustomer?.id,
+        line1: document.getElementById('addr-line1').value.trim(),
+        line2: document.getElementById('addr-line2').value.trim() || null,
+        city: document.getElementById('addr-city').value.trim(),
+        province: provinceVisible ? (document.getElementById('addr-province').value || null) : null,
+        postal_code: document.getElementById('addr-zip').value.trim(),
+        country: document.getElementById('addr-country').value
+      })
+      if (error) throw error
+      e.target.reset()
+      document.getElementById('province-wrap').style.display = 'none'
+      toggleAddressForm()
+      loadAddresses(currentCustomer?.id)
+    } catch(err) {
+      msg.textContent = (err.message || 'SOMETHING WENT WRONG.').toUpperCase()
+      msg.className = 'msg-box error show'; msg.style.display = 'block'
+    }
+  }
+
+  function showSection(id) {
+    document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'))
+    document.querySelectorAll('.dash-nav-item').forEach(n => n.classList.remove('active'))
+    const target = document.getElementById('section-' + id)
+    if (target) target.classList.add('active')
+    const map = { orders:0, watches:1, register:2, details:3, addresses:4 }
+    const items = document.querySelectorAll('.dash-nav-item')
+    if (map[id] !== undefined && items[map[id]]) items[map[id]].classList.add('active')
+  }
+
+  function toggleEditForm() {
+    const wrap = document.getElementById('edit-form-wrap')
+    const btn = document.getElementById('edit-toggle-btn')
+    if (wrap.style.display === 'none') { wrap.style.display = 'block'; btn.textContent = 'CANCEL' }
+    else { wrap.style.display = 'none'; btn.textContent = 'EDIT DETAILS'; document.getElementById('edit-msg').style.display = 'none' }
+  }
+
+  function toggleAddressForm() {
+    const wrap = document.getElementById('address-form-wrap')
+    const btn = document.getElementById('add-address-btn')
+    if (wrap.style.display === 'none') { wrap.style.display = 'block'; btn.textContent = 'CANCEL' }
+    else { wrap.style.display = 'none'; btn.textContent = 'ADD NEW ADDRESS' }
+  }
+
+  function toggleMenu() {
+    document.getElementById('menuToggle').classList.toggle('open')
+    document.getElementById('menu-drawer').classList.toggle('open')
+    document.getElementById('menu-overlay').classList.toggle('open')
+  }
+</script>
+</body>
+</html>#menu-drawer.open .drawer-nav a:nth-child(3){transition-delay:.19s;}
+#menu-drawer.open .drawer-nav a:nth-child(4){transition-delay:.25s;}
+#menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
+.drawer-footer{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.28);}
+.dashboard{display:grid;grid-template-columns:280px 1fr;min-height:100vh;padding-top:96px;}
+.dash-sidebar{border-right:1px solid rgba(26,24,20,0.07);padding:64px 48px;position:sticky;top:96px;height:calc(100vh - 96px);display:flex;flex-direction:column;overflow-y:auto;}
+.dash-welcome-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.35);display:block;margin-bottom:10px;}
+.dash-welcome-name{font-size:clamp(22px,2.5vw,30px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:48px;line-height:1.15;}
+.dash-welcome-name em{font-style:italic;color:rgba(26,24,20,0.4);}
+.dash-nav{display:flex;flex-direction:column;flex:1;}
+.dash-nav-item{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.45);padding:16px 0;border-bottom:1px solid rgba(26,24,20,0.06);cursor:pointer;transition:color .2s;background:none;border-left:none;border-right:none;border-top:none;text-align:left;display:flex;justify-content:space-between;align-items:center;text-decoration:none;}
+.dash-nav-item:first-child{border-top:1px solid rgba(26,24,20,0.06);}
+.dash-nav-item:hover{color:#1a1814;}
+.dash-nav-item.active{color:#1a1814;}
+.dash-nav-item svg{width:10px;height:10px;stroke:rgba(26,24,20,0.25);fill:none;stroke-width:1.5;stroke-linecap:round;}
+.dash-signout{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.3);background:none;border:1px solid rgba(26,24,20,0.12);cursor:pointer;padding:14px;text-align:center;margin-top:40px;transition:color .25s,border-color .25s;width:100%;}
+.dash-signout:hover{color:#1a1814;border-color:rgba(26,24,20,0.3);}
+.dash-main{padding:64px 72px;}
+.dash-section{display:none;}
+.dash-section.active{display:block;}
+.dash-section-eyebrow{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.35);display:block;margin-bottom:16px;}
+.dash-section-title{font-size:clamp(28px,3vw,40px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:48px;line-height:1.1;}
+.dash-section-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.order-empty{padding:80px 0;text-align:center;border-top:1px solid rgba(26,24,20,0.06);border-bottom:1px solid rgba(26,24,20,0.06);}
+.order-empty-text{font-size:clamp(22px,2.5vw,32px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:12px;}
+.order-empty-text em{font-style:italic;color:rgba(26,24,20,0.35);}
+.order-empty-sub{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-bottom:40px;}
+.order-card{border:1px solid rgba(26,24,20,0.07);padding:32px;margin-bottom:16px;transition:border-color .2s;}
+.order-card:hover{border-color:rgba(26,24,20,0.2);}
+.order-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(26,24,20,0.06);}
+.order-number{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.4);display:block;margin-bottom:8px;}
+.order-product{font-size:22px;font-weight:300;letter-spacing:0.03em;color:#1a1814;}
+.order-product em{font-style:italic;color:rgba(26,24,20,0.4);}
+.order-status{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.5);padding:8px 16px;border:1px solid rgba(26,24,20,0.12);}
+.order-meta{display:flex;gap:48px;}
+.order-meta-label{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.3);display:block;margin-bottom:6px;}
+.order-meta-value{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.1em;color:#1a1814;}
+.watch-card{display:grid;grid-template-columns:100px 1fr auto;gap:32px;padding:32px 0;border-bottom:1px solid rgba(26,24,20,0.06);align-items:start;}
+.watch-card:first-of-type{border-top:1px solid rgba(26,24,20,0.06);}
+.watch-card-img{aspect-ratio:1/1;background:#e9e5de;overflow:hidden;}
+.watch-card-img img{width:100%;height:100%;object-fit:contain;background:#f2efe9;filter:brightness(0.95);}
+.watch-card-ref{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.35);display:block;margin-bottom:8px;}
+.watch-card-name{font-size:22px;font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:8px;}
+.watch-card-name em{font-style:italic;color:rgba(26,24,20,0.4);}
+.watch-card-serial{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.4);display:block;margin-bottom:20px;}
+.watch-warranty-badge{display:inline-flex;align-items:center;gap:8px;font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.5);padding:8px 14px;border:1px solid rgba(26,24,20,0.1);}
+.watch-warranty-badge.active{color:#1a1814;border-color:rgba(26,24,20,0.25);}
+.watch-warranty-dot{width:6px;height:6px;border-radius:50%;background:rgba(26,24,20,0.2);flex-shrink:0;}
+.watch-warranty-dot.active{background:#1a1814;}
+.watch-reg-date{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.35);text-align:right;white-space:nowrap;}
+.reg-form{display:flex;flex-direction:column;gap:28px;max-width:520px;}
+.reg-form .form-group{display:flex;flex-direction:column;gap:10px;}
+.reg-form .form-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.5);}
+.reg-form .form-input{width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;transition:border-color .3s;border-radius:0;}
+.reg-form .form-input:focus{border-bottom-color:rgba(26,24,20,0.6);}
+.reg-form .form-input::placeholder{color:rgba(26,24,20,0.18);font-size:15px;}
+.reg-submit{display:block;width:100%;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.6em;color:#f2efe9;background:#1a1814;border:none;cursor:pointer;padding:20px;text-align:center;transition:background .3s;margin-top:8px;}
+.reg-submit:hover{background:#2a2620;}
+.reg-submit:disabled{opacity:0.5;cursor:not-allowed;}
+.reg-note{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-top:4px;}
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:520px;}
+.details-field{display:flex;flex-direction:column;gap:8px;}
+.details-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.35);}
+.details-value{font-size:18px;font-weight:300;letter-spacing:0.02em;color:#1a1814;padding:12px 0;border-bottom:1px solid rgba(26,24,20,0.08);}
+.details-edit{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.4);border:1px solid rgba(26,24,20,0.15);padding:12px 28px;text-decoration:none;cursor:pointer;margin-top:32px;transition:color .2s,border-color .2s;background:none;}
+.details-edit:hover{color:#1a1814;border-color:rgba(26,24,20,0.35);}
+.address-card{border:1px solid rgba(26,24,20,0.08);padding:28px;margin-bottom:16px;max-width:400px;position:relative;}
+.address-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.35);display:block;margin-bottom:12px;}
+.address-name{font-size:18px;font-weight:300;letter-spacing:0.02em;color:#1a1814;margin-bottom:8px;}
+.address-line{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.1em;color:rgba(26,24,20,0.5);line-height:1.9;}
+.address-remove{position:absolute;top:28px;right:28px;background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.25);cursor:pointer;transition:color .2s;padding:0;}
+.address-remove:hover{color:rgba(26,24,20,0.6);}
+.dash-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.5em;color:#1a1814;border:1px solid rgba(26,24,20,0.2);padding:14px 32px;text-decoration:none;transition:background .3s,color .3s;cursor:pointer;background:none;}
+.dash-cta:hover{background:#1a1814;color:#f2efe9;}
+.msg-box{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;padding:14px 20px;margin-bottom:24px;display:none;}
+.msg-box.show{display:block;}
+.msg-box.success{color:#1a1814;border:1px solid rgba(26,24,20,0.2);background:rgba(26,24,20,0.03);}
+.msg-box.error{color:#c0392b;border:1px solid rgba(192,57,43,0.2);background:rgba(192,57,43,0.03);}
+.msg-box.info{color:rgba(26,24,20,0.6);border:1px solid rgba(26,24,20,0.1);background:rgba(26,24,20,0.02);}
+.verified-banner{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:#1a1814;border:1px solid rgba(26,24,20,0.2);background:rgba(26,24,20,0.03);padding:14px 20px;margin-bottom:32px;display:none;}
+.verified-banner.show{display:block;}
 footer{background:#141210;padding:80px 52px 48px;}
 .foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
 .foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
