@@ -7,6 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+
+  #account-overlay{position:fixed;top:96px;left:0;right:0;bottom:0;z-index:999;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
+#account-overlay.open{background:rgba(26,24,20,0.5);pointer-events:all;}
+.account-nav-links{display:flex;flex-direction:column;margin-top:8px;}
+.account-nav-links a{font-family:'Times New Roman',Times,serif;font-size:26px;font-weight:300;letter-spacing:0.03em;color:#1a1814;text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(26,24,20,0.07);transition:color .2s;}
+.account-nav-links a:hover{color:rgba(26,24,20,0.4);}
+.account-signout-btn{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.35);cursor:pointer;padding:20px 0 0;text-align:left;transition:color .2s;}
+.account-signout-btn:hover{color:#1a1814;}
+  
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;overflow-x:hidden;}
