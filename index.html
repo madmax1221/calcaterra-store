@@ -384,12 +384,12 @@ footer{background:#141210;padding:80px 52px 48px;}
   async function initAuth() {
     const { data: { session } } = await _supabase.auth.getSession()
     if (session) {
-      const { data: customer } = await _supabase
+     const { data: customer } = await _supabase
         .from('customers')
-        .select('first_name, id')
+        .select('first_name, last_name, id')
         .eq('auth_user_id', session.user.id)
         .single()
-      const name = customer ? customer.first_name : 'Member'
+      const name = customer ? `${customer.first_name} ${customer.last_name || ''}`.trim() : 'Member'
       const memberId = 'CRRM\u2013' + (customer?.id?.slice(0,4) || '0000').toUpperCase()
       document.getElementById('accountContent').innerHTML = `
         <div class="acct-in">
