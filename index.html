@@ -403,10 +403,13 @@ footer{background:#141210;padding:80px 52px 48px;}
         <a href="/calcaterra-dashboard-21.html" class="account-lo-btn account-lo-btn-primary">MY ACCOUNT</a>
         <button id="signOutBtn" class="account-lo-btn account-lo-btn-secondary" style="cursor:pointer;">SIGN OUT</button>
       `
-      document.getElementById('signOutBtn').addEventListener('click', async function() {
-        await _supabase.auth.signOut()
-        window.location.reload()
-      })
+     setTimeout(() => {
+        const btn = document.getElementById('signOutBtn')
+        if (btn) btn.addEventListener('click', async function() {
+          await _supabase.auth.signOut()
+          window.location.reload()
+        })
+      }, 100)
     }
   }
 
