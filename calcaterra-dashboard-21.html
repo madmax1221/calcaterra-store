@@ -597,8 +597,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     const { error } = await _supabase.from('addresses').delete().eq('id', id)
     if (!error) { const card = document.getElementById('addr-card-' + id); if (card) card.remove() }
   }
-
-  async function saveDetails(e) {
+async function saveDetails(e) {
     e.preventDefault()
     const firstName = document.getElementById('edit-first').value.trim()
     const lastName = document.getElementById('edit-last').value.trim()
@@ -609,22 +608,17 @@ footer{background:#141210;padding:80px 52px 48px;}
     btn.disabled = true; btn.textContent = 'SAVING...'
     msg.className = 'msg-box'; msg.style.display = 'none'
     try {
-      
-     const originalEmail = currentSession.user.email || ''
+      const originalEmail = currentSession.user.email || ''
       const emailChanged = email.toLowerCase() !== originalEmail.toLowerCase()
 
-      // Only update email in customers table if it hasn't changed — keep in sync with auth
       const { error: custError } = await _supabase.from('customers')
         .update({ first_name: firstName, last_name: lastName, ...(emailChanged ? {} : { email }) })
         .eq('auth_user_id', currentSession.user.id)
       if (custError) throw custError
-      if (currentCustomer) { currentCustomer.first_name = firstName; currentCustomer.last_name = lastName }
 
-      // Always display the verified auth email, not the pending new one
+      if (currentCustomer) { currentCustomer.first_name = firstName; currentCustomer.last_name = lastName }
       updateDisplay(firstName, lastName, originalEmail)
-      
-      const originalEmail = currentSession.user.email || currentCustomer?.email || ''
-      const emailChanged = email.toLowerCase() !== originalEmail.toLowerCase()
+
       const authUpdate = {}
       if (emailChanged) authUpdate.email = email
       if (newPass && newPass.length >= 8) authUpdate.password = newPass
