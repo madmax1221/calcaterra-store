@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Collections — Calcaterra</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;overflow-x:hidden;}
+::-webkit-scrollbar{width:1px;}
+::-webkit-scrollbar-thumb{background:rgba(26,24,20,0.15);}
+::selection{background:rgba(26,24,20,0.08);}
+
+/* ─── NAV ─── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:96px;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:18px 52px;
+  background:rgba(242,239,233,0.95);
+  border-bottom:1px solid rgba(26,24,20,0.07);
+  backdrop-filter:blur(14px);
+}
+.nav-l,.nav-r{display:flex;gap:28px;align-items:center;}
+.nav-center{position:absolute;left:50%;transform:translateX(-50%);}
+.nav-logo-img{height:58px;width:auto;display:block;filter:invert(1);margin-top:4px;}
+.nav-hamburger{
+  display:flex;flex-direction:column;justify-content:center;
+  gap:5px;width:28px;height:28px;
+  background:none;border:none;cursor:pointer;padding:0;
+}
+.nav-hamburger span{
+  display:block;width:22px;height:1.5px;
+  background:rgba(26,24,20,0.85);
+  transition:transform .35s,opacity .3s;
+  transform-origin:center;
+}
+.nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+.nav-icon-btn{
+  background:none;border:none;cursor:pointer;padding:4px;
+  display:flex;align-items:center;justify-content:center;
+  opacity:.85;transition:opacity .25s;
+}
+.nav-icon-btn:hover{opacity:1;}
+.nav-icon-btn svg{
+  width:18px;height:18px;
+  stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.cart-wrap{position:relative;}
+
+/* ─── MENU DRAWER ─── */
+#menu-overlay{
+  position:fixed;inset:0;z-index:480;
+  background:rgba(26,24,20,0);
+  pointer-events:none;transition:background .5s;
+}
+#menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
+#menu-drawer{
+  position:fixed;top:0;left:0;bottom:0;width:300px;
+  background:#f2efe9;z-index:490;
+  transform:translateX(-100%);
+  transition:transform .5s cubic-bezier(.77,0,.18,1);
+  display:flex;flex-direction:column;
+  padding:120px 48px 60px;
+}
+#menu-drawer.open{transform:translateX(0);}
+.drawer-nav{display:flex;flex-direction:column;flex:1;}
+.drawer-nav a{
+  font-family:'Times New Roman',Times,serif;
+  font-size:28px;font-weight:300;
+  letter-spacing:0.03em;color:#1a1814;
+  text-decoration:none;
+  padding:13px 0;
+  border-bottom:1px solid rgba(26,24,20,0.07);
+  opacity:0;transform:translateX(-16px);
+  transition:opacity .4s,transform .4s,color .2s;
+}
+.drawer-nav a:hover{color:rgba(26,24,20,0.4);}
+#menu-drawer.open .drawer-nav a{opacity:1;transform:translateX(0);}
+#menu-drawer.open .drawer-nav a:nth-child(1){transition-delay:.07s;}
+#menu-drawer.open .drawer-nav a:nth-child(2){transition-delay:.13s;}
+#menu-drawer.open .drawer-nav a:nth-child(3){transition-delay:.19s;}
+#menu-drawer.open .drawer-nav a:nth-child(4){transition-delay:.25s;}
+#menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
+.drawer-footer{
+  font-family:'Montserrat',sans-serif;
+  font-size:8px;font-weight:300;letter-spacing:0.45em;
+  color:rgba(26,24,20,0.28);
+}
+
+/* ─── PAGE HEADER ─── */
+.page-header{
+  padding:180px 52px 80px;
+  text-align:center;
+}
+.page-eyebrow{
+  font-family:'Montserrat',sans-serif;
+  font-size:8.5px;font-weight:300;letter-spacing:0.72em;
+  color:rgba(26,24,20,0.35);
+  display:block;margin-bottom:24px;
+}
+.page-title{
+  font-size:clamp(38px,5.5vw,72px);
+  font-weight:300;line-height:1.08;
+  letter-spacing:0.04em;color:#1a1814;
+  margin-bottom:20px;
+}
+.page-title em{font-style:italic;color:#1a1814;}
+.page-subtitle{
+  font-family:'Montserrat',sans-serif;
+  font-size:11px;font-weight:300;letter-spacing:0.25em;
+  color:rgba(26,24,20,0.45);
+}
+
+/* ─── HAIRLINE ─── */
+.hairline-h{width:80px;height:1px;background:rgba(26,24,20,0.09);margin:0 auto;}
+
+/* ─── COLLECTIONS GRID ─── */
+.collections-grid{
+  padding:100px 52px 160px;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:2px;
+  max-width:1200px;
+  margin:0 auto;
+}
+
+/* ─── COLLECTION CARD ─── */
+.collection-card{
+  position:relative;
+  display:block;
+  text-decoration:none;
+  color:inherit;
+  cursor:pointer;
+}
+
+/* Main image */
+.collection-card-img{
+  position:relative;
+  overflow:hidden;
+  aspect-ratio:4/5;
+  background:#141210;
+}
+.collection-card-img img{
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center;
+  filter:brightness(0.82) saturate(0.88);
+  transition:transform 1s cubic-bezier(.25,.46,.45,.94), filter .8s ease;
+}
+.collection-card:hover .collection-card-img img{
+  transform:scale(1.05);
+  filter:brightness(0.9) saturate(1);
+}
+
+/* Overlay gradient */
+.collection-card-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top, rgba(14,13,11,0.85) 0%, rgba(14,13,11,0.2) 50%, transparent 100%);
+  transition:opacity .5s ease;
+}
+
+/* Content inside image */
+.collection-card-inner{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  padding:48px;
+  z-index:2;
+}
+.collection-card-label{
+  font-family:'Montserrat',sans-serif;
+  font-size:8px;font-weight:300;letter-spacing:0.55em;
+  color:rgba(242,239,233,0.4);
+  display:block;margin-bottom:12px;
+}
+.collection-card-name{
+  font-size:clamp(32px,4vw,56px);
+  font-weight:300;line-height:1.1;
+  letter-spacing:0.04em;color:#f2efe9;
+  display:block;margin-bottom:8px;
+}
+.collection-card-name em{font-style:italic;color:#f2efe9;}
+.collection-card-refs{
+  font-family:'Montserrat',sans-serif;
+  font-size:9px;font-weight:300;letter-spacing:0.35em;
+  color:rgba(242,239,233,0.3);
+  display:block;margin-bottom:32px;
+}
+
+/* CTA button inside card */
+.collection-card-cta{
+  display:inline-block;
+  font-family:'Montserrat',sans-serif;
+  font-size:8px;font-weight:300;letter-spacing:0.45em;
+  color:rgba(242,239,233,0.6);
+  border:1px solid rgba(242,239,233,0.25);
+  padding:13px 28px;
+  transition:background .3s,color .3s,border-color .3s;
+  transform:translateY(8px);
+  opacity:0;
+  transition:opacity .4s ease, transform .4s ease, background .3s, color .3s;
+}
+.collection-card:hover .collection-card-cta{
+  opacity:1;
+  transform:translateY(0);
+}
+.collection-card:hover .collection-card-cta:hover{
+  background:#f2efe9;
+  color:#141210;
+  border-color:#f2efe9;
+}
+
+/* Coming soon card */
+.collection-card.coming-soon .collection-card-img img{
+  filter:brightness(0.42) saturate(0);
+}
+.collection-card.coming-soon .collection-card-overlay{
+  background:linear-gradient(to top, rgba(14,13,11,0.95) 0%, rgba(14,13,11,0.5) 60%, rgba(14,13,11,0.2) 100%);
+}
+.coming-soon-badge{
+  position:absolute;
+  top:28px;right:28px;
+  font-family:'Montserrat',sans-serif;
+  font-size:7px;font-weight:300;letter-spacing:0.45em;
+  color:rgba(242,239,233,0.3);
+  border:1px solid rgba(242,239,233,0.12);
+  padding:8px 16px;
+  z-index:3;
+}
+
+/* ─── BOTTOM STATEMENT ─── */
+.collections-statement{
+  padding:0 52px 160px;
+  text-align:center;
+  max-width:680px;
+  margin:0 auto;
+}
+.collections-statement p{
+  font-size:clamp(18px,2vw,24px);
+  font-weight:300;line-height:1.7;
+  letter-spacing:0.02em;
+  color:rgba(26,24,20,0.5);
+}
+.collections-statement em{font-style:italic;color:rgba(26,24,20,0.3);}
+
+/* ─── FOOTER ─── */
+footer{background:#141210;padding:80px 52px 48px;}
+.foot-grid{
+  display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;
+  gap:48px;padding-bottom:56px;
+  border-bottom:1px solid rgba(242,239,233,0.06);
+}
+.foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
+.foot-copy{
+  font-family:'Times New Roman',Times,serif;font-size:13px;
+  letter-spacing:0.04em;color:rgba(242,239,233,0.2);line-height:1.9;max-width:250px;
+}
+.foot-col h5{
+  font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;
+  letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;
+}
+.foot-col a{
+  display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;
+  letter-spacing:0.08em;color:rgba(242,239,233,0.3);text-decoration:none;
+  margin-bottom:12px;transition:color .25s;
+}
+.foot-col a:hover{color:rgba(242,239,233,0.72);}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;}
+.foot-bottom span{
+  font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;
+  letter-spacing:0.35em;color:rgba(242,239,233,0.14);
+}
+
+/* ─── ANIMATIONS ─── */
+.fade{opacity:0;transform:translateY(24px);transition:opacity .95s ease,transform .95s ease;}
+.fade.in{opacity:1;transform:translateY(0);}
+.fade-d1{transition-delay:.12s;}
+.fade-d2{transition-delay:.24s;}
+.fade-d3{transition-delay:.36s;}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:860px){
+  #nav{padding:0 24px;}
+  .page-header{padding:140px 24px 60px;}
+  .collections-grid{grid-template-columns:1fr;padding:60px 24px 100px;}
+  .collections-statement{padding:0 24px 100px;}
+  footer{padding:48px 24px 36px;}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-l">
+    <button class="nav-hamburger" id="menuToggle" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-center">
+    <a href="index.html">
+      <!-- ═══════════════════════════════════════
+           NAV LOGO — dark version (light nav)
+           Replace src with Shopify CDN URL
+      ═══════════════════════════════════════ -->
+      <img class="nav-logo-img"
+        src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117"
+        alt="Calcaterra"/>
+    </a>
+  </div>
+  <div class="nav-r">
+    <button class="nav-icon-btn" aria-label="Search">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+    </button>
+    <div class="cart-wrap">
+      <button class="nav-icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- MENU DRAWER -->
+<div id="menu-overlay" onclick="toggleMenu()"></div>
+<div id="menu-drawer">
+  <nav class="drawer-nav">
+    <a href="collection.html">Collection</a>
+    <a href="our-story.html">About</a>
+    <a href="#">Contact</a>
+    <a href="#">Notify Me</a>
+    <a href="#">Stockists</a>
+  </nav>
+  <span class="drawer-footer">CALCATERRA</span>
+</div>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <span class="page-eyebrow fade">CALCATERRA</span>
+  <h1 class="page-title fade fade-d1">The <em>Collections.</em></h1>
+  <p class="page-subtitle fade fade-d2">The present chapter of Calcaterra.</p>
+</header>
+
+<div class="hairline-h"></div>
+
+<!-- COLLECTIONS GRID -->
+<div class="collections-grid">
+
+  <!-- ── THE ROMA COLLECTION ── -->
+  <a href="calcaterra-collection.html" class="collection-card fade">
+    <div class="collection-card-img">
+      <!-- ═══════════════════════════════════════
+           ROMA COLLECTION CARD IMAGE
+           Type: Hero shot of the Roma watch
+           Mood: Dark, editorial, strong contrast
+           Replace src with Shopify CDN URL
+      ═══════════════════════════════════════ -->
+      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_ec8sfnec8sfnec8s.png?v=1773510119" alt="The Roma Collection">
+      <div class="collection-card-overlay"></div>
+    </div>
+    <div class="collection-card-inner">
+      <span class="collection-card-name">The Roma<br><em>Collection.</em></span>
+      <span class="collection-card-refs">III REFERENCES &nbsp;&middot;&nbsp; FROM 329 EUR</span>
+      <span class="collection-card-cta">DISCOVER THE ROMA</span>
+    </div>
+  </a>
+
+  <!-- ── COMING SOON PLACEHOLDER ── -->
+  <div class="collection-card coming-soon fade fade-d1">
+    <div class="collection-card-img">
+      <!-- ═══════════════════════════════════════
+           COMING SOON CARD IMAGE
+           Type: Atmospheric/architectural image
+           Mood: Very dark, barely visible
+           Replace src with any dark image
+      ═══════════════════════════════════════ -->
+      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_ec8sfnec8sfnec8s.png?v=1773510119" alt="Coming Soon">
+      <div class="collection-card-overlay"></div>
+    </div>
+    <span class="coming-soon-badge">COMING SOON</span>
+    <div class="collection-card-inner">
+      <span class="collection-card-name" style="color:rgba(242,239,233,0.2);">The Next<br><em>Chapter.</em></span>
+      <span class="collection-card-refs" style="color:rgba(242,239,233,0.15);">IN DEVELOPMENT</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM STATEMENT -->
+<div class="collections-statement fade">
+  <p>
+    One collection at a time.<br>
+    <em>Each one complete in itself.</em>
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <img class="foot-logo" style="filter:invert(1) brightness(0.6);"
+        src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117"
+        alt="Calcaterra"/>
+      <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
+      <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
+    </div>
+    <div class="foot-col">
+      <h5>THE HOUSE</h5>
+      <a href="our-story.html">Our Story</a>
+      <a href="#">Philosophy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+    <div class="foot-col">
+      <h5>COLLECTIONS</h5>
+      <a href="calcaterra-collection.html">Roma</a>
+    </div>
+    <div class="foot-col">
+      <h5>SUPPORT</h5>
+      <a href="#">Contact</a>
+      <a href="#">Warranty</a>
+      <a href="#">Shipping</a>
+      <a href="#">Returns</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span>
+  </div>
+</footer>
+
+<script>
+function toggleMenu(){
+  document.getElementById('menuToggle').classList.toggle('open');
+  document.getElementById('menu-drawer').classList.toggle('open');
+  document.getElementById('menu-overlay').classList.toggle('open');
+}
+window.addEventListener('load', function(){ reveal(); });
+window.addEventListener('scroll', function(){ reveal(); }, {passive:true});
+function reveal(){
+  document.querySelectorAll('.fade:not(.in)').forEach(function(el){
+    if(el.getBoundingClientRect().top < window.innerHeight - 80){ el.classList.add('in'); }
+  });
+}
+</script>
+
+</body>
+</html>

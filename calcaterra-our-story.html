@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Our Story Calcaterra</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;overflow-x:hidden;}
+::-webkit-scrollbar{width:1px;}
+::-webkit-scrollbar-thumb{background:rgba(26,24,20,0.15);}
+::selection{background:rgba(26,24,20,0.08);}
+
+/* ─── NAV ─── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:96px;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:18px 52px;
+  background:rgba(242,239,233,0.95);
+  border-bottom:1px solid rgba(26,24,20,0.07);
+  backdrop-filter:blur(14px);
+}
+.nav-l,.nav-r{display:flex;gap:28px;align-items:center;}
+.nav-center{position:absolute;left:50%;transform:translateX(-50%);}
+.nav-logo-img{height:58px;width:auto;display:block;filter:invert(1);margin-top:4px;}
+.nav-hamburger{
+  display:flex;flex-direction:column;justify-content:center;
+  gap:5px;width:28px;height:28px;
+  background:none;border:none;cursor:pointer;padding:0;
+}
+.nav-hamburger span{
+  display:block;width:22px;height:1.5px;
+  background:rgba(26,24,20,0.85);
+  transition:transform .35s,opacity .3s;
+  transform-origin:center;
+}
+.nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+.nav-icon-btn{
+  background:none;border:none;cursor:pointer;padding:4px;
+  display:flex;align-items:center;justify-content:center;
+  opacity:.85;transition:opacity .25s;
+}
+.nav-icon-btn:hover{opacity:1;}
+.nav-icon-btn svg{
+  width:18px;height:18px;
+  stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.cart-wrap{position:relative;}
+
+/* ─── MENU DRAWER ─── */
+#menu-overlay{
+  position:fixed;inset:0;z-index:480;
+  background:rgba(26,24,20,0);
+  pointer-events:none;transition:background .5s;
+}
+#menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
+#menu-drawer{
+  position:fixed;top:0;left:0;bottom:0;width:300px;
+  background:#f2efe9;z-index:490;
+  transform:translateX(-100%);
+  transition:transform .5s cubic-bezier(.77,0,.18,1);
+  display:flex;flex-direction:column;
+  padding:120px 48px 60px;
+}
+#menu-drawer.open{transform:translateX(0);}
+.drawer-nav{display:flex;flex-direction:column;flex:1;}
+.drawer-nav a{
+  font-family:'Times New Roman',Times,serif;
+  font-size:28px;font-weight:300;
+  letter-spacing:0.03em;color:#1a1814;
+  text-decoration:none;
+  padding:13px 0;
+  border-bottom:1px solid rgba(26,24,20,0.07);
+  opacity:0;transform:translateX(-16px);
+  transition:opacity .4s,transform .4s,color .2s;
+}
+.drawer-nav a:hover{color:rgba(26,24,20,0.4);}
+#menu-drawer.open .drawer-nav a{opacity:1;transform:translateX(0);}
+#menu-drawer.open .drawer-nav a:nth-child(1){transition-delay:.07s;}
+#menu-drawer.open .drawer-nav a:nth-child(2){transition-delay:.13s;}
+#menu-drawer.open .drawer-nav a:nth-child(3){transition-delay:.19s;}
+#menu-drawer.open .drawer-nav a:nth-child(4){transition-delay:.25s;}
+#menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
+.drawer-footer{
+  font-family:'Montserrat',sans-serif;
+  font-size:8px;font-weight:300;letter-spacing:0.45em;
+  color:rgba(26,24,20,0.28);
+}
+
+/* ─── PAGE HERO ─── */
+.page-hero{
+  padding:180px 52px 100px;
+  max-width:900px;
+  margin:0 auto;
+  text-align:center;
+}
+.page-eyebrow{
+  font-family:'Montserrat',sans-serif;
+  font-size:8.5px;font-weight:300;letter-spacing:0.72em;
+  color:rgba(26,24,20,0.35);
+  display:block;margin-bottom:32px;
+}
+.page-title{
+  font-size:clamp(42px,6vw,86px);
+  font-weight:300;line-height:1.08;
+  letter-spacing:0.04em;color:#1a1814;
+  margin-bottom:48px;
+}
+.page-title em{font-style:italic;color:#1a1814;}
+.page-intro{
+  font-size:clamp(17px,2vw,22px);
+  font-weight:300;line-height:1.8;
+  letter-spacing:0.02em;
+  color:rgba(26,24,20,0.65);
+  max-width:620px;margin:0 auto;
+}
+
+/* ─── HAIRLINE ─── */
+.hairline{
+  width:1px;height:100px;
+  background:rgba(26,24,20,0.09);
+  margin:0 auto;
+}
+.hairline-h{
+  width:80px;height:1px;
+  background:rgba(26,24,20,0.09);
+  margin:0 auto;
+}
+
+/* ─── STORY SECTIONS ─── */
+.story-section{
+  padding:100px 52px;
+  max-width:780px;
+  margin:0 auto;
+}
+.story-section.center{text-align:center;}
+.story-section.right{text-align:right;}
+
+.story-label{
+  font-family:'Montserrat',sans-serif;
+  font-size:8px;font-weight:300;letter-spacing:0.58em;
+  color:rgba(26,24,20,0.3);
+  display:block;margin-bottom:28px;
+}
+.story-heading{
+  font-size:clamp(28px,3.5vw,48px);
+  font-weight:300;line-height:1.25;
+  letter-spacing:0.03em;color:#1a1814;
+  margin-bottom:32px;
+}
+.story-heading em{font-style:italic;color:rgba(26,24,20,0.4);}
+.story-body{
+  font-family:'Montserrat',sans-serif;
+  font-size:13px;font-weight:300;
+  letter-spacing:0.08em;line-height:2.1;
+  color:rgba(26,24,20,0.6);
+  max-width:560px;
+}
+.story-section.center .story-body{margin:0 auto;}
+.story-section.right .story-body{margin-left:auto;}
+
+/* ─── DARK INTERLUDE ─── */
+.dark-interlude{
+  background:#141210;
+  padding:140px 52px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.dark-interlude .story-label{color:rgba(242,239,233,0.18);}
+.dark-quote{
+  font-size:clamp(32px,4.8vw,68px);
+  font-weight:300;line-height:1.2;
+  letter-spacing:0.03em;color:#f2efe9;
+  max-width:820px;margin:0 auto 24px;
+}
+.dark-quote em{font-style:italic;color:rgba(242,239,233,0.38);font-size:0.93em;}
+.dark-sub{
+  font-family:'Montserrat',sans-serif;
+  font-size:11px;font-weight:300;
+  letter-spacing:0.25em;color:rgba(242,239,233,0.3);
+}
+
+/* ─── SPLIT FEATURE ─── */
+.story-split{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:540px;
+}
+.story-split-img{
+  background:#1a1814;
+  overflow:hidden;
+  position:relative;
+}
+.story-split-img img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center 30%;
+  filter:brightness(0.82) saturate(0.75);
+}
+.story-split-text{
+  background:#e9e5de;
+  padding:80px 64px;
+  display:flex;flex-direction:column;justify-content:flex-start;
+}
+.story-split-text .story-label{color:rgba(26,24,20,0.4);}
+.story-split-text .story-heading{font-size:clamp(26px,3vw,42px);}
+
+/* ─── CLOSING ─── */
+.story-closing{
+  padding:160px 52px;
+  text-align:center;
+}
+.story-closing-label{
+  font-family:'Montserrat',sans-serif;
+  font-size:8px;font-weight:300;letter-spacing:0.58em;
+  color:rgba(26,24,20,0.25);
+  display:block;margin-bottom:40px;
+}
+.story-closing-statement{
+  font-size:clamp(36px,5.5vw,78px);
+  font-weight:300;line-height:1.1;
+  letter-spacing:0.04em;color:#1a1814;
+  margin-bottom:16px;
+}
+.story-closing-statement em{font-style:italic;color:rgba(26,24,20,0.35);}
+.story-closing-sub{
+  font-family:'Montserrat',sans-serif;
+  font-size:9px;font-weight:300;letter-spacing:0.55em;
+  color:rgba(26,24,20,0.3);
+  margin-top:32px;
+}
+
+/* ─── FOOTER ─── */
+footer{
+  background:#141210;
+  padding:80px 52px 48px;
+}
+.foot-grid{
+  display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;
+  gap:48px;padding-bottom:56px;
+  border-bottom:1px solid rgba(242,239,233,0.06);
+}
+.foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
+.foot-copy{
+  font-family:'Times New Roman',Times,serif;font-size:13px;font-weight:400;
+  letter-spacing:0.04em;color:rgba(242,239,233,0.2);line-height:1.9;max-width:250px;
+}
+.foot-col h5{
+  font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;
+  letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;
+}
+.foot-col a{
+  display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;
+  letter-spacing:0.08em;color:rgba(242,239,233,0.3);text-decoration:none;
+  margin-bottom:12px;transition:color .25s;
+}
+.foot-col a:hover{color:rgba(242,239,233,0.72);}
+.foot-bottom{
+  display:flex;justify-content:space-between;align-items:center;padding-top:28px;
+}
+.foot-bottom span{
+  font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;
+  letter-spacing:0.35em;color:rgba(242,239,233,0.14);
+}
+
+/* ─── ANIMATIONS ─── */
+.fade{opacity:0;transform:translateY(28px);transition:opacity 1s ease,transform 1s ease;}
+.fade.in{opacity:1;transform:translateY(0);}
+.fade-d1{transition-delay:.1s;}
+.fade-d2{transition-delay:.2s;}
+.fade-d3{transition-delay:.3s;}
+.fade-d4{transition-delay:.4s;}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:860px){
+  #nav{padding:0 24px;}
+  .page-hero{padding:140px 24px 60px;}
+  .story-section{padding:60px 24px;}
+  .dark-interlude{padding:80px 24px;}
+  .story-split{grid-template-columns:1fr;}
+  .story-split-img{height:360px;}
+  .story-split-text{padding:56px 28px;}
+  .story-closing{padding:100px 24px;}
+  footer{padding:48px 24px 36px;}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-l">
+    <button class="nav-hamburger" id="menuToggle" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-center">
+    <a href="index.html">
+      <!-- ═══════════════════════════════════════════════
+           NAV LOGO IMAGE
+           Type: Brand logo (white/light version)
+           Current: Shopify CDN URL already set
+      ═══════════════════════════════════════════════ -->
+      <img class="nav-logo-img" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117" alt="Calcaterra"/>
+    </a>
+  </div>
+  <div class="nav-r">
+    <button class="nav-icon-btn" aria-label="Search">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+    </button>
+    <div class="cart-wrap">
+      <button class="nav-icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- MENU DRAWER -->
+<div id="menu-overlay" onclick="toggleMenu()"></div>
+<div id="menu-drawer">
+  <nav class="drawer-nav">
+    <a href="index.html">Collection</a>
+    <a href="our-story.html">About</a>
+    <a href="#">Contact</a>
+    <a href="#">Notify Me</a>
+    <a href="#">Stockists</a>
+  </nav>
+  <span class="drawer-footer">CALCATERRA &mdash; EST. MMXXVI</span>
+</div>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <span class="page-eyebrow fade">THE HOUSE OF CALCATERRA</span>
+  <h1 class="page-title fade fade-d1">Our <em>Story.</em></h1>
+  <p class="page-intro fade fade-d2">
+    Some things are built to impress.<br>
+    Others are built to last.<br>
+    Calcaterra was built to last.
+  </p>
+</section>
+
+<div class="hairline"></div>
+
+<!-- SECTION 1: WHY CALCATERRA EXISTS -->
+<section class="story-section center">
+  <span class="story-label fade">THE BEGINNING</span>
+  <h2 class="story-heading fade fade-d1">Not a reaction.<br><em>A decision.</em></h2>
+  <p class="story-body fade fade-d2">
+    Calcaterra was not created in response to a trend. It was not born from a gap in the market or a desire to disrupt. It was created around a single idea: the objects we carry should reflect the decisions we make. Deliberate. Considered. Permanent.
+    <br><br>
+    In a world of excess, we chose restraint. In a world of noise, we chose silence. Everything Calcaterra produces begins with one question: does this need to exist?
+  </p>
+</section>
+
+<div class="hairline-h"></div>
+
+<!-- SECTION 2: THE NAME -->
+<section class="story-section right">
+  <span class="story-label fade">THE NAME</span>
+  <h2 class="story-heading fade fade-d1">A name carried<br><em>forward.</em></h2>
+  <p class="story-body fade fade-d2">
+    Calcaterra is a family surname. It was chosen not for its sound or its aesthetics, but for what it represents: continuity, identity, and a sense of responsibility to what came before.
+    <br><br>
+    A name is a declaration. It says: this belongs to someone. This was made with care. This will outlast the moment it was created in.
+  </p>
+</section>
+
+<!-- DARK INTERLUDE -->
+<div class="dark-interlude">
+  <span class="story-label fade">EUROPEAN INFLUENCE</span>
+  <blockquote class="dark-quote fade fade-d1">
+    Shaped by proportion.<br>
+    <em>Refined by restraint.</em>
+  </blockquote>
+  <p class="dark-sub fade fade-d2">
+    Roman architecture. Milanese precision. The quiet confidence of things built to endure.
+  </p>
+</div>
+
+<!-- SECTION 3: EUROPEAN INFLUENCE -->
+<section class="story-section">
+  <span class="story-label fade">AESTHETIC ROOTS</span>
+  <h2 class="story-heading fade fade-d1">Europe as<br><em>a reference.</em></h2>
+  <p class="story-body fade fade-d2">
+    The aesthetic language of Calcaterra draws from European architecture, proportion, and the cultural conviction that form and function are not opposites. They are the same thing expressed differently.
+    <br><br>
+    Roman columns. Parisian restraint. The Milanese understanding that elegance is never loud. These are not influences we reference consciously. They are embedded in how we see, and therefore in how we design.
+  </p>
+</section>
+
+<div class="hairline-h"></div>
+
+<!-- SECTION 4: DESIGN PHILOSOPHY -->
+<section class="story-section center">
+  <span class="story-label fade">DESIGN PHILOSOPHY</span>
+  <h2 class="story-heading fade fade-d1">Every detail<br><em>earns its place.</em></h2>
+  <p class="story-body fade fade-d2">
+    There is no decoration in a Calcaterra watch. Every element exists because it was considered, tested, and chosen. The proportions of the case, the weight of the hands, the finish on the dial.
+    <br><br>
+    Simplicity is not the absence of detail. It is the result of removing everything that does not serve the whole. Precision guides the process. Restraint defines the result.
+  </p>
+</section>
+
+<!-- SPLIT: THE ROMA -->
+<div class="story-split">
+  <div class="story-split-img">
+    <!-- ═══════════════════════════════════════════════
+         SPLIT SECTION IMAGE THE ROMA WATCH
+         Type: Close-up product shot, watch on surface
+         Mood: Dark, moody, editorial similar to about section
+         Current: Shopify CDN URL already set
+    ═══════════════════════════════════════════════ -->
+    <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/16412043-CA81-4D44-B51D-03180FF0EDD8.png?v=1772379920" alt="The Roma">
+  </div>
+  <div class="story-split-text">
+    <span class="story-label fade">THE FIRST CHAPTER</span>
+    <h2 class="story-heading fade fade-d1">The Roma.</h2>
+    <p class="story-body fade fade-d2">
+      The Roma is the first reference in the Calcaterra collection. It is not a prototype or a proof of concept. It is the brand expressed fully. The philosophy made physical.
+      <br><br>
+      Named for the city that first shaped our aesthetic sensibility, the Roma carries the restraint, proportion, and permanence that define everything Calcaterra produces. It is the beginning of a single, considered collection.
+      <br><br>
+      Designed once. Worn indefinitely.
+    </p>
+  </div>
+</div>
+
+<!-- CLOSING -->
+<section class="story-closing">
+  <span class="story-closing-label fade">CALCATERRA</span>
+  <h2 class="story-closing-statement fade fade-d1">
+    Precision<br><em>over excess.</em>
+  </h2>
+  <p class="story-closing-sub fade fade-d2">ALWAYS.</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <!-- ═══════════════════════════════════════════════
+           FOOTER LOGO IMAGE
+           Type: Brand logo (white/light version)
+           Current: Shopify CDN URL already set
+      ═══════════════════════════════════════════════ -->
+      <img class="foot-logo" style="filter:invert(1) brightness(0.6);" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117" alt="Calcaterra"/>
+      <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
+      <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
+    </div>
+    <div class="foot-col">
+      <h5>THE HOUSE</h5>
+      <a href="#">Our Story</a>
+      <a href="#">Philosophy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+    <div class="foot-col">
+      <h5>COLLECTIONS</h5>
+      <a href="#">Roma</a>
+    </div>
+    <div class="foot-col">
+      <h5>SUPPORT</h5>
+      <a href="#">Contact</a>
+      <a href="#">Warranty</a>
+      <a href="#">Shipping</a>
+      <a href="#">Returns</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span>
+  </div>
+</footer>
+
+<script>
+function toggleMenu(){
+  document.getElementById('menuToggle').classList.toggle('open');
+  document.getElementById('menu-drawer').classList.toggle('open');
+  document.getElementById('menu-overlay').classList.toggle('open');
+}
+
+window.addEventListener('load', function(){ reveal(); });
+window.addEventListener('scroll', function(){ reveal(); }, {passive:true});
+
+function reveal(){
+  document.querySelectorAll('.fade:not(.in)').forEach(function(el){
+    if(el.getBoundingClientRect().top < window.innerHeight - 80){
+      el.classList.add('in');
+    }
+  });
+}
+</script>
+
+</body>
+</html>
