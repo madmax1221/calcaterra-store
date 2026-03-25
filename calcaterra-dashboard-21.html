@@ -247,7 +247,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     <div class="dash-section" id="section-details">
       <span class="dash-section-eyebrow">YOUR PROFILE</span>
       <h2 class="dash-section-title">Account <em>Details.</em></h2>
-      <div id="verified-banner" class="verified-banner">EMAIL ADDRESS VERIFIED — YOUR NEW EMAIL IS NOW ACTIVE.</div>
+      <div id="verified-banner" class="verified-banner">EMAIL ADDRESS VERIFIED SUCCESSFULLY.</div>
       <div class="details-grid">
         <div class="details-field">
           <span class="details-label">FIRST NAME</span>
@@ -482,40 +482,39 @@ footer{background:#141210;padding:80px 52px 48px;}
   }
 
   window.addEventListener('DOMContentLoaded', async () => {
-
-    // Check all possible places Supabase puts the type param
     const hash = window.location.hash
-    const search = window.location.search
-    const hashParams = new URLSearchParams(hash.replace('#', '?'))
-    const searchParams = new URLSearchParams(search)
-    const type = hashParams.get('type') || searchParams.get('type') || ''
-    const emailJustVerified = type === 'email_change'
-
-    const { data: { session } } = await _supabase.auth.getSession()
-    if (!session) { window.location.href = '/calcaterra-signin.html'; return }
-    currentSession = session
-
-    // If email just verified sync customers table immediately using fresh auth email
-    if (emailJustVerified) {
-      await _supabase.from('customers')
-        .update({ email: session.user.email })
-        .eq('auth_user_id', session.user.id)
-      window.history.replaceState({}, '', window.location.pathname)
+    const params = new URLSearchParams(window.location.search)
+   let emailJustVerified = false
+    
+    if (hash.includes('type=email_change') || params.get('type') === 'email_change') {
       showSection('details')
       const banner = document.getElementById('verified-banner')
       banner.classList.add('show')
       setTimeout(() => banner.classList.remove('show'), 6000)
+      window.history.replaceState({}, '', window.location.pathname)
+      emailJustVerified = true
     }
+
+    const { data: { session } } = await _supabase.auth.getSession()
+    
+    if (!session) { window.location.href = '/calcaterra-signin.html'; return }
+    currentSession = session
 
     const { data: customer, error } = await _supabase
       .from('customers').select('*').eq('auth_user_id', session.user.id).single()
     if (error) console.error('Customer fetch error:', error)
     currentCustomer = customer
 
+   // If email was just verified, sync customers table then use auth email
+    if (emailJustVerified) {
+      await _supabase.from('customers')
+        .update({ email: session.user.email })
+        .eq('auth_user_id', session.user.id)
+    }
+
     const firstName = customer?.first_name || session.user.user_metadata?.first_name || ''
     const lastName = customer?.last_name || session.user.user_metadata?.last_name || ''
-    // Always use auth email as source of truth
-    const email = session.user.email || customer?.email || ''
+    const email = emailJustVerified ? session.user.email : (customer?.email || session.user.email || '')
 
     updateDisplay(firstName, lastName, email)
     loadOrders(customer?.id)
@@ -609,8 +608,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     const { error } = await _supabase.from('addresses').delete().eq('id', id)
     if (!error) { const card = document.getElementById('addr-card-' + id); if (card) card.remove() }
   }
-
-  async function saveDetails(e) {
+async function saveDetails(e) {
     e.preventDefault()
     const firstName = document.getElementById('edit-first').value.trim()
     const lastName = document.getElementById('edit-last').value.trim()
@@ -639,7 +637,6 @@ footer{background:#141210;padding:80px 52px 48px;}
         const { error: authError } = await _supabase.auth.updateUser(authUpdate)
         if (authError) throw authError
       }
-
       if (emailChanged) {
         msg.textContent = 'DETAILS SAVED. CHECK YOUR NEW EMAIL TO CONFIRM THE ADDRESS CHANGE.'
         msg.className = 'msg-box info show'; msg.style.display = 'block'
