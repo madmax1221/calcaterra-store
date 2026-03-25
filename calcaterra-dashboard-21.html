@@ -490,6 +490,13 @@ footer{background:#141210;padding:80px 52px 48px;}
       banner.classList.add('show')
       setTimeout(() => banner.classList.remove('show'), 6000)
       window.history.replaceState({}, '', window.location.pathname)
+      // Sync customers table email with newly verified auth email
+      const { data: { session: freshSession } } = await _supabase.auth.getSession()
+      if (freshSession) {
+        await _supabase.from('customers')
+          .update({ email: freshSession.user.email })
+          .eq('auth_user_id', freshSession.user.id)
+      }
     }
 
     const { data: { session } } = await _supabase.auth.getSession()
