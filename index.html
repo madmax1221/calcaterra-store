@@ -18,8 +18,8 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .nav-l,.nav-r{display:flex;gap:28px;align-items:center;}
 .nav-center{position:absolute;left:50%;transform:translateX(-50%);}
 /* LOGO FIX — starts inverted (white) on dark hero, flips to normal (dark) when nav is solid */
-.nav-logo-img{height:58px;width:auto;display:block;transition:filter .4s ease;filter:invert(1);margin-top:4px;}
-#nav.solid .nav-logo-img{filter:invert(0);}
+.nav-logo-img{height:58px;width:auto;display:block;transition:filter .4s ease;filter:invert(0);margin-top:4px;}
+#nav.solid .nav-logo-img{filter:invert(1);}
 .nav-hamburger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:28px;height:28px;background:none;border:none;cursor:pointer;padding:0;}
 .nav-hamburger span{display:block;width:22px;height:1px;background:rgba(242,239,233,0.85);transition:background .4s,transform .35s,opacity .3s;transform-origin:center;}
 #nav.solid .nav-hamburger span{background:rgba(26,24,20,0.85);}
