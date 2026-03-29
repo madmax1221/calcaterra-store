@@ -513,6 +513,14 @@ footer{background:#141210;padding:80px 52px 48px;}
   document.addEventListener('DOMContentLoaded', () => {
     initAuth()
 
+// Cart badge
+    const cartItems = JSON.parse(localStorage.getItem('cal_cart') || '[]')
+    const cartTotal = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+    const badge = document.getElementById('cartBadge')
+    if (badge && cartTotal > 0) { badge.textContent = cartTotal; badge.style.display = 'flex' }
+
+   
+    
     document.getElementById('menuToggle').addEventListener('click', toggleMenu)
     document.getElementById('menu-overlay').addEventListener('click', toggleMenu)
 
