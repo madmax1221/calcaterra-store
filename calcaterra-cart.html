@@ -13,8 +13,6 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 ::-webkit-scrollbar{width:1px;}
 ::-webkit-scrollbar-thumb{background:rgba(26,24,20,0.15);}
 ::selection{background:rgba(26,24,20,0.08);}
-
-/* NAV */
 #nav{position:fixed;top:0;left:0;right:0;z-index:500;height:96px;display:flex;justify-content:space-between;align-items:center;padding:18px 52px;background:rgba(242,239,233,0.95);border-bottom:1px solid rgba(26,24,20,0.07);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
 .nav-l,.nav-r{display:flex;gap:28px;align-items:center;}
 .nav-center{position:absolute;left:50%;transform:translateX(-50%);}
@@ -27,14 +25,435 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;position:relative;}
 .nav-icon-btn:hover{opacity:1;}
 .nav-icon-btn svg{width:18px;height:18px;stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-.cart-wrap{position:relative;}
-.cart-badge{position:absolute;top:-5px;right:-6px;width:14px;height:14px;border-radius:50%;background:#1a1814;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;color:#f2efe9;display:none;align-items:center;justify-content:center;}
-
-/* MENU DRAWER */
 #menu-overlay{position:fixed;inset:0;z-index:480;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
 #menu-drawer{position:fixed;top:0;left:0;bottom:0;width:300px;background:#f2efe9;z-index:490;transform:translateX(-100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;padding:120px 48px 60px;}
 #menu-drawer.open{transform:translateX(0);}
+.drawer-nav{display:flex;flex-direction:column;flex:1;}
+.drawer-nav a{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;letter-spacing:0.03em;color:#1a1814;text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(26,24,20,0.07);opacity:0;transform:translateX(-16px);transition:opacity .4s,transform .4s,color .2s;}
+.drawer-nav a:hover{color:rgba(26,24,20,0.4);}
+#menu-drawer.open .drawer-nav a{opacity:1;transform:translateX(0);}
+#menu-drawer.open .drawer-nav a:nth-child(1){transition-delay:.07s;}
+#menu-drawer.open .drawer-nav a:nth-child(2){transition-delay:.13s;}
+#menu-drawer.open .drawer-nav a:nth-child(3){transition-delay:.19s;}
+#menu-drawer.open .drawer-nav a:nth-child(4){transition-delay:.25s;}
+#menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
+.drawer-footer{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.28);}
+#account-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:498;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
+#account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
+#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f2efe9;z-index:499;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.07);}
+#account-drawer.open{transform:translateX(0);}
+.acct-out{padding:52px 44px;display:flex;flex-direction:column;gap:28px;flex:1;}
+.acct-out-eyebrow{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.65em;color:rgba(26,24,20,0.35);display:block;}
+.acct-out-heading{font-family:'Times New Roman',Times,serif;font-size:clamp(26px,3vw,34px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;}
+.acct-out-heading em{font-style:italic;color:rgba(26,24,20,0.38);}
+.acct-out-body{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.08em;line-height:2;color:rgba(26,24,20,0.5);}
+.acct-out-btn{display:block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;padding:17px;text-align:center;text-decoration:none;transition:background .25s,color .25s,border-color .25s;}
+.acct-out-btn-primary{background:#1a1814;color:#f2efe9;border:1px solid #1a1814;}
+.acct-out-btn-primary:hover{background:#2a2620;}
+.acct-out-btn-secondary{background:none;color:rgba(26,24,20,0.55);border:1px solid rgba(26,24,20,0.18);}
+.acct-out-btn-secondary:hover{border-color:rgba(26,24,20,0.4);color:#1a1814;}
+.acct-in{display:flex;flex-direction:column;flex:1;}
+.acct-in-header{padding:44px 44px 36px;border-bottom:1px solid rgba(26,24,20,0.06);}
+.acct-in-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+.acct-in-label{font-family:'Montserrat',sans-serif;font-size:6.5px;font-weight:300;letter-spacing:0.65em;color:rgba(26,24,20,0.4);}
+.acct-in-name{font-family:'Times New Roman',Times,serif;font-size:34px;font-weight:300;letter-spacing:0.02em;color:#1a1814;display:block;line-height:1.1;margin-bottom:8px;}
+.acct-in-sub{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.28em;color:rgba(26,24,20,0.45);display:block;}
+.acct-in-nav{display:flex;flex-direction:column;flex:1;padding:8px 0;}
+.acct-in-item{position:relative;display:flex;justify-content:space-between;align-items:center;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.62);text-decoration:none;padding:19px 44px;border-bottom:1px solid rgba(26,24,20,0.05);transition:color .25s ease;}
+.acct-in-item:hover{color:#1a1814;}
+.acct-in-arrow{opacity:0;font-size:10px;letter-spacing:0;transition:opacity .25s,transform .25s;transform:translateX(-4px);}
+.acct-in-item:hover .acct-in-arrow{opacity:0.4;transform:translateX(0);}
+.acct-in-footer{padding:32px 44px;border-top:1px solid rgba(26,24,20,0.05);flex-shrink:0;}
+.acct-in-signout{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.3);cursor:pointer;transition:color .25s;padding:0;}
+.acct-in-signout:hover{color:rgba(26,24,20,0.55);}
+#cal-search-overlay{position:fixed;inset:0;z-index:600;background:rgba(242,239,233,0.98);backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity 0.35s ease;display:flex;flex-direction:column;align-items:center;padding-top:120px;}
+#cal-search-overlay.open{opacity:1;pointer-events:all;}
+.cal-search-wrap{width:100%;max-width:640px;padding:0 24px;}
+.cal-search-input-row{display:flex;align-items:center;border-bottom:1px solid rgba(26,24,20,0.2);padding-bottom:16px;gap:16px;}
+.cal-search-icon-svg{width:18px;height:18px;stroke:rgba(26,24,20,0.4);fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0;}
+#cal-search-input{flex:1;background:none;border:none;outline:none;font-family:'Times New Roman',Times,serif;font-size:32px;font-weight:300;color:#1a1814;letter-spacing:0.02em;}
+#cal-search-input::placeholder{color:rgba(26,24,20,0.18);}
+.cal-search-close{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;opacity:.5;transition:opacity .2s;flex-shrink:0;}
+.cal-search-close:hover{opacity:1;}
+.cal-search-close svg{width:18px;height:18px;stroke:#1a1814;fill:none;stroke-width:1.8;stroke-linecap:round;}
+#cal-search-results{width:100%;max-width:640px;padding:0 24px;margin-top:8px;overflow-y:auto;max-height:calc(100vh - 260px);}
+.cal-search-status{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.5);padding:24px 0 16px;}
+.cal-search-result{display:grid;grid-template-columns:72px 1fr;gap:24px;padding:20px 0;border-bottom:1px solid rgba(26,24,20,0.06);text-decoration:none;align-items:center;transition:opacity .2s;}
+.cal-search-result:hover{opacity:0.6;}
+.cal-search-result-img{width:72px;height:72px;background:#e9e5de;overflow:hidden;}
+.cal-search-result-img img{width:100%;height:100%;object-fit:cover;}
+.cal-search-result-ref{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.5);display:block;margin-bottom:4px;}
+.cal-search-result-title{font-family:'Times New Roman',Times,serif;font-size:20px;font-weight:300;color:#1a1814;letter-spacing:0.02em;display:block;margin-bottom:4px;}
+.cal-search-result-price{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.15em;color:rgba(26,24,20,0.6);}
+.cal-search-no-results{padding:64px 0;text-align:center;}
+.cal-search-no-results p{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;color:rgba(26,24,20,0.35);}
+.cal-search-hint{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.25);text-align:center;margin-top:48px;}
+.cart-page{min-height:100vh;padding:160px 52px 120px;max-width:1100px;margin:0 auto;}
+.cart-header{margin-bottom:64px;padding-bottom:40px;border-bottom:1px solid rgba(26,24,20,0.07);}
+.cart-eyebrow{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.5);display:block;margin-bottom:16px;}
+.cart-title{font-size:clamp(36px,4.5vw,64px);font-weight:300;line-height:1.08;letter-spacing:0.04em;color:#1a1814;}
+.cart-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.cart-count{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.45);margin-top:12px;display:block;}
+.cart-body{display:grid;grid-template-columns:1fr 380px;gap:80px;align-items:start;}
+.cart-item{display:grid;grid-template-columns:120px 1fr auto;gap:32px;padding:40px 0;border-bottom:1px solid rgba(26,24,20,0.06);align-items:start;}
+.cart-item:first-child{border-top:1px solid rgba(26,24,20,0.06);}
+.cart-item-img{aspect-ratio:1/1;background:#e9e5de;overflow:hidden;}
+.cart-item-img img{width:100%;height:100%;object-fit:contain;}
+.cart-item-brand{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.5);display:block;margin-bottom:10px;}
+.cart-item-name{font-size:clamp(20px,2vw,28px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:8px;}
+.cart-item-name em{font-style:italic;color:rgba(26,24,20,0.4);}
+.cart-item-variant{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.5);display:block;margin-bottom:28px;}
+.cart-item-qty{display:flex;align-items:center;gap:16px;}
+.qty-btn{width:28px;height:28px;background:none;border:1px solid rgba(26,24,20,0.15);cursor:pointer;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:300;color:rgba(26,24,20,0.6);display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s;}
+.qty-btn:hover{border-color:rgba(26,24,20,0.5);color:#1a1814;}
+.qty-num{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.2em;color:#1a1814;min-width:20px;text-align:center;}
+.cart-item-remove{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.4);background:none;border:none;cursor:pointer;margin-top:16px;display:block;transition:color .2s;text-align:left;padding:0;}
+.cart-item-remove:hover{color:rgba(26,24,20,0.7);}
+.cart-item-price{font-size:clamp(18px,1.8vw,24px);font-weight:300;letter-spacing:0.03em;color:#1a1814;text-align:right;padding-top:4px;white-space:nowrap;}
+.cart-empty{padding:120px 0;text-align:center;border-top:1px solid rgba(26,24,20,0.06);border-bottom:1px solid rgba(26,24,20,0.06);}
+.cart-empty-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.45);display:block;margin-bottom:28px;}
+.cart-empty-text{font-size:clamp(28px,3vw,44px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:12px;}
+.cart-empty-text em{font-style:italic;color:rgba(26,24,20,0.35);}
+.cart-empty-sub{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.45);margin-bottom:52px;}
+.cart-empty-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:#1a1814;border:1px solid rgba(26,24,20,0.25);padding:16px 40px;text-decoration:none;transition:background .25s,color .25s;}
+.cart-empty-cta:hover{background:#1a1814;color:#f2efe9;}
+.cart-summary{position:sticky;top:120px;border-top:1px solid rgba(26,24,20,0.07);padding-top:32px;}
+.cart-summary-header{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.5);display:block;margin-bottom:32px;}
+.summary-row{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(26,24,20,0.05);}
+.summary-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.55);}
+.summary-value{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.1em;color:#1a1814;}
+.summary-total{display:flex;justify-content:space-between;align-items:baseline;padding:28px 0;border-bottom:1px solid rgba(26,24,20,0.1);margin-bottom:8px;}
+.summary-total-label{font-size:clamp(22px,2vw,30px);font-weight:300;letter-spacing:0.03em;color:#1a1814;}
+.summary-total-label em{font-style:italic;color:rgba(26,24,20,0.4);}
+.summary-total-value{font-size:clamp(22px,2vw,30px);font-weight:300;letter-spacing:0.03em;color:#1a1814;}
+.summary-note{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.4);display:block;text-align:center;margin-bottom:24px;}
+.checkout-btn{display:block;width:100%;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:400;letter-spacing:0.35em;color:#f2efe9;background:#1a1814;border:none;cursor:pointer;padding:24px;text-align:center;text-decoration:none;transition:background .3s,letter-spacing .3s;margin-bottom:32px;}
+.checkout-btn:hover{background:#0e0d0b;letter-spacing:0.45em;}
+.cart-assurances{display:flex;flex-direction:column;gap:16px;}
+.assurance-item{display:flex;align-items:center;gap:14px;}
+.assurance-item svg{width:14px;height:14px;stroke:rgba(26,24,20,0.5);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.assurance-text{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.6);}
+footer{background:#141210;padding:80px 52px 48px;}
+.foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
+.foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
+.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;letter-spacing:0.04em;color:rgba(242,239,233,0.25);line-height:1.9;max-width:250px;}
+.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.6);margin-bottom:20px;}
+.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.4);text-decoration:none;margin-bottom:12px;transition:color .25s;}
+.foot-col a:hover{color:rgba(242,239,233,0.8);}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;}
+.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.2);}
+.fade{opacity:0;transform:translateY(24px);transition:opacity .95s ease,transform .95s ease;}
+.fade.in{opacity:1;transform:translateY(0);}
+.fade-d1{transition-delay:.12s;}
+.fade-d2{transition-delay:.24s;}
+@media(max-width:860px){
+  #nav{padding:0 24px;}
+  .cart-page{padding:140px 24px 80px;}
+  .cart-body{grid-template-columns:1fr;gap:48px;}
+  .cart-summary{position:static;}
+  .cart-item{grid-template-columns:96px 1fr auto;gap:20px;}
+  #account-drawer{width:100%;top:96px;}
+  footer{padding:48px 24px 36px;}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-l">
+    <button class="nav-hamburger" id="menuToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-center">
+    <a href="/index.html">
+      <img class="nav-logo-img" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/>
+    </a>
+  </div>
+  <div class="nav-r">
+    <button class="nav-icon-btn" id="calSearchBtn" aria-label="Search">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+    </button>
+    <button class="nav-icon-btn" id="accountToggle" aria-label="Account">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div id="menu-overlay"></div>
+<div id="menu-drawer">
+  <nav class="drawer-nav">
+    <a href="/calcaterra-collections-2-2.html">Collection</a>
+    <a href="/calcaterra-our-story.html">About</a>
+    <a href="#">Contact</a>
+    <a href="#">Notify Me</a>
+    <a href="#">Stockists</a>
+  </nav>
+  <span class="drawer-footer">CALCATERRA</span>
+</div>
+
+<div id="account-overlay"></div>
+<div id="account-drawer">
+  <div id="accountContent" style="display:flex;flex-direction:column;flex:1;">
+    <div class="acct-out">
+      <span class="acct-out-eyebrow">Your Collection.</span>
+      <h2 class="acct-out-heading">Managed with <em>precision.</em></h2>
+      <p class="acct-out-body">Access your registered timepieces and ownership records.</p>
+      <a href="/calcaterra-signin.html" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
+      <a href="/calcaterra-register-4.html" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
+    </div>
+  </div>
+</div>
+
+<div id="cal-search-overlay">
+  <div class="cal-search-wrap">
+    <div class="cal-search-input-row">
+      <svg class="cal-search-icon-svg" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+      <input type="text" id="cal-search-input" placeholder="Search timepieces..." autocomplete="off">
+      <button class="cal-search-close" id="cal-search-close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="cal-search-results"></div>
+  <p class="cal-search-hint">ESC TO CLOSE</p>
+</div>
+
+<main class="cart-page">
+  <div class="cart-header fade">
+    <span class="cart-eyebrow">YOUR SELECTION</span>
+    <h1 class="cart-title">Your <em>Cart.</em></h1>
+    <span class="cart-count" id="cartCount"></span>
+  </div>
+  <div class="cart-body">
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-summary fade fade-d1" id="cartSummary">
+      <span class="cart-summary-header">ORDER SUMMARY</span>
+      <div class="summary-row">
+        <span class="summary-label">SUBTOTAL</span>
+        <span class="summary-value" id="summarySubtotal">—</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">SHIPPING</span>
+        <span class="summary-value">Complimentary</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">DUTIES & TAXES</span>
+        <span class="summary-value">Included</span>
+      </div>
+      <div class="summary-total">
+        <span class="summary-total-label">Total <em>Due.</em></span>
+        <span class="summary-total-value" id="summaryTotal">—</span>
+      </div>
+      <span class="summary-note">SECURE CHECKOUT · SSL ENCRYPTED</span>
+      <a href="#" class="checkout-btn" id="checkoutBtn">PROCEED TO CHECKOUT</a>
+      <div class="cart-assurances">
+        <div class="assurance-item">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span class="assurance-text">2 YEAR INTERNATIONAL WARRANTY</span>
+        </div>
+        <div class="assurance-item">
+          <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <span class="assurance-text">COMPLIMENTARY WORLDWIDE SHIPPING</span>
+        </div>
+        <div class="assurance-item">
+          <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span class="assurance-text">30 DAY RETURNS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <img class="foot-logo" style="filter:invert(1) brightness(0.6);" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117" alt="Calcaterra"/>
+      <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
+      <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
+    </div>
+    <div class="foot-col"><h5>THE HOUSE</h5><a href="/calcaterra-our-story.html">Our Story</a><a href="#">Philosophy</a><a href="#">Terms of Service</a><a href="#">Privacy Policy</a></div>
+    <div class="foot-col"><h5>COLLECTIONS</h5><a href="/calcaterra-roma-collection-page.html">Roma</a></div>
+    <div class="foot-col"><h5>SUPPORT</h5><a href="#">Contact</a><a href="#">Warranty</a><a href="#">Shipping</a><a href="#">Returns</a></div>
+  </div>
+  <div class="foot-bottom"><span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span></div>
+</footer>
+
+<script>
+  const { createClient } = supabase
+  const _supabase = createClient(
+    'https://tnjuxcdcwcxoipbsowih.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
+  )
+
+  function getCart() { return JSON.parse(localStorage.getItem('cal_cart') || '[]') }
+  function saveCart(cart) { localStorage.setItem('cal_cart', JSON.stringify(cart)) }
+
+  function renderCart() {
+    const cart = getCart()
+    const container = document.getElementById('cartItems')
+    const countEl = document.getElementById('cartCount')
+    const subtotalEl = document.getElementById('summarySubtotal')
+    const totalEl = document.getElementById('summaryTotal')
+    const summaryEl = document.getElementById('cartSummary')
+    const totalQty = cart.reduce((sum, i) => sum + i.quantity, 0)
+    const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0)
+    if (countEl) countEl.textContent = totalQty > 0 ? `${totalQty} ITEM${totalQty !== 1 ? 'S' : ''}` : ''
+    if (cart.length === 0) {
+      container.innerHTML = `
+        <div class="cart-empty fade in">
+          <span class="cart-empty-label">YOUR SELECTION</span>
+          <div class="cart-empty-text">Nothing <em>yet.</em></div>
+          <p class="cart-empty-sub">YOUR CART IS EMPTY</p>
+          <a href="/calcaterra-product-black-2.html" class="cart-empty-cta">DISCOVER THE ROMA</a>
+        </div>`
+      if (summaryEl) summaryEl.style.display = 'none'
+      return
+    }
+    if (summaryEl) summaryEl.style.display = ''
+    subtotalEl.textContent = `€${totalPrice}`
+    totalEl.textContent = `€${totalPrice}`
+    container.innerHTML = cart.map((item, idx) => `
+      <div class="cart-item fade in">
+        <div class="cart-item-img">
+          <img src="${item.image}" alt="${item.name}" loading="lazy">
+        </div>
+        <div class="cart-item-details">
+          <span class="cart-item-brand">CALCATERRA</span>
+          <div class="cart-item-name">Roma <em>${item.variantKey.charAt(0).toUpperCase() + item.variantKey.slice(1)}.</em></div>
+          <span class="cart-item-variant">QUARTZ &nbsp;&middot;&nbsp; 40MM &nbsp;&middot;&nbsp; STAINLESS STEEL</span>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
+            <span class="qty-num">${item.quantity}</span>
+            <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
+          </div>
+          <button class="cart-item-remove" onclick="removeItem(${idx})">REMOVE</button>
+        </div>
+        <div class="cart-item-price">€${item.price * item.quantity}</div>
+      </div>`).join('')
+  }
+
+  function changeQty(idx, delta) {
+    const cart = getCart()
+    cart[idx].quantity += delta
+    if (cart[idx].quantity <= 0) cart.splice(idx, 1)
+    saveCart(cart)
+    renderCart()
+  }
+
+  function removeItem(idx) {
+    const cart = getCart()
+    cart.splice(idx, 1)
+    saveCart(cart)
+    renderCart()
+  }
+
+  async function initAuth() {
+    const { data: { session } } = await _supabase.auth.getSession()
+    if (!session) return
+    const { data: customer } = await _supabase.from('customers').select('first_name, last_name, id').eq('auth_user_id', session.user.id).single()
+    const firstName = customer?.first_name || session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || 'Member'
+    const lastName = customer?.last_name || session.user.user_metadata?.last_name || ''
+    const name = `${firstName} ${lastName}`.trim()
+    document.getElementById('accountContent').innerHTML = `
+      <div class="acct-in">
+        <div class="acct-in-header">
+          <div class="acct-in-top"><span class="acct-in-label">CALCATERRA</span></div>
+          <span class="acct-in-name">${name}.</span>
+          <span class="acct-in-sub">Managed with precision.</span>
+        </div>
+        <nav class="acct-in-nav">
+          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
+        </nav>
+        <div class="acct-in-footer">
+          <button id="signOutBtn" class="acct-in-signout">SIGN OUT</button>
+        </div>
+      </div>`
+    setTimeout(() => {
+      const btn = document.getElementById('signOutBtn')
+      if (btn) btn.addEventListener('click', async () => { await _supabase.auth.signOut(); window.location.reload() })
+    }, 100)
+  }
+
+  function toggleMenu() {
+    document.getElementById('menuToggle').classList.toggle('open')
+    document.getElementById('menu-drawer').classList.toggle('open')
+    document.getElementById('menu-overlay').classList.toggle('open')
+  }
+  function openAccount() {
+    document.getElementById('account-drawer').classList.add('open')
+    document.getElementById('account-overlay').classList.add('open')
+  }
+  function closeAccount() {
+    document.getElementById('account-drawer').classList.remove('open')
+    document.getElementById('account-overlay').classList.remove('open')
+  }
+  function openSearch() {
+    document.getElementById('cal-search-overlay').classList.add('open')
+    document.body.style.overflow = 'hidden'
+    setTimeout(() => document.getElementById('cal-search-input').focus(), 100)
+  }
+  function closeSearch() {
+    document.getElementById('cal-search-overlay').classList.remove('open')
+    document.body.style.overflow = ''
+    document.getElementById('cal-search-input').value = ''
+    document.getElementById('cal-search-results').innerHTML = ''
+  }
+
+  async function fetchSearchResults(query) {
+    document.getElementById('cal-search-results').innerHTML = '<p class="cal-search-status">SEARCHING...</p>'
+    const { data } = await _supabase.from('product_variants').select('id, name, attributes, images').ilike('name', `%${query}%`).eq('is_active', true).limit(6)
+    const variants = data || []
+    if (!variants.length) { document.getElementById('cal-search-results').innerHTML = '<div class="cal-search-no-results"><p>Nothing <em>found.</em></p></div>'; return }
+    let html = `<p class="cal-search-status">${variants.length} RESULT${variants.length !== 1 ? 'S' : ''}</p>`
+    variants.forEach(v => {
+      const imgs = Array.isArray(v.images) ? v.images : JSON.parse(v.images || '[]')
+      const img = imgs[0] || ''
+      const slug = v.attributes?.slug || ''
+      const url = slug ? `/calcaterra-product-black-2.html?variant=${slug}` : '#'
+      html += `<a href="${url}" class="cal-search-result"><div class="cal-search-result-img">${img ? `<img src="${img}" alt="${v.name}" loading="lazy">` : ''}</div><div><span class="cal-search-result-ref">CALCATERRA ROMA</span><span class="cal-search-result-title">${v.name}</span><span class="cal-search-result-price">€329</span></div></a>`
+    })
+    document.getElementById('cal-search-results').innerHTML = html
+  }
+
+  function reveal() {
+    document.querySelectorAll('.fade:not(.in)').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('in')
+    })
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderCart()
+    initAuth()
+    document.getElementById('menuToggle').addEventListener('click', toggleMenu)
+    document.getElementById('menu-overlay').addEventListener('click', toggleMenu)
+    document.getElementById('accountToggle').addEventListener('click', e => {
+      e.stopPropagation()
+      document.getElementById('account-drawer').classList.contains('open') ? closeAccount() : openAccount()
+    })
+    document.getElementById('account-overlay').addEventListener('click', closeAccount)
+    document.getElementById('calSearchBtn').addEventListener('click', e => { e.stopPropagation(); openSearch() })
+    document.getElementById('cal-search-close').addEventListener('click', closeSearch)
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch() })
+    let debounceTimer
+    document.getElementById('cal-search-input').addEventListener('input', function() {
+      clearTimeout(debounceTimer)
+      const query = this.value.trim()
+      if (query.length < 2) { document.getElementById('cal-search-results').innerHTML = ''; return }
+      debounceTimer = setTimeout(() => fetchSearchResults(query), 250)
+    })
+    setTimeout(reveal, 300)
+    window.addEventListener('scroll', reveal, { passive: true })
+  })
+</script>
+</body>
+</html>#menu-drawer.open{transform:translateX(0);}
 .drawer-nav{display:flex;flex-direction:column;flex:1;}
 .drawer-nav a{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;letter-spacing:0.03em;color:#1a1814;text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(26,24,20,0.07);opacity:0;transform:translateX(-16px);transition:opacity .4s,transform .4s,color .2s;}
 .drawer-nav a:hover{color:rgba(26,24,20,0.4);}
