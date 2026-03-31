@@ -5,13 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>The Roma Collection — Calcaterra</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-
-html, body { background: #f2efe9 !important; margin: 0 !important; padding: 0 !important; }
-
-
-
-
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;overflow-x:hidden;}
@@ -19,90 +14,35 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 ::-webkit-scrollbar-thumb{background:rgba(26,24,20,0.15);}
 ::selection{background:rgba(26,24,20,0.08);}
 
-/* ─── NAV ─── */
-#nav{
-  position:fixed;top:0;left:0;right:0;z-index:500;
-  height:96px;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:18px 52px;
-  background:transparent;
-  border-bottom:1px solid transparent;
-  backdrop-filter:blur(0px);
-  -webkit-backdrop-filter:blur(0px);
-  transition:background .5s ease, border-color .5s ease, backdrop-filter .5s ease;
-}
-#nav.scrolled{
-  background:rgba(242,239,233,0.95);
-  border-bottom:1px solid rgba(26,24,20,0.07);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-}
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;z-index:500;height:96px;display:flex;justify-content:space-between;align-items:center;padding:18px 52px;background:transparent;border-bottom:1px solid transparent;backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);transition:background .5s ease,border-color .5s ease,backdrop-filter .5s ease;}
+#nav.scrolled{background:rgba(242,239,233,0.95);border-bottom:1px solid rgba(26,24,20,0.07);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
 .nav-l,.nav-r{display:flex;gap:28px;align-items:center;}
 .nav-center{position:absolute;left:50%;transform:translateX(-50%);}
-.nav-logo-img{
-  height:58px;width:auto;display:block;margin-top:4px;
-  filter:brightness(0) invert(1);
-  transition:filter .5s ease;
-}
+.nav-logo-img{height:58px;width:auto;display:block;margin-top:4px;filter:brightness(0) invert(1);transition:filter .5s ease;}
 #nav.scrolled .nav-logo-img{filter:invert(1);}
-.nav-hamburger{
-  display:flex;flex-direction:column;justify-content:center;
-  gap:5px;width:28px;height:28px;
-  background:none;border:none;cursor:pointer;padding:0;
-}
-.nav-hamburger span{
-  display:block;width:22px;height:1.5px;
-  background:rgba(242,239,233,0.85);
-  transition:transform .35s, opacity .3s, background .5s;
-  transform-origin:center;
-}
+.nav-hamburger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:28px;height:28px;background:none;border:none;cursor:pointer;padding:0;}
+.nav-hamburger span{display:block;width:22px;height:1.5px;background:rgba(242,239,233,0.85);transition:transform .35s,opacity .3s,background .5s;transform-origin:center;}
 #nav.scrolled .nav-hamburger span{background:rgba(26,24,20,0.85);}
+.nav-hamburger.open span{background:rgba(26,24,20,0.85);}
 .nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
 .nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
 .nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
-.nav-icon-btn{
-  background:none;border:none;cursor:pointer;padding:4px;
-  display:flex;align-items:center;justify-content:center;
-  opacity:.85;transition:opacity .25s;
-  text-decoration:none;
-}
+.nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;position:relative;}
 .nav-icon-btn:hover{opacity:1;}
-.nav-icon-btn svg{
-  width:18px;height:18px;
-  stroke:rgba(242,239,233,0.85);fill:none;stroke-width:1.8;
-  stroke-linecap:round;stroke-linejoin:round;
-  transition:stroke .5s ease;
-}
+.nav-icon-btn svg{width:18px;height:18px;stroke:rgba(242,239,233,0.85);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .5s ease;}
 #nav.scrolled .nav-icon-btn svg{stroke:rgba(26,24,20,0.85);}
 .cart-wrap{position:relative;}
+.cart-badge{position:absolute;top:-5px;right:-6px;width:14px;height:14px;border-radius:50%;background:#f2efe9;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;color:#1a1814;display:none;align-items:center;justify-content:center;transition:background .5s,color .5s;}
+#nav.scrolled .cart-badge{background:#1a1814;color:#f2efe9;}
 
-/* ─── MENU DRAWER ─── */
-#menu-overlay{
-  position:fixed;inset:0;z-index:480;
-  background:rgba(26,24,20,0);
-  pointer-events:none;transition:background .5s;
-}
+/* MENU DRAWER */
+#menu-overlay{position:fixed;inset:0;z-index:480;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
-#menu-drawer{
-  position:fixed;top:0;left:0;bottom:0;width:300px;
-  background:#f2efe9;z-index:490;
-  transform:translateX(-100%);
-  transition:transform .5s cubic-bezier(.77,0,.18,1);
-  display:flex;flex-direction:column;
-  padding:120px 48px 60px;
-}
+#menu-drawer{position:fixed;top:0;left:0;bottom:0;width:300px;background:#f2efe9;z-index:490;transform:translateX(-100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;padding:120px 48px 60px;}
 #menu-drawer.open{transform:translateX(0);}
 .drawer-nav{display:flex;flex-direction:column;flex:1;}
-.drawer-nav a{
-  font-family:'Times New Roman',Times,serif;
-  font-size:28px;font-weight:300;
-  letter-spacing:0.03em;color:#1a1814;
-  text-decoration:none;
-  padding:13px 0;
-  border-bottom:1px solid rgba(26,24,20,0.07);
-  opacity:0;transform:translateX(-16px);
-  transition:opacity .4s,transform .4s,color .2s;
-}
+.drawer-nav a{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;letter-spacing:0.03em;color:#1a1814;text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(26,24,20,0.07);opacity:0;transform:translateX(-16px);transition:opacity .4s,transform .4s,color .2s;}
 .drawer-nav a:hover{color:rgba(26,24,20,0.4);}
 #menu-drawer.open .drawer-nav a{opacity:1;transform:translateX(0);}
 #menu-drawer.open .drawer-nav a:nth-child(1){transition-delay:.07s;}
@@ -110,293 +50,158 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 #menu-drawer.open .drawer-nav a:nth-child(3){transition-delay:.19s;}
 #menu-drawer.open .drawer-nav a:nth-child(4){transition-delay:.25s;}
 #menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
-.drawer-footer{
-  font-family:'Montserrat',sans-serif;
-  font-size:8px;font-weight:300;letter-spacing:0.45em;
-  color:rgba(26,24,20,0.28);
-}
+.drawer-footer{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.28);}
 
-/* ─── HERO ─── */
-.roma-hero{
-  position:relative;
-  width:100%;
-  height:100vh;
-  min-height:600px;
-  background:#141210;
-  overflow:hidden;
-  display:flex;align-items:flex-end;
-}
-.roma-hero-img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;
-  object-position:center;
-  filter:brightness(0.72) saturate(0.85);
-  transition:transform 8s ease;
-}
+/* ACCOUNT DRAWER */
+#account-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:498;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
+#account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
+#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f2efe9;z-index:499;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.07);}
+#account-drawer.open{transform:translateX(0);}
+.acct-out{padding:52px 44px;display:flex;flex-direction:column;gap:28px;flex:1;}
+.acct-out-eyebrow{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.65em;color:rgba(26,24,20,0.35);display:block;}
+.acct-out-heading{font-family:'Times New Roman',Times,serif;font-size:clamp(26px,3vw,34px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;}
+.acct-out-heading em{font-style:italic;color:rgba(26,24,20,0.38);}
+.acct-out-body{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.08em;line-height:2;color:rgba(26,24,20,0.5);}
+.acct-out-btn{display:block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;padding:17px;text-align:center;text-decoration:none;transition:background .25s,color .25s,border-color .25s;}
+.acct-out-btn-primary{background:#1a1814;color:#f2efe9;border:1px solid #1a1814;}
+.acct-out-btn-primary:hover{background:#2a2620;}
+.acct-out-btn-secondary{background:none;color:rgba(26,24,20,0.55);border:1px solid rgba(26,24,20,0.18);}
+.acct-out-btn-secondary:hover{border-color:rgba(26,24,20,0.4);color:#1a1814;}
+.acct-in{display:flex;flex-direction:column;flex:1;}
+.acct-in-header{padding:44px 44px 36px;border-bottom:1px solid rgba(26,24,20,0.06);}
+.acct-in-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+.acct-in-label{font-family:'Montserrat',sans-serif;font-size:6.5px;font-weight:300;letter-spacing:0.65em;color:rgba(26,24,20,0.4);}
+.acct-in-name{font-family:'Times New Roman',Times,serif;font-size:34px;font-weight:300;letter-spacing:0.02em;color:#1a1814;display:block;line-height:1.1;margin-bottom:8px;}
+.acct-in-sub{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.28em;color:rgba(26,24,20,0.45);display:block;}
+.acct-in-nav{display:flex;flex-direction:column;flex:1;padding:8px 0;}
+.acct-in-item{position:relative;display:flex;justify-content:space-between;align-items:center;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.62);text-decoration:none;padding:19px 44px;border-bottom:1px solid rgba(26,24,20,0.05);transition:color .25s ease;}
+.acct-in-item:hover{color:#1a1814;}
+.acct-in-arrow{opacity:0;font-size:10px;letter-spacing:0;transition:opacity .25s,transform .25s;transform:translateX(-4px);}
+.acct-in-item:hover .acct-in-arrow{opacity:0.4;transform:translateX(0);}
+.acct-in-footer{padding:32px 44px;border-top:1px solid rgba(26,24,20,0.05);flex-shrink:0;}
+.acct-in-signout{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.3);cursor:pointer;transition:color .25s;padding:0;}
+.acct-in-signout:hover{color:rgba(26,24,20,0.55);}
+
+/* SEARCH */
+#cal-search-overlay{position:fixed;inset:0;z-index:600;background:rgba(242,239,233,0.98);backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity 0.35s ease;display:flex;flex-direction:column;align-items:center;padding-top:120px;}
+#cal-search-overlay.open{opacity:1;pointer-events:all;}
+.cal-search-wrap{width:100%;max-width:640px;padding:0 24px;}
+.cal-search-input-row{display:flex;align-items:center;border-bottom:1px solid rgba(26,24,20,0.2);padding-bottom:16px;gap:16px;}
+.cal-search-icon-svg{width:18px;height:18px;stroke:rgba(26,24,20,0.4);fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0;}
+#cal-search-input{flex:1;background:none;border:none;outline:none;font-family:'Times New Roman',Times,serif;font-size:32px;font-weight:300;color:#1a1814;letter-spacing:0.02em;}
+#cal-search-input::placeholder{color:rgba(26,24,20,0.18);}
+.cal-search-close{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;opacity:.5;transition:opacity .2s;flex-shrink:0;}
+.cal-search-close:hover{opacity:1;}
+.cal-search-close svg{width:18px;height:18px;stroke:#1a1814;fill:none;stroke-width:1.8;stroke-linecap:round;}
+#cal-search-results{width:100%;max-width:640px;padding:0 24px;margin-top:8px;overflow-y:auto;max-height:calc(100vh - 260px);}
+.cal-search-status{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.5);padding:24px 0 16px;}
+.cal-search-result{display:grid;grid-template-columns:72px 1fr;gap:24px;padding:20px 0;border-bottom:1px solid rgba(26,24,20,0.06);text-decoration:none;align-items:center;transition:opacity .2s;}
+.cal-search-result:hover{opacity:0.6;}
+.cal-search-result-img{width:72px;height:72px;background:#e9e5de;overflow:hidden;}
+.cal-search-result-img img{width:100%;height:100%;object-fit:cover;}
+.cal-search-result-ref{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.5);display:block;margin-bottom:4px;}
+.cal-search-result-title{font-family:'Times New Roman',Times,serif;font-size:20px;font-weight:300;color:#1a1814;letter-spacing:0.02em;display:block;margin-bottom:4px;}
+.cal-search-result-price{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.15em;color:rgba(26,24,20,0.6);}
+.cal-search-no-results{padding:64px 0;text-align:center;}
+.cal-search-no-results p{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;color:rgba(26,24,20,0.35);}
+.cal-search-hint{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.25);text-align:center;margin-top:48px;}
+
+/* HERO */
+.roma-hero{position:relative;width:100%;height:100vh;min-height:600px;background:#141210;overflow:hidden;display:flex;align-items:flex-end;}
+.roma-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.72) saturate(0.85);transition:transform 8s ease;}
 .roma-hero:hover .roma-hero-img{transform:scale(1.03);}
-.roma-hero-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top, rgba(14,13,11,0.92) 0%, rgba(14,13,11,0.3) 55%, transparent 100%);
-}
-.roma-hero-inner{
-  position:relative;z-index:2;
-  padding:0 52px 80px;
-  max-width:900px;
-}
-.page-eyebrow{
-  font-family:'Montserrat',sans-serif;
-  font-size:8.5px;font-weight:300;letter-spacing:0.72em;
-  color:rgba(242,239,233,0.4);
-  display:block;margin-bottom:24px;
-}
-.page-title{
-  font-size:clamp(42px,6vw,86px);
-  font-weight:300;line-height:1.08;
-  letter-spacing:0.04em;color:#f2efe9;
-  margin-bottom:20px;
-}
+.roma-hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(14,13,11,0.92) 0%,rgba(14,13,11,0.3) 55%,transparent 100%);}
+.roma-hero-inner{position:relative;z-index:2;padding:0 52px 80px;max-width:900px;}
+.page-eyebrow{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:rgba(242,239,233,0.45);display:block;margin-bottom:24px;}
+.page-title{font-size:clamp(42px,6vw,86px);font-weight:300;line-height:1.08;letter-spacing:0.04em;color:#f2efe9;margin-bottom:20px;}
 .page-title em{font-style:italic;color:rgba(242,239,233,0.7);}
-.page-subtitle{
-  font-family:'Montserrat',sans-serif;
-  font-size:10px;font-weight:300;letter-spacing:0.45em;
-  color:rgba(242,239,233,0.35);
-  display:block;margin-bottom:32px;
-}
-.page-intro{
-  font-size:clamp(15px,1.6vw,19px);
-  font-weight:300;line-height:1.9;
-  letter-spacing:0.02em;
-  color:rgba(242,239,233,0.5);
-  max-width:540px;
-}
+.page-subtitle{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.4em;color:rgba(242,239,233,0.35);display:block;margin-bottom:32px;}
+.page-intro{font-size:clamp(15px,1.6vw,19px);font-weight:300;line-height:1.9;letter-spacing:0.02em;color:rgba(242,239,233,0.5);max-width:540px;}
 
-/* ─── HAIRLINES ─── */
-.hairline-h{
-  display:block !important;
-  width:80px !important;height:1px !important;
-  background:rgba(26,24,20,0.09) !important;
-  margin:0 auto !important;
-}
+/* HAIRLINE */
+.hairline-h{display:block;width:80px;height:1px;background:rgba(26,24,20,0.09);margin:0 auto;}
 
-
-/* ─── SECTION SHARED ─── */
-.section-label{
-  font-family:'Montserrat',sans-serif;
-  font-size:8px;font-weight:300;letter-spacing:0.58em;
-  color:rgba(26,24,20,0.5);
-  display:block;margin-bottom:28px;
-}
-.section-heading{
-  font-size:clamp(28px,3.8vw,52px);
-  font-weight:300;line-height:1.2;
-  letter-spacing:0.03em;color:#1a1814;
-  margin-bottom:28px;
-}
+/* SECTION SHARED */
+.section-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.5);display:block;margin-bottom:28px;}
+.section-heading{font-size:clamp(28px,3.8vw,52px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;margin-bottom:28px;}
 .section-heading em{font-style:italic;color:rgba(26,24,20,0.38);}
-.section-body{
-  font-family:'Montserrat',sans-serif;
-  font-size:13px;font-weight:300;
-  letter-spacing:0.08em;line-height:2.1;
-  color:rgba(26,24,20,0.55);
-}
+.section-body{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.08em;line-height:2.1;color:rgba(26,24,20,0.6);}
 
-/* ─── REFERENCES ─── */
-.references-section{
-  padding:80px 52px 140px;
-  max-width:1200px;
-  margin:0 auto;
-}
-.references-header{
-  text-align:center;
-  margin-bottom:72px;
-}
-.references-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:2px;
-}
-.ref-card{
-  position:relative;
-  display:block;
-  text-decoration:none;
-  color:inherit;
-  background:#f2efe9;
-  overflow:hidden;
-}
-.ref-card-img{
-  position:relative;
-  overflow:hidden;
-  aspect-ratio:3/4;
-  background:#e9e5de;
-}
-.ref-card-img img{
-  width:100%;height:100%;
-  object-fit:cover;
-  object-position:center;
-  filter:brightness(0.9) saturate(0.85);
-  transition:transform 1s cubic-bezier(.25,.46,.45,.94), filter .8s ease;
-}
-.ref-card:hover .ref-card-img img{
-  transform:scale(1.04);
-  filter:brightness(1) saturate(1);
-}
-.ref-card-body{
-  padding:32px 28px 40px;
-  border-top:1px solid rgba(26,24,20,0.06);
-}
-.ref-card-name{
-  font-size:clamp(22px,2.2vw,30px);
-  font-weight:300;line-height:1.2;
-  letter-spacing:0.03em;color:#1a1814;
-  display:block;margin-bottom:8px;
-}
+/* FEATURE IMAGE */
+.feature-image{width:100%;height:75vh;min-height:480px;overflow:hidden;position:relative;background:#1a1814;}
+.feature-image img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.88) saturate(0.82);transition:transform 10s ease;}
+.feature-image:hover img{transform:scale(1.02);}
+.feature-image-caption{position:absolute;bottom:40px;right:52px;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.55em;color:rgba(242,239,233,0.3);}
+
+/* PHILOSOPHY SPLIT */
+.philosophy-section{display:grid;grid-template-columns:1fr 1fr;min-height:640px;}
+.philosophy-img{position:relative;overflow:hidden;background:#1a1814;}
+.philosophy-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.82) saturate(0.75);transition:transform 8s ease;}
+.philosophy-img:hover img{transform:scale(1.03);}
+.philosophy-text{padding:100px 80px;display:flex;flex-direction:column;justify-content:center;background:#f2efe9;}
+.philosophy-text .section-body{max-width:420px;}
+
+/* REFERENCES */
+.references-section{padding:80px 52px 140px;max-width:1200px;margin:0 auto;}
+.references-header{text-align:center;margin-bottom:72px;}
+.references-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.ref-card{position:relative;display:block;text-decoration:none;color:inherit;background:#f2efe9;overflow:hidden;}
+.ref-card-img{position:relative;overflow:hidden;aspect-ratio:3/4;background:#e9e5de;}
+.ref-card-img img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.9) saturate(0.85);transition:transform 1s cubic-bezier(.25,.46,.45,.94),filter .8s ease;}
+.ref-card:hover .ref-card-img img{transform:scale(1.04);filter:brightness(1) saturate(1);}
+.ref-card-body{padding:32px 28px 40px;border-top:1px solid rgba(26,24,20,0.06);}
+.ref-card-name{font-size:clamp(22px,2.2vw,30px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;display:block;margin-bottom:8px;}
 .ref-card-name em{font-style:italic;color:rgba(26,24,20,0.4);}
-.ref-card-spec{
-  font-family:'Montserrat',sans-serif;
-  font-size:8px;font-weight:300;letter-spacing:0.45em;
-  color:rgba(26,24,20,0.5);
-  display:block;margin-bottom:28px;
-}
-.ref-card-cta{
-  display:inline-block;
-  font-family:'Montserrat',sans-serif;
-  font-size:8px;font-weight:300;letter-spacing:0.45em;
-  color:rgba(26,24,20,0.35);
-  border:1px solid rgba(26,24,20,0.12);
-  padding:12px 24px;
-  text-decoration:none;
-  transition:background .3s, color .3s, border-color .3s;
-}
-.ref-card:hover .ref-card-cta{
-  background:#1a1814;
-  color:#f2efe9;
-  border-color:#1a1814;
-}
+.ref-card-spec{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.5);display:block;margin-bottom:28px;}
+.ref-card-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.45);border:1px solid rgba(26,24,20,0.15);padding:12px 24px;text-decoration:none;transition:background .3s,color .3s,border-color .3s;}
+.ref-card:hover .ref-card-cta{background:#1a1814;color:#f2efe9;border-color:#1a1814;}
 
-/* ─── SPECIFICATIONS ─── */
-.specs-section{
-  background:#141210;
-  padding:140px 52px;
-}
-.specs-inner{
-  max-width:1000px;
-  margin:0 auto;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:0 80px;
-  align-items:start;
-}
-.specs-header{
-  grid-column:1 / -1;
-  margin-bottom:80px;
-  padding-bottom:56px;
-  border-bottom:1px solid rgba(242,239,233,0.12);
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-}
-.specs-header .section-label{color:rgba(242,239,233,0.25);}
+/* EDITORIAL STRIP */
+.editorial-strip{width:100%;height:55vh;min-height:380px;overflow:hidden;position:relative;background:#0e0d0b;display:flex;align-items:center;justify-content:center;}
+.editorial-strip img{width:100%;height:100%;object-fit:cover;object-position:center 35%;filter:brightness(0.7) saturate(0.7);transition:transform 10s ease;}
+.editorial-strip:hover img{transform:scale(1.02);}
+.editorial-strip-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;}
+.editorial-strip-label{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.65em;color:rgba(242,239,233,0.35);margin-bottom:16px;}
+.editorial-strip-quote{font-size:clamp(22px,3vw,40px);font-weight:300;letter-spacing:0.04em;color:rgba(242,239,233,0.75);text-align:center;}
+.editorial-strip-quote em{font-style:italic;color:rgba(242,239,233,0.4);}
+
+/* SPECIFICATIONS */
+.specs-section{background:#141210;padding:140px 52px;}
+.specs-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:0 80px;align-items:start;}
+.specs-header{grid-column:1 / -1;margin-bottom:80px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.12);}
+.specs-header .section-label{color:rgba(242,239,233,0.3);}
 .specs-header .section-heading{color:#f2efe9;margin-bottom:0;}
 .specs-header .section-heading em{color:rgba(242,239,233,0.3);}
-.specs-header-right{
-  font-family:'Montserrat',sans-serif;
-  font-size:8px;font-weight:300;letter-spacing:0.45em;
-  color:rgba(242,239,233,0.2);
-  padding-bottom:8px;
-}
-.specs-grid{
-  display:contents;
-}
-.spec-col{
-  display:flex;
-  flex-direction:column;
-}
-.spec-row{
-  padding:36px 0;
-  border-bottom:1px solid rgba(242,239,233,0.07);
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  transition:padding-left .3s ease;
-}
+.specs-grid{display:contents;}
+.spec-col{display:flex;flex-direction:column;}
+.spec-row{padding:36px 0;border-bottom:1px solid rgba(242,239,233,0.07);display:flex;flex-direction:column;gap:12px;transition:padding-left .3s ease;}
 .spec-row:first-child{border-top:1px solid rgba(242,239,233,0.07);}
 .spec-row:hover{padding-left:12px;}
-.spec-label{
-  font-family:'Montserrat',sans-serif;
-  font-size:7px;font-weight:300;letter-spacing:0.62em;
-  color:rgba(242,239,233,0.22);
-  transition:color .3s ease;
-}
-.spec-row:hover .spec-label{color:rgba(242,239,233,0.45);}
-.spec-value{
-  font-size:clamp(18px,1.8vw,24px);
-  font-weight:300;letter-spacing:0.02em;
-  color:rgba(242,239,233,0.75);
-  line-height:1.2;
-  transition:color .3s ease;
-}
+.spec-label{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.62em;color:rgba(242,239,233,0.25);transition:color .3s ease;}
+.spec-row:hover .spec-label{color:rgba(242,239,233,0.5);}
+.spec-value{font-size:clamp(18px,1.8vw,24px);font-weight:300;letter-spacing:0.02em;color:rgba(242,239,233,0.75);line-height:1.2;transition:color .3s ease;}
 .spec-row:hover .spec-value{color:#f2efe9;}
 
-/* ─── CLOSING ─── */
-.closing-section{
-  padding:160px 52px;
-  text-align:center;
-  max-width:680px;
-  margin:0 auto;
-}
-.closing-statement{
-  font-size:clamp(36px,5.5vw,72px);
-  font-weight:300;line-height:1.1;
-  letter-spacing:0.04em;color:#1a1814;
-  margin-bottom:40px;
-}
-.closing-statement em{font-style:italic;color:rgba(26,24,20,0.35);}
-.closing-body{
-  font-family:'Montserrat',sans-serif;
-  font-size:13px;font-weight:300;
-  letter-spacing:0.08em;line-height:2.1;
-  color:rgba(26,24,20,0.45);
-  max-width:480px;
-  margin:0 auto;
-}
-.closing-sub{
-  font-family:'Montserrat',sans-serif;
-  font-size:8px;font-weight:300;letter-spacing:0.55em;
-  color:rgba(26,24,20,0.2);
-  margin-top:48px;
-  display:block;
-}
+/* CINEMATIC BLOCK */
+.cinematic-block{width:100%;height:90vh;min-height:560px;overflow:hidden;position:relative;background:#0e0d0b;display:flex;align-items:flex-end;}
+.cinematic-block img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.65) saturate(0.75);transition:transform 12s ease;}
+.cinematic-block:hover img{transform:scale(1.02);}
+.cinematic-block-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(14,13,11,0.88) 0%,transparent 60%);}
+.cinematic-block-inner{position:relative;z-index:2;padding:0 52px 72px;}
+.cinematic-block-label{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.65em;color:rgba(242,239,233,0.3);display:block;margin-bottom:16px;}
+.cinematic-block-text{font-size:clamp(28px,4vw,58px);font-weight:300;line-height:1.1;letter-spacing:0.03em;color:#f2efe9;}
+.cinematic-block-text em{font-style:italic;color:rgba(242,239,233,0.4);}
 
-/* ─── FOOTER ─── */
+/* FOOTER */
 footer{background:#141210;padding:80px 52px 48px;}
-.foot-grid{
-  display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;
-  gap:48px;padding-bottom:56px;
-  border-bottom:1px solid rgba(242,239,233,0.06);
-}
+.foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
 .foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
-.foot-copy{
-  font-family:'Times New Roman',Times,serif;font-size:13px;
-  letter-spacing:0.04em;color:rgba(242,239,233,0.2);line-height:1.9;max-width:250px;
-}
-.foot-col h5{
-  font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;
-  letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;
-}
-.foot-col a{
-  display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;
-  letter-spacing:0.08em;color:rgba(242,239,233,0.3);text-decoration:none;
-  margin-bottom:12px;transition:color .25s;
-}
-.foot-col a:hover{color:rgba(242,239,233,0.72);}
+.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;letter-spacing:0.04em;color:rgba(242,239,233,0.25);line-height:1.9;max-width:250px;}
+.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.6);margin-bottom:20px;}
+.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.4);text-decoration:none;margin-bottom:12px;transition:color .25s;}
+.foot-col a:hover{color:rgba(242,239,233,0.8);}
 .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;}
-.foot-bottom span{
-  font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;
-  letter-spacing:0.35em;color:rgba(242,239,233,0.14);
-}
-
-/* ─── ANIMATIONS ─── */
+.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.2);}
 .fade{opacity:0;transform:translateY(24px);transition:opacity .95s ease,transform .95s ease;}
 .fade.in{opacity:1;transform:translateY(0);}
 .fade-d1{transition-delay:.12s;}
@@ -404,146 +209,6 @@ footer{background:#141210;padding:80px 52px 48px;}
 .fade-d3{transition-delay:.36s;}
 .fade-d4{transition-delay:.48s;}
 
-/* ─── FEATURE IMAGE (after hero) ─── */
-.feature-image{
-  width:100%;
-  height:75vh;
-  min-height:480px;
-  overflow:hidden;
-  position:relative;
-  background:#1a1814;
-}
-.feature-image img{
-  width:100%;height:100%;
-  object-fit:cover;
-  object-position:center;
-  filter:brightness(0.88) saturate(0.82);
-  transition:transform 10s ease;
-}
-.feature-image:hover img{transform:scale(1.02);}
-.feature-image-caption{
-  position:absolute;
-  bottom:40px;right:52px;
-  font-family:'Montserrat',sans-serif;
-  font-size:7px;font-weight:300;letter-spacing:0.55em;
-  color:rgba(242,239,233,0.3);
-}
-
-/* ─── PHILOSOPHY SPLIT (image + text) ─── */
-.philosophy-section{
-  padding:0;
-  max-width:none;
-  margin:0;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  min-height:640px;
-  text-align:left;
-}
-.philosophy-img{
-  position:relative;
-  overflow:hidden;
-  background:#1a1814;
-}
-.philosophy-img img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;
-  object-position:center;
-  filter:brightness(0.82) saturate(0.75);
-  transition:transform 8s ease;
-}
-.philosophy-img:hover img{transform:scale(1.03);}
-.philosophy-text{
-  padding:100px 80px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  background:#f2efe9;
-}
-.philosophy-text .section-body{max-width:420px;}
-
-/* ─── EDITORIAL STRIP (between refs and specs) ─── */
-.editorial-strip{
-  width:100%;
-  height:55vh;
-  min-height:380px;
-  overflow:hidden;
-  position:relative;
-  background:#0e0d0b;
-  display:flex;align-items:center;justify-content:center;
-}
-.editorial-strip img{
-  width:100%;height:100%;
-  object-fit:cover;
-  object-position:center 35%;
-  filter:brightness(0.7) saturate(0.7);
-  transition:transform 10s ease;
-}
-.editorial-strip:hover img{transform:scale(1.02);}
-.editorial-strip-inner{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  z-index:2;
-}
-.editorial-strip-label{
-  font-family:'Montserrat',sans-serif;
-  font-size:7px;font-weight:300;letter-spacing:0.7em;
-  color:rgba(242,239,233,0.3);
-  margin-bottom:16px;
-}
-.editorial-strip-quote{
-  font-size:clamp(22px,3vw,40px);
-  font-weight:300;letter-spacing:0.04em;
-  color:rgba(242,239,233,0.75);
-  text-align:center;
-}
-.editorial-strip-quote em{font-style:italic;color:rgba(242,239,233,0.4);}
-
-/* ─── CINEMATIC BLOCK (before closing) ─── */
-.cinematic-block{
-  width:100%;
-  height:90vh;
-  min-height:560px;
-  overflow:hidden;
-  position:relative;
-  background:#0e0d0b;
-  display:flex;align-items:flex-end;
-}
-.cinematic-block img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;
-  object-position:center;
-  filter:brightness(0.65) saturate(0.75);
-  transition:transform 12s ease;
-}
-.cinematic-block:hover img{transform:scale(1.02);}
-.cinematic-block-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top, rgba(14,13,11,0.88) 0%, transparent 60%);
-}
-.cinematic-block-inner{
-  position:relative;z-index:2;
-  padding:0 52px 72px;
-}
-.cinematic-block-label{
-  font-family:'Montserrat',sans-serif;
-  font-size:7px;font-weight:300;letter-spacing:0.65em;
-  color:rgba(242,239,233,0.28);
-  display:block;margin-bottom:16px;
-}
-.cinematic-block-text{
-  font-size:clamp(28px,4vw,58px);
-  font-weight:300;line-height:1.1;
-  letter-spacing:0.03em;color:#f2efe9;
-}
-.cinematic-block-text em{font-style:italic;color:rgba(242,239,233,0.4);}
-
-/* ─── RESPONSIVE ─── */
 @media(max-width:860px){
   #nav{padding:0 24px;}
   .roma-hero-inner{padding:0 24px 60px;}
@@ -557,46 +222,46 @@ footer{background:#141210;padding:80px 52px 48px;}
   .specs-inner{grid-template-columns:1fr;}
   .specs-header{grid-column:1;}
   .cinematic-block{height:70vh;}
+  #account-drawer{width:100%;top:96px;}
   footer{padding:48px 24px 36px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
 }
-
 </style>
 </head>
 <body>
 
-<div id="calcaterra-roma">
-
-<!-- NAV -->
 <nav id="nav">
   <div class="nav-l">
-    <button class="nav-hamburger" id="menuToggle" onclick="toggleMenu()" aria-label="Menu">
+    <button class="nav-hamburger" id="menuToggle" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </div>
   <div class="nav-center">
-    <a href="index.html">
+    <a href="/index.html">
       <img class="nav-logo-img" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/>
     </a>
   </div>
   <div class="nav-r">
-    <a href="#" class="nav-icon-btn" aria-label="Search">
+    <button class="nav-icon-btn" id="calSearchBtn" aria-label="Search">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
-    </a>
+    </button>
+    <button class="nav-icon-btn" id="accountToggle" aria-label="Account">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    </button>
     <div class="cart-wrap">
-      <a href="#" class="nav-icon-btn" aria-label="Cart">
+      <a href="/calcaterra-cart.html" class="nav-icon-btn" aria-label="Cart">
         <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
       </a>
+      <span class="cart-badge" id="cartBadge">0</span>
     </div>
   </div>
 </nav>
 
-<!-- MENU DRAWER -->
-<div id="menu-overlay" onclick="toggleMenu()"></div>
+<div id="menu-overlay"></div>
 <div id="menu-drawer">
   <nav class="drawer-nav">
-    <a href="/pages/collection">Collection</a>
-    <a href="/pages/our-story">About</a>
+    <a href="/calcaterra-collections-2-2.html">Collection</a>
+    <a href="/calcaterra-our-story.html">About</a>
     <a href="#">Contact</a>
     <a href="#">Notify Me</a>
     <a href="#">Stockists</a>
@@ -604,32 +269,51 @@ footer{background:#141210;padding:80px 52px 48px;}
   <span class="drawer-footer">CALCATERRA</span>
 </div>
 
-<!-- HERO -->
+<div id="account-overlay"></div>
+<div id="account-drawer">
+  <div id="accountContent" style="display:flex;flex-direction:column;flex:1;">
+    <div class="acct-out">
+      <span class="acct-out-eyebrow">Your Collection.</span>
+      <h2 class="acct-out-heading">Managed with <em>precision.</em></h2>
+      <p class="acct-out-body">Access your registered timepieces and ownership records.</p>
+      <a href="/calcaterra-signin.html" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
+      <a href="/calcaterra-register-4.html" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
+    </div>
+  </div>
+</div>
+
+<div id="cal-search-overlay">
+  <div class="cal-search-wrap">
+    <div class="cal-search-input-row">
+      <svg class="cal-search-icon-svg" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+      <input type="text" id="cal-search-input" placeholder="Search timepieces..." autocomplete="off">
+      <button class="cal-search-close" id="cal-search-close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="cal-search-results"></div>
+  <p class="cal-search-hint">ESC TO CLOSE</p>
+</div>
+
 <section class="roma-hero">
-  <img class="roma-hero-img"
-    src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_dlgf5wdlgf5wdlgf.png?v=1773595864"
-    alt="The Roma Collection">
+  <img class="roma-hero-img" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_dlgf5wdlgf5wdlgf.png?v=1773595864" alt="The Roma Collection">
   <div class="roma-hero-overlay"></div>
   <div class="roma-hero-inner">
     <span class="page-eyebrow fade">CALCATERRA — THE FIRST CHAPTER</span>
     <h1 class="page-title fade fade-d1">The Roma<br><em>Collection.</em></h1>
-    <span class="page-subtitle fade fade-d2">THE FIRST CHAPTER OF CALCATERRA</span>
-    <p class="page-intro fade fade-d3">
-      The Roma collection introduces the design language of Calcaterra.<br>
-      Proportion, clarity, and restraint form the foundation of every piece.
-    </p>
+    <span class="page-subtitle fade fade-d2">THREE REFERENCES · ONE CONVICTION</span>
+    <p class="page-intro fade fade-d3">The Roma collection introduces the design language of Calcaterra. Proportion, clarity, and restraint form the foundation of every piece.</p>
   </div>
 </section>
 
-<!-- FEATURE IMAGE — dial / case macro -->
 <div class="feature-image fade">
-  <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_ibmmrfibmmrfibmm.png?v=1773595865" alt="Roma — Case &amp; Dial Detail">
-  <span class="feature-image-caption fade">ROMA · CASE &amp; DIAL DETAIL</span>
+  <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_ibmmrfibmmrfibmm.png?v=1773595865" alt="Roma — Case & Dial Detail">
+  <span class="feature-image-caption">ROMA · CASE & DIAL DETAIL</span>
 </div>
 
 <div class="hairline-h" style="margin-top:80px;"></div>
 
-<!-- PHILOSOPHY SPLIT -->
 <section class="philosophy-section">
   <div class="philosophy-img fade">
     <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_tpbc1atpbc1atpbc.png?v=1773595865" alt="Roma — Detail">
@@ -637,63 +321,51 @@ footer{background:#141210;padding:80px 52px 48px;}
   <div class="philosophy-text">
     <span class="section-label fade">DESIGN PHILOSOPHY</span>
     <h2 class="section-heading fade fade-d1">Clarity in form.<br><em>Restraint in detail.</em></h2>
-    <p class="section-body fade fade-d2">
-      Every element of the Roma watch exists because it was considered, tested, and chosen. Nothing decorates. Nothing distracts. The case proportions, the weight of the hands, the finish on the dial — each decision was made once, and made permanently. The result is a watch that does not ask to be noticed. It simply endures.
-    </p>
+    <p class="section-body fade fade-d2">Every element of the Roma watch exists because it was considered, tested, and chosen. Nothing decorates. Nothing distracts. The case proportions, the weight of the hands, the finish on the dial — each decision was made once, and made permanently. The result is a watch that does not ask to be noticed. It simply endures.</p>
   </div>
 </section>
 
 <div class="hairline-h"></div>
 
-<!-- REFERENCES -->
 <section class="references-section">
   <div class="references-header">
     <span class="section-label fade">THE ROMA COLLECTION</span>
     <h2 class="section-heading fade fade-d1">III References.</h2>
   </div>
-
   <div class="references-grid">
-
-    <!-- ROMA BLACK -->
     <a href="/calcaterra-product-black-2.html?variant=black" class="ref-card fade">
       <div class="ref-card-img">
         <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_bv2rodbv2rodbv2r.png?v=1773599485" alt="Roma Black">
       </div>
       <div class="ref-card-body">
         <span class="ref-card-name">Roma <em>Black.</em></span>
-        <span class="ref-card-spec">Quartz &nbsp;&middot;&nbsp; 40mm</span>
+        <span class="ref-card-spec">REF. I &nbsp;&middot;&nbsp; QUARTZ &nbsp;&middot;&nbsp; 40MM</span>
         <span class="ref-card-cta">VIEW DETAILS</span>
       </div>
     </a>
-
-    <!-- ROMA NAVY -->
     <a href="/calcaterra-product-black-2.html?variant=navy" class="ref-card fade fade-d1" style="transform:scale(1.05) translateY(-2px);transform-origin:center;z-index:1;position:relative;">
       <div class="ref-card-img">
-        <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_aqzqnnaqzqnnaqzq.png?v=1773599485" alt="Roma Navy" style="box-shadow:0 40px 80px rgba(26,24,20,0.22), 0 12px 32px rgba(26,24,20,0.14);">
+        <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_aqzqnnaqzqnnaqzq.png?v=1773599485" alt="Roma Navy">
       </div>
       <div class="ref-card-body">
         <span class="ref-card-name">Roma <em>Navy.</em></span>
-        <span class="ref-card-spec">Quartz &nbsp;&middot;&nbsp; 40mm</span>
+        <span class="ref-card-spec">REF. II &nbsp;&middot;&nbsp; QUARTZ &nbsp;&middot;&nbsp; 40MM</span>
         <span class="ref-card-cta">VIEW DETAILS</span>
       </div>
     </a>
-
-    <!-- ROMA SILVER -->
     <a href="/calcaterra-product-black-2.html?variant=silver" class="ref-card fade fade-d2">
       <div class="ref-card-img">
         <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_9b58wm9b58wm9b58.png?v=1773599485" alt="Roma Silver">
       </div>
       <div class="ref-card-body">
         <span class="ref-card-name">Roma <em>Silver.</em></span>
-        <span class="ref-card-spec">Quartz &nbsp;&middot;&nbsp; 40mm</span>
+        <span class="ref-card-spec">REF. III &nbsp;&middot;&nbsp; QUARTZ &nbsp;&middot;&nbsp; 40MM</span>
         <span class="ref-card-cta">VIEW DETAILS</span>
       </div>
     </a>
-
   </div>
 </section>
 
-<!-- EDITORIAL STRIP — wrist / lifestyle shot -->
 <div class="editorial-strip fade">
   <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_hglsrxhglsrxhgls.png?v=1773595864" alt="Roma — Wrist Shot">
   <div class="editorial-strip-inner">
@@ -702,7 +374,6 @@ footer{background:#141210;padding:80px 52px 48px;}
   </div>
 </div>
 
-<!-- SPECIFICATIONS -->
 <section class="specs-section">
   <div class="specs-inner">
     <div class="specs-header">
@@ -710,58 +381,26 @@ footer{background:#141210;padding:80px 52px 48px;}
         <span class="section-label fade">TECHNICAL</span>
         <h2 class="section-heading fade fade-d1">Specifications.</h2>
       </div>
-      <span class="specs-header-right fade">X DETAILS</span>
     </div>
     <div class="specs-grid">
       <div class="spec-col">
-        <div class="spec-row fade">
-          <span class="spec-label">CASE MATERIAL</span>
-          <span class="spec-value">316L Stainless Steel</span>
-        </div>
-        <div class="spec-row fade fade-d1">
-          <span class="spec-label">CASE DIAMETER</span>
-          <span class="spec-value">40mm</span>
-        </div>
-        <div class="spec-row fade fade-d1">
-          <span class="spec-label">CRYSTAL</span>
-          <span class="spec-value">Sapphire Crystal</span>
-        </div>
-        <div class="spec-row fade fade-d1">
-          <span class="spec-label">WATER RESISTANCE</span>
-          <span class="spec-value">5 ATM Water Resistance</span>
-        </div>
-        <div class="spec-row fade fade-d1">
-          <span class="spec-label">DIAL</span>
-          <span class="spec-value">Sunburst Textured Dial</span>
-        </div>
+        <div class="spec-row fade"><span class="spec-label">CASE MATERIAL</span><span class="spec-value">316L Stainless Steel</span></div>
+        <div class="spec-row fade fade-d1"><span class="spec-label">CASE DIAMETER</span><span class="spec-value">40mm</span></div>
+        <div class="spec-row fade fade-d1"><span class="spec-label">CRYSTAL</span><span class="spec-value">Sapphire Crystal</span></div>
+        <div class="spec-row fade fade-d1"><span class="spec-label">WATER RESISTANCE</span><span class="spec-value">5 ATM</span></div>
+        <div class="spec-row fade fade-d1"><span class="spec-label">DIAL</span><span class="spec-value">Sunburst Textured Dial</span></div>
       </div>
       <div class="spec-col">
-        <div class="spec-row fade">
-          <span class="spec-label">MOVEMENT</span>
-          <span class="spec-value">Precision Japanese Quartz Movement</span>
-        </div>
-        <div class="spec-row fade fade-d1">
-          <span class="spec-label">BRACELET</span>
-          <span class="spec-value">Integrated Stainless Steel Bracelet</span>
-        </div>
-        <div class="spec-row fade fade-d1">
-          <span class="spec-label">CLASP</span>
-          <span class="spec-value">Butterfly Deployant Clasp</span>
-        </div>
-        <div class="spec-row fade fade-d1">
-          <span class="spec-label">WARRANTY</span>
-          <span class="spec-value">2 Year International Warranty</span>
-        </div>
-        <div class="spec-row fade fade-d1">
-          <span class="spec-label">CASE FINISH</span>
-          <span class="spec-value">Brushed &amp; Polished Stainless Steel</span>
-        </div>
+        <div class="spec-row fade"><span class="spec-label">MOVEMENT</span><span class="spec-value">Precision Japanese Quartz</span></div>
+        <div class="spec-row fade fade-d1"><span class="spec-label">BRACELET</span><span class="spec-value">Integrated Stainless Steel</span></div>
+        <div class="spec-row fade fade-d1"><span class="spec-label">CLASP</span><span class="spec-value">Butterfly Deployant</span></div>
+        <div class="spec-row fade fade-d1"><span class="spec-label">WARRANTY</span><span class="spec-value">2 Year International</span></div>
+        <div class="spec-row fade fade-d1"><span class="spec-label">CASE FINISH</span><span class="spec-value">Brushed & Polished</span></div>
       </div>
     </div>
-</div>
+  </div>
 </section>
 
-<!-- CINEMATIC BLOCK — final product image -->
 <div class="cinematic-block fade">
   <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_sfx3xvsfx3xvsfx3.png?v=1773595865" alt="Roma — Cinematic">
   <div class="cinematic-block-overlay"></div>
@@ -771,75 +410,149 @@ footer{background:#141210;padding:80px 52px 48px;}
   </div>
 </div>
 
-
-<!-- FOOTER -->
 <footer>
   <div class="foot-grid">
     <div>
-      <img class="foot-logo" style="filter:invert(1) brightness(0.6);"
-        src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117"
-        alt="Calcaterra"/>
+      <img class="foot-logo" style="filter:invert(1) brightness(0.6);" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117" alt="Calcaterra"/>
       <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
       <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
     </div>
-    <div class="foot-col">
-      <h5>THE HOUSE</h5>
-      <a href="/pages/our-story">Our Story</a>
-      <a href="#">Philosophy</a>
-      <a href="#">Terms of Service</a>
-      <a href="#">Privacy Policy</a>
-    </div>
-    <div class="foot-col">
-      <h5>COLLECTIONS</h5>
-      <a href="/collections/roma">Roma</a>
-    </div>
-    <div class="foot-col">
-      <h5>SUPPORT</h5>
-      <a href="#">Contact</a>
-      <a href="#">Warranty</a>
-      <a href="#">Shipping</a>
-      <a href="#">Returns</a>
-    </div>
+    <div class="foot-col"><h5>THE HOUSE</h5><a href="/calcaterra-our-story.html">Our Story</a><a href="#">Philosophy</a><a href="#">Terms of Service</a><a href="#">Privacy Policy</a></div>
+    <div class="foot-col"><h5>COLLECTIONS</h5><a href="/calcaterra-roma-collection-page.html">Roma</a></div>
+    <div class="foot-col"><h5>SUPPORT</h5><a href="#">Contact</a><a href="#">Warranty</a><a href="#">Shipping</a><a href="#">Returns</a></div>
   </div>
-  <div class="foot-bottom">
-    <span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span>
-  </div>
+  <div class="foot-bottom"><span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span></div>
 </footer>
 
 <script>
-function toggleMenu(){
-  document.getElementById('menuToggle').classList.toggle('open');
-  document.getElementById('menu-drawer').classList.toggle('open');
-  document.getElementById('menu-overlay').classList.toggle('open');
-}
+  const { createClient } = supabase
+  const _supabase = createClient(
+    'https://tnjuxcdcwcxoipbsowih.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
+  )
 
-window.addEventListener('load', function(){
-  setTimeout(function(){ reveal(); }, 300);
-});
-window.addEventListener('scroll', function(){ reveal(); }, {passive:true});
-
-function reveal(){
-  document.querySelectorAll('.fade:not(.in)').forEach(function(el){
-    if(el.getBoundingClientRect().top < window.innerHeight - 80){
-      el.classList.add('in');
-    }
-  });
-}
-
-// ── Transparent nav ──
-var nav = document.getElementById('nav');
-function navScroll(){
-  if(window.scrollY > 60){
-    nav.classList.add('scrolled');
-  } else {
-    nav.classList.remove('scrolled');
+  async function initAuth() {
+    const { data: { session } } = await _supabase.auth.getSession()
+    if (!session) return
+    const { data: customer } = await _supabase.from('customers').select('first_name, last_name, id').eq('auth_user_id', session.user.id).single()
+    const firstName = customer?.first_name || session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || 'Member'
+    const lastName = customer?.last_name || session.user.user_metadata?.last_name || ''
+    const name = `${firstName} ${lastName}`.trim()
+    document.getElementById('accountContent').innerHTML = `
+      <div class="acct-in">
+        <div class="acct-in-header">
+          <div class="acct-in-top"><span class="acct-in-label">CALCATERRA</span></div>
+          <span class="acct-in-name">${name}.</span>
+          <span class="acct-in-sub">Managed with precision.</span>
+        </div>
+        <nav class="acct-in-nav">
+          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
+          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
+        </nav>
+        <div class="acct-in-footer">
+          <button id="signOutBtn" class="acct-in-signout">SIGN OUT</button>
+        </div>
+      </div>`
+    setTimeout(() => {
+      const btn = document.getElementById('signOutBtn')
+      if (btn) btn.addEventListener('click', async () => { await _supabase.auth.signOut(); window.location.reload() })
+    }, 100)
   }
-}
-window.addEventListener('scroll', navScroll, {passive:true});
-navScroll();
+
+  function updateCartBadge() {
+    const cart = JSON.parse(localStorage.getItem('cal_cart') || '[]')
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0)
+    const badge = document.getElementById('cartBadge')
+    if (badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none' }
+  }
+
+  function toggleMenu() {
+    document.getElementById('menuToggle').classList.toggle('open')
+    document.getElementById('menu-drawer').classList.toggle('open')
+    document.getElementById('menu-overlay').classList.toggle('open')
+  }
+  function openAccount() {
+    document.getElementById('account-drawer').classList.add('open')
+    document.getElementById('account-overlay').classList.add('open')
+    document.getElementById('nav').classList.add('scrolled')
+  }
+  function closeAccount() {
+    document.getElementById('account-drawer').classList.remove('open')
+    document.getElementById('account-overlay').classList.remove('open')
+    if (window.scrollY <= 60) document.getElementById('nav').classList.remove('scrolled')
+  }
+  function openSearch() {
+    document.getElementById('cal-search-overlay').classList.add('open')
+    document.body.style.overflow = 'hidden'
+    setTimeout(() => document.getElementById('cal-search-input').focus(), 100)
+  }
+  function closeSearch() {
+    document.getElementById('cal-search-overlay').classList.remove('open')
+    document.body.style.overflow = ''
+    document.getElementById('cal-search-input').value = ''
+    document.getElementById('cal-search-results').innerHTML = ''
+  }
+
+  async function fetchSearchResults(query) {
+    document.getElementById('cal-search-results').innerHTML = '<p class="cal-search-status">SEARCHING...</p>'
+    const { data } = await _supabase.from('product_variants').select('id, name, attributes, images').ilike('name', `%${query}%`).eq('is_active', true).limit(6)
+    const variants = data || []
+    if (!variants.length) { document.getElementById('cal-search-results').innerHTML = '<div class="cal-search-no-results"><p>Nothing <em>found.</em></p></div>'; return }
+    let html = `<p class="cal-search-status">${variants.length} RESULT${variants.length !== 1 ? 'S' : ''}</p>`
+    variants.forEach(v => {
+      const imgs = Array.isArray(v.images) ? v.images : JSON.parse(v.images || '[]')
+      const img = imgs[0] || ''
+      const slug = v.attributes?.slug || ''
+      const url = slug ? `/calcaterra-product-black-2.html?variant=${slug}` : '#'
+      html += `<a href="${url}" class="cal-search-result"><div class="cal-search-result-img">${img ? `<img src="${img}" alt="${v.name}" loading="lazy">` : ''}</div><div><span class="cal-search-result-ref">CALCATERRA ROMA</span><span class="cal-search-result-title">${v.name}</span><span class="cal-search-result-price">€329</span></div></a>`
+    })
+    document.getElementById('cal-search-results').innerHTML = html
+  }
+
+  function reveal() {
+    document.querySelectorAll('.fade:not(.in)').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('in')
+    })
+  }
+
+  function navScroll() {
+    if (window.scrollY > 60) { document.getElementById('nav').classList.add('scrolled') }
+    else { document.getElementById('nav').classList.remove('scrolled') }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initAuth()
+    updateCartBadge()
+    navScroll()
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      toggleMenu()
+      document.getElementById('nav').classList.add('scrolled')
+    })
+    document.getElementById('menu-overlay').addEventListener('click', () => {
+      toggleMenu()
+      if (window.scrollY <= 60) document.getElementById('nav').classList.remove('scrolled')
+    })
+    document.getElementById('accountToggle').addEventListener('click', e => {
+      e.stopPropagation()
+      document.getElementById('account-drawer').classList.contains('open') ? closeAccount() : openAccount()
+    })
+    document.getElementById('account-overlay').addEventListener('click', closeAccount)
+    document.getElementById('calSearchBtn').addEventListener('click', e => { e.stopPropagation(); openSearch() })
+    document.getElementById('cal-search-close').addEventListener('click', closeSearch)
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch() })
+    let debounceTimer
+    document.getElementById('cal-search-input').addEventListener('input', function() {
+      clearTimeout(debounceTimer)
+      const query = this.value.trim()
+      if (query.length < 2) { document.getElementById('cal-search-results').innerHTML = ''; return }
+      debounceTimer = setTimeout(() => fetchSearchResults(query), 250)
+    })
+    window.addEventListener('scroll', () => { navScroll(); reveal() }, { passive: true })
+    setTimeout(reveal, 300)
+  })
 </script>
-
-</div>
-
 </body>
 </html>
