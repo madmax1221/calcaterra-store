@@ -930,6 +930,12 @@ async function assignItemCode(btn, itemId, orderId) {
     order_id: orderId,
     expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
   }).eq('id', codeId)
+ // remove this code from ALL other selects immediately
+  document.querySelectorAll('.item-code-select').forEach(sel => {
+    Array.from(sel.options).forEach(opt => {
+      if (opt.value === codeId) opt.remove()
+    })
+  })
   // update UI
   row.innerHTML = `<div style="padding:16px 0;border-bottom:1px solid rgba(242,239,233,0.05);"><span style="font-size:9px;letter-spacing:0.3em;color:#4ade80;">✓ ASSIGNED: ${codeData.activation_code}</span></div>`
   toast('Code assigned — ' + codeData.activation_code)
