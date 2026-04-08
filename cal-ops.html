@@ -548,6 +548,1166 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
       </div>
       <!-- ASSIGN CODE -->
       <div class="ops-modal-section" id="modal-code-section" style="display:none;">
+        <span class="ops-modal-section-label">ASSIGN ACTIVATION CODES</span>
+        <div id="modal-code-assign-rows"></div>
+      </div>
+      <!-- TRACKING -->
+      <div class="ops-modal-section" id="modal-tracking-section" style="display:none;">
+        <span class="ops-modal-section-label">SHIPPING & TRACKING</span>
+        <div class="ops-input-group">
+          <input class="ops-input" type="text" id="modal-tracking-input" placeholder="Enter tracking number...">
+          <button class="ops-btn ops-btn-ship" onclick="saveTracking()">SAVE TRACKING</button>
+        </div>
+        <div id="modal-tracking-display" style="margin-top:12px;display:none;">
+          <span style="font-size:7px;letter-spacing:0.4em;color:rgba(242,239,233,0.3);">TRACKING: </span>
+          <span style="font-size:13px;font-weight:400;color:#a78bfa;" id="modal-tracking-value">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="ops-modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="ops-toast" id="toast"></div>
+
+<script>
+const { createClient } = supabase
+const _supabase = createClient(
+  'https://tnjuxcdcwcxoipbsowih.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
+)
+
+// ── RESEND CONFIG ──
+const RESEND_API_KEY = 're_18zAHqhr_2fERGnf65NGLFcL7tfyhe7as'
+const FROM_EMAIL = 'orders@calcaterra.co'
+const FROM_NAME = 'Calcaterra'
+
+// ── SAFE CHAR SET — no 0/O, 1/I/L, 5/S, 8/B ──
+const SAFE_CHARS = 'ACDEFGHJKMNPQRTUVWXYZ234679'
+
+let currentOrder = null
+let allOrders = []
+let allCodes = []
+
+// ── CLOCK ──
+function updateClock() {
+  const now = new Date()
+  document.getElementById('topbar-time').textContent =
+    now.toLocaleDateString('en-ZA', { weekday:'short', day:'numeric', month:'short' }).toUpperCase() + ' · ' +
+    now.toLocaleTimeString('en-ZA', { hour:'2-digit', minute:'2-digit' })
+}
+setInterval(updateClock, 1000)
+updateClock()
+
+// ── AUTH GUARD ──
+async function initAdmin() {
+  const { data: { session } } = await _supabase.auth.getSession()
+  if (!session) { window.location.href = '/calcaterra-signin.html'; return }
+  const { data: customer } = await _supabase.from('customers').select('role, first_name').eq('auth_user_id', session.user.id).single()
+  if (!customer || customer.role !== 'admin') { window.location.href = '/index.html'; return }
+  loadDashboard()
+  loadOrders()
+  loadCodes()
+  loadWarranties()
+  loadCustomers()
+}
+
+function toggleSidebar() {
+  document.getElementById('ops-sidebar').classList.toggle('open')
+  document.getElementById('sidebarOverlay').classList.toggle('open')
+}
+
+// ── NAVIGATION ──
+function showPanel(id) {
+  document.querySelectorAll('.ops-panel').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.ops-nav-item').forEach(n => n.classList.remove('active'))
+  document.getElementById('panel-' + id).classList.add('active')
+  // find and activate the correct nav item
+  document.querySelectorAll('.ops-nav-item').forEach(n => {
+    if (n.getAttribute('data-panel') === id) n.classList.add('active')
+  })
+  const titles = { dashboard:'DASHBOARD', orders:'ORDERS', codes:'CODES', warranties:'WARRANTIES', customers:'CUSTOMERS' }
+  document.getElementById('topbar-title').textContent = titles[id] || id.toUpperCase()
+  // close sidebar on mobile after nav
+  if (window.innerWidth <= 1024) {
+    document.getElementById('ops-sidebar').classList.remove('open')
+    document.getElementById('sidebarOverlay').classList.remove('open')
+  }
+}
+
+// ── TOAST ──
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toast')
+  t.textContent = msg
+  t.className = 'ops-toast show ' + type
+  setTimeout(() => t.className = 'ops-toast', 3000)
+}
+
+// ── DASHBOARD ──
+async function loadDashboard() {
+  const today = new Date().toISOString().split('T')[0]
+  const [ordersRes, customersRes, warrantiesRes, codesRes] = await Promise.all([
+    _supabase.from('orders').select('id, total, status, created_at, shipping_address, customer_id'),
+    _supabase.from('customers').select('id', { count: 'exact' }),
+    _supabase.from('warranties').select('id, status', { count: 'exact' }),
+    _supabase.from('warranties').select('id, status, activation_code')
+  ])
+  const orders = ordersRes.data || []
+  const todayOrders = orders.filter(o => o.created_at?.startsWith(today))
+  const pendingOrders = orders.filter(o => o.status === 'pending')
+  const totalRevenue = orders.reduce((s, o) => s + (parseFloat(o.total) || 0), 0)
+  const todayRevenue = todayOrders.reduce((s, o) => s + (parseFloat(o.total) || 0), 0)
+  const warranties = warrantiesRes.data || []
+  const activeWarranties = warranties.filter(w => w.status === 'active').length
+  const codes = codesRes.data || []
+  const inactiveCodes = codes.filter(c => c.status === 'inactive').length
+  const unactivatedCodes = codes.filter(c => c.status === 'unactivated').length
+
+  document.getElementById('stat-total-orders').textContent = orders.length
+  document.getElementById('stat-today-orders').textContent = todayOrders.length
+  document.getElementById('stat-pending').textContent = pendingOrders.length
+  document.getElementById('stat-revenue').textContent = '€' + totalRevenue.toFixed(0)
+  document.getElementById('stat-today-revenue').textContent = '€' + todayRevenue.toFixed(0)
+  document.getElementById('stat-customers').textContent = customersRes.count || 0
+  document.getElementById('stat-warranties').textContent = activeWarranties
+  document.getElementById('stat-codes').textContent = inactiveCodes
+  document.getElementById('stat-unactivated').textContent = unactivatedCodes
+
+  // pending badge
+  if (pendingOrders.length > 0) {
+    const badge = document.getElementById('pending-badge')
+    badge.textContent = pendingOrders.length
+    badge.style.display = 'inline-block'
+  }
+
+  // country breakdown
+  const countryCounts = {}
+  orders.forEach(o => {
+    const country = o.shipping_address?.country || 'Unknown'
+    countryCounts[country] = (countryCounts[country] || 0) + 1
+  })
+  const sorted = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
+  const maxCount = sorted[0]?.[1] || 1
+  const countryList = document.getElementById('country-list')
+  if (sorted.length === 0) {
+    countryList.innerHTML = '<div class="ops-loading">NO DATA YET</div>'
+  } else {
+    countryList.innerHTML = sorted.map(([country, count]) => `
+      <div class="country-row">
+        <span class="country-name">${country}</span>
+        <div class="country-bar-wrap"><div class="country-bar" style="width:${(count/maxCount*100)}%"></div></div>
+        <span class="country-count">${count}</span>
+      </div>`).join('')
+  }
+
+  // recent orders
+  const recent = [...orders].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 6)
+  document.getElementById('recent-orders-body').innerHTML = recent.length ? recent.map(o => `
+    <tr onclick="openOrder('${o.id}')">
+      <td style="font-family:'Times New Roman',serif;font-size:13px;">CAL-${o.id.slice(0,8).toUpperCase()}</td>
+      <td>${o.customer_id ? '—' : 'Guest'}</td>
+      <td><span class="variant-tag">—</span></td>
+      <td>€${parseFloat(o.total).toFixed(0)}</td>
+      <td><span class="status-pill status-${o.status}">${o.status.toUpperCase()}</span></td>
+      <td>${new Date(o.created_at).toLocaleDateString('en-ZA')}</td>
+    </tr>`).join('') : '<tr><td colspan="6" class="ops-table-empty">NO ORDERS YET</td></tr>'
+}
+
+// ── ORDERS ──
+async function loadOrders() {
+  const { data: orders } = await _supabase.from('orders').select(`
+    id, status, total, created_at, shipping_address, notes, customer_id,
+    customers(first_name, last_name, email),
+    order_items(id, quantity, unit_price, variant_id, serial_number, product_variants(name))
+  `).order('created_at', { ascending: false })
+  allOrders = orders || []
+  renderOrders(allOrders)
+}
+
+function renderOrders(orders) {
+  document.getElementById('orders-body').innerHTML = orders.length ? orders.map(o => {
+    const customer = o.customers
+    const name = customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Guest'
+    const email = customer?.email || '—'
+    const items = o.order_items || []
+    const totalQty = items.reduce((s, i) => s + (i.quantity || 1), 0)
+    const itemSummary = totalQty === 1
+      ? (items[0]?.product_variants?.name || 'Roma Watch')
+      : `${totalQty} ITEMS`
+    return `
+    <tr onclick="openOrder('${o.id}')">
+      <td style="font-family:'Times New Roman',serif;font-size:13px;">CAL-${o.id.slice(0,8).toUpperCase()}</td>
+      <td>${name}</td>
+      <td style="font-size:10px;">${email}</td>
+      <td><span class="variant-tag">${itemSummary.toUpperCase()}</span></td>
+      <td>€${parseFloat(o.total).toFixed(0)}</td>
+      <td><span class="status-pill status-${o.status}">${o.status.toUpperCase()}</span></td>
+      <td>${new Date(o.created_at).toLocaleDateString('en-ZA')}</td>
+      <td><button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="event.stopPropagation();openOrder('${o.id}')">REVIEW</button></td>
+    </tr>`
+  }).join('') : '<tr><td colspan="8" class="ops-table-empty">NO ORDERS</td></tr>'
+}
+
+function filterOrders() {
+  const val = document.getElementById('order-filter').value
+  renderOrders(val === 'all' ? allOrders : allOrders.filter(o => o.status === val))
+}
+
+// ── ORDER MODAL ──
+async function openOrder(id) {
+  const order = allOrders.find(o => o.id === id)
+  if (!order) return
+  currentOrder = order
+  const addr = order.shipping_address || {}
+  const customer = order.customers
+  document.getElementById('modal-order-num').innerHTML = `Order <em>#CAL-${id.slice(0,8).toUpperCase()}</em>`
+  document.getElementById('modal-customer-name').textContent = customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Guest'
+  document.getElementById('modal-customer-email').textContent = customer?.email || '—'
+  document.getElementById('modal-addr-line').textContent = addr.line1 || '—'
+  document.getElementById('modal-addr-city').textContent = addr.city || '—'
+  document.getElementById('modal-addr-province').textContent = addr.province || '—'
+  document.getElementById('modal-addr-country').textContent = addr.country || '—'
+  document.getElementById('modal-addr-postal').textContent = addr.postal_code || '—'
+  document.getElementById('modal-total').textContent = '€' + parseFloat(order.total).toFixed(2)
+  document.getElementById('modal-payment').textContent = order.stripe_payment_intent ? 'PAID' : 'PENDING PAYMENT'
+  document.getElementById('modal-status').innerHTML = `<span class="status-pill status-${order.status}">${order.status.toUpperCase()}</span>`
+  document.getElementById('modal-date').textContent = new Date(order.created_at).toLocaleString('en-ZA')
+  document.getElementById('modal-notes').textContent = order.notes || 'None'
+
+  // expand items into individual rows (qty > 1 = multiple rows)
+  const rawItems = order.order_items || []
+  const expandedItems = []
+  rawItems.forEach(item => {
+    const qty = item.quantity || 1
+    for (let i = 0; i < qty; i++) {
+      expandedItems.push({ ...item, _instance: i + 1, _totalInstances: qty })
+    }
+  })
+
+  // render items list
+  document.getElementById('modal-items').innerHTML = expandedItems.length ? expandedItems.map((item, idx) => {
+    const variantName = item.product_variants?.name || 'Roma Watch'
+    const instanceLabel = item._totalInstances > 1 ? ` (${item._instance} of ${item._totalInstances})` : ''
+    const hasCode = item.serial_number
+    return `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(242,239,233,0.05);" id="item-row-${idx}">
+        <div>
+          <span style="font-size:13px;font-weight:300;color:rgba(242,239,233,0.9);">${variantName}<span style="font-size:9px;color:rgba(242,239,233,0.3);">${instanceLabel}</span></span>
+          <span style="display:block;font-size:7.5px;letter-spacing:0.35em;color:rgba(242,239,233,0.3);margin-top:4px;">QUARTZ · 40MM</span>
+          ${hasCode ? `<span style="display:block;font-size:8px;letter-spacing:0.3em;color:#4ade80;margin-top:6px;">✓ CODE ASSIGNED: ${item.serial_number}</span>` : `<span style="display:block;font-size:8px;letter-spacing:0.3em;color:rgba(251,191,36,0.7);margin-top:6px;">⚠ NO CODE ASSIGNED</span>`}
+        </div>
+        <span style="font-size:14px;font-weight:300;color:rgba(242,239,233,0.6);">€${parseFloat(item.unit_price).toFixed(2)}</span>
+      </div>`
+  }).join('') : '<span style="color:rgba(242,239,233,0.3);font-size:10px;letter-spacing:0.2em;">NO ITEMS FOUND</span>'
+
+  // code assignment section — one row per expanded item, only if confirmed
+  const codeSection = document.getElementById('modal-code-section')
+  if (order.status === 'confirmed') {
+    codeSection.style.display = 'block'
+
+    // load available codes per variant
+    const { data: availableCodes } = await _supabase.from('warranties')
+      .select('id, activation_code, variant')
+      .eq('status', 'inactive')
+      .order('created_at', { ascending: true })
+
+    const codesByVariant = {}
+    ;(availableCodes || []).forEach(c => {
+      const v = (c.variant || 'unknown').toLowerCase()
+      if (!codesByVariant[v]) codesByVariant[v] = []
+      codesByVariant[v].push(c)
+    })
+
+    // track selected code IDs across selects to prevent duplicates
+    const selectedIds = new Set()
+
+    const assignRows = expandedItems.map((item, idx) => {
+      if (item.serial_number) return '' // already assigned
+      const variantRaw = item.product_variants?.name || ''
+      const variant = variantRaw.toLowerCase().includes('black') ? 'black'
+                    : variantRaw.toLowerCase().includes('navy') ? 'navy'
+                    : variantRaw.toLowerCase().includes('silver') ? 'silver'
+                    : 'black'
+      const variantCodes = codesByVariant[variant] || []
+      const variantName = item.product_variants?.name || 'Roma Watch'
+      const instanceLabel = item._totalInstances > 1 ? ` (${item._instance} of ${item._totalInstances})` : ''
+      const options = variantCodes.map(c =>
+        `<option value="${c.id}" data-variant="${variant}">${c.activation_code}</option>`
+      ).join('')
+
+      return `
+        <div style="padding:16px 0;border-bottom:1px solid rgba(242,239,233,0.05);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div>
+              <span style="font-size:11px;font-weight:300;color:rgba(242,239,233,0.7);">${variantName}${instanceLabel}</span>
+              <span style="display:block;font-size:7px;letter-spacing:0.4em;color:rgba(242,239,233,0.3);margin-top:2px;">${variant.toUpperCase()} CODES ONLY</span>
+            </div>
+            <span style="font-size:7px;letter-spacing:0.3em;color:rgba(242,239,233,0.25);">${variantCodes.length} AVAILABLE</span>
+          </div>
+          <div style="display:flex;gap:0;">
+            <select class="ops-input ops-select item-code-select" data-item-id="${item.id}" data-item-idx="${idx}" style="flex:1;" onchange="onCodeSelectChange(this)">
+              <option value="">— SELECT ${variant.toUpperCase()} CODE —</option>
+              ${options}
+            </select>
+            <button class="ops-btn ops-btn-confirm ops-btn-sm" onclick="assignItemCode(this, '${item.id}', '${id}')">ASSIGN</button>
+          </div>
+        </div>`
+    }).filter(Boolean).join('')
+
+    document.getElementById('modal-code-assign-rows').innerHTML = assignRows ||
+      '<span style="font-size:9px;letter-spacing:0.3em;color:#4ade80;">✓ ALL ITEMS HAVE CODES ASSIGNED</span>'
+  } else {
+    codeSection.style.display = 'none'
+  }
+
+  // tracking section
+  const trackSection = document.getElementById('modal-tracking-section')
+  if (order.status === 'confirmed' || order.status === 'shipped') {
+    trackSection.style.display = 'block'
+    const trackInput = document.getElementById('modal-tracking-input')
+    const trackDisplay = document.getElementById('modal-tracking-display')
+    const trackVal = document.getElementById('modal-tracking-value')
+    if (order.tracking_number) {
+      trackDisplay.style.display = 'block'
+      trackVal.textContent = order.tracking_number
+      trackInput.value = order.tracking_number
+    } else {
+      trackDisplay.style.display = 'none'
+      trackInput.value = ''
+    }
+  } else {
+    trackSection.style.display = 'none'
+  }
+
+  // actions
+  const actions = document.getElementById('modal-actions')
+  let btns = ''
+  if (order.status === 'pending') {
+    btns += `<button class="ops-btn ops-btn-confirm" onclick="updateOrderStatus('${id}', 'confirmed')">✓ CONFIRM ORDER</button>`
+    btns += `<button class="ops-btn ops-btn-danger ops-btn-sm" onclick="updateOrderStatus('${id}', 'cancelled')">CANCEL</button>`
+  }
+  if (order.status === 'confirmed') {
+    btns += `<button class="ops-btn ops-btn-ship" onclick="markShipped('${id}')">MARK AS SHIPPED</button>`
+  }
+  if (order.status === 'shipped') {
+    btns += `<button class="ops-btn ops-btn-confirm" onclick="updateOrderStatus('${id}', 'delivered')">MARK DELIVERED</button>`
+  }
+  btns += `<button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="closeModal()">CLOSE</button>`
+  actions.innerHTML = btns
+
+  document.getElementById('orderModal').classList.add('open')
+}
+
+// prevent same code being selected in two selects
+function onCodeSelectChange(changedSelect) {
+  const allSelects = document.querySelectorAll('.item-code-select')
+  const usedIds = new Set()
+  allSelects.forEach(s => { if (s !== changedSelect && s.value) usedIds.add(s.value) })
+  // disable already-used options in other selects
+  allSelects.forEach(sel => {
+    if (sel === changedSelect) return
+    Array.from(sel.options).forEach(opt => {
+      if (opt.value) opt.disabled = usedIds.has(opt.value)
+    })
+  })
+}
+
+// assign code to a specific item
+async function assignItemCode(btn, itemId, orderId) {
+  const row = btn.closest('div[style]')
+  const sel = row.querySelector('.item-code-select')
+  const codeId = sel.value
+  if (!codeId) { toast('Select a code first', 'error'); return }
+  const { data: codeData } = await _supabase.from('warranties').select('activation_code').eq('id', codeId).single()
+  if (!codeData) { toast('Code not found', 'error'); return }
+  // update order_item with serial number
+  const { error: itemErr } = await _supabase.from('order_items').update({ serial_number: codeData.activation_code }).eq('id', itemId)
+  if (itemErr) { toast('Error assigning code', 'error'); return }
+  // mark warranty code as unactivated and link to order
+  await _supabase.from('warranties').update({
+    status: 'unactivated',
+    order_id: orderId,
+    expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+  }).eq('id', codeId)
+  // update UI
+  row.innerHTML = `<div style="padding:16px 0;border-bottom:1px solid rgba(242,239,233,0.05);"><span style="font-size:9px;letter-spacing:0.3em;color:#4ade80;">✓ ASSIGNED: ${codeData.activation_code}</span></div>`
+  toast('Code assigned — ' + codeData.activation_code)
+  loadOrders()
+}
+
+function closeModal() {
+  document.getElementById('orderModal').classList.remove('open')
+  currentOrder = null
+}
+
+// ── UPDATE ORDER STATUS ──
+async function updateOrderStatus(id, status) {
+  const { error } = await _supabase.from('orders').update({ status }).eq('id', id)
+  if (error) { toast('Error updating order', 'error'); return }
+  toast(`Order ${status.toUpperCase()}`)
+  // send confirmation email
+  if (status === 'confirmed') await sendOrderConfirmationEmail(id)
+  closeModal()
+  loadOrders()
+  loadDashboard()
+}
+
+// ── MARK SHIPPED ──
+async function markShipped(id) {
+  const tracking = document.getElementById('modal-tracking-input').value.trim()
+  const updates = { status: 'shipped' }
+  if (tracking) updates.tracking_number = tracking
+  const { error } = await _supabase.from('orders').update(updates).eq('id', id)
+  if (error) { toast('Error', 'error'); return }
+  if (tracking) await sendShippingEmail(id, tracking)
+  toast('Marked as shipped — customer notified')
+  closeModal()
+  loadOrders()
+  loadDashboard()
+}
+
+async function saveTracking() {
+  if (!currentOrder) return
+  const tracking = document.getElementById('modal-tracking-input').value.trim()
+  if (!tracking) { toast('Enter a tracking number', 'error'); return }
+  const { error } = await _supabase.from('orders').update({ tracking_number: tracking }).eq('id', currentOrder.id)
+  if (error) { toast('Error', 'error'); return }
+  document.getElementById('modal-tracking-display').style.display = 'block'
+  document.getElementById('modal-tracking-value').textContent = tracking
+  toast('Tracking saved')
+}
+
+// ── CODE GENERATOR ──
+function generateUniqueCode(existing) {
+  const gen = () => {
+    let code = 'CAL-'
+    for (let g = 0; g < 2; g++) {
+      if (g > 0) code += '-'
+      for (let i = 0; i < 4; i++) code += SAFE_CHARS[Math.floor(Math.random() * SAFE_CHARS.length)]
+    }
+    return code
+  }
+  let code
+  let attempts = 0
+  do { code = gen(); attempts++ } while (existing.has(code) && attempts < 1000)
+  return code
+}
+
+async function generateCodes() {
+  const variant = document.getElementById('gen-variant').value
+  const qty = parseInt(document.getElementById('gen-qty').value) || 10
+  if (qty < 1 || qty > 200) { toast('Enter a quantity between 1 and 200', 'error'); return }
+
+  // fetch all existing codes to prevent duplicates
+  const { data: existingCodes } = await _supabase.from('warranties').select('activation_code')
+  const existingSet = new Set((existingCodes || []).map(c => c.activation_code))
+
+  const newCodes = []
+  for (let i = 0; i < qty; i++) {
+    const code = generateUniqueCode(existingSet)
+    existingSet.add(code)
+    newCodes.push({ activation_code: code, status: 'inactive', variant })
+  }
+
+  const { error } = await _supabase.from('warranties').insert(newCodes)
+  if (error) { toast('Error generating codes: ' + error.message, 'error'); return }
+
+  // preview
+  document.getElementById('generated-codes-preview').style.display = 'block'
+  document.getElementById('gen-preview-label').textContent = `${qty} CODES GENERATED — ${variant.toUpperCase()}`
+  const variantDot = { black: 'dot-black', navy: 'dot-navy', silver: 'dot-silver' }
+  document.getElementById('codes-preview-list').innerHTML = newCodes.map(c => `
+    <div class="code-preview-item">
+      <span>${c.activation_code}</span>
+      <div class="variant-dot ${variantDot[variant]}"></div>
+    </div>`).join('')
+
+  toast(`${qty} codes generated for ${variant.toUpperCase()}`)
+  loadCodes()
+  loadDashboard()
+}
+
+function printCodes() {
+  const codes = document.getElementById('codes-preview-list').innerText
+  const win = window.open('', '_blank')
+  win.document.write(`<html><head><title>Calcaterra Activation Codes</title><style>body{font-family:monospace;font-size:14px;padding:40px;} h2{margin-bottom:20px;} .code{padding:8px 0;border-bottom:1px solid #eee;}</style></head><body><h2>CALCATERRA ACTIVATION CODES</h2><p style="margin-bottom:20px;font-size:12px;">Generated: ${new Date().toLocaleString()}</p>`)
+  const items = document.querySelectorAll('.code-preview-item')
+  items.forEach(item => { win.document.write(`<div class="code">${item.querySelector('span').textContent}</div>`) })
+  win.document.write('</body></html>')
+  win.document.close()
+  win.print()
+}
+
+// ── LOAD CODES ──
+async function loadCodes() {
+  const { data } = await _supabase.from('warranties').select('id, activation_code, status, variant, created_at, activated_at, order_id').order('created_at', { ascending: false })
+  allCodes = data || []
+  renderCodes(allCodes)
+}
+
+function renderCodes(codes) {
+  document.getElementById('codes-body').innerHTML = codes.length ? codes.map(c => `
+    <tr>
+      <td style="font-family:monospace;font-size:12px;letter-spacing:0.08em;">${c.activation_code}</td>
+      <td><span class="variant-tag">${(c.variant || '—').toUpperCase()}</span></td>
+      <td><span class="status-pill status-${c.status}">${c.status.toUpperCase()}</span></td>
+      <td style="font-size:10px;">${c.order_id ? 'CAL-' + c.order_id.slice(0,8).toUpperCase() : '—'}</td>
+      <td>${new Date(c.created_at).toLocaleDateString('en-ZA')}</td>
+      <td>${c.activated_at ? new Date(c.activated_at).toLocaleDateString('en-ZA') : '—'}</td>
+    </tr>`).join('') : '<tr><td colspan="6" class="ops-table-empty">NO CODES GENERATED YET</td></tr>'
+}
+
+function filterCodes() {
+  const val = document.getElementById('code-filter').value
+  renderCodes(val === 'all' ? allCodes : allCodes.filter(c => c.status === val))
+}
+
+// ── WARRANTIES ──
+async function loadWarranties() {
+  const { data } = await _supabase.from('warranties').select(`
+    id, status, serial_number, activation_code, activated_at, warranty_end, expires_at, variant,
+    customers(first_name, last_name, email)
+  `).neq('status', 'inactive').order('activated_at', { ascending: false })
+  const warranties = data || []
+  document.getElementById('warranties-body').innerHTML = warranties.length ? warranties.map(w => {
+    const customer = w.customers
+    const name = customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Guest'
+    return `
+    <tr>
+      <td>
+        <div style="font-size:13px;color:rgba(242,239,233,0.8);">${name}</div>
+        <div style="font-size:9px;letter-spacing:0.1em;color:rgba(242,239,233,0.3);margin-top:3px;">${customer?.email || '—'}</div>
+      </td>
+      <td><span class="variant-tag">${(w.variant || '—').toUpperCase()}</span></td>
+      <td style="font-family:monospace;font-size:11px;">${w.activation_code || '—'}</td>
+      <td>${w.activated_at ? new Date(w.activated_at).toLocaleDateString('en-ZA') : '—'}</td>
+      <td>${w.warranty_end ? new Date(w.warranty_end).toLocaleDateString('en-ZA') : '—'}</td>
+      <td><span class="status-pill status-${w.status}">${w.status.toUpperCase()}</span></td>
+      <td>
+        ${w.status === 'unactivated' ? `<button class="ops-btn ops-btn-confirm ops-btn-sm" onclick="manualActivate('${w.id}')">ACTIVATE</button>` : ''}
+      </td>
+    </tr>`
+  }).join('') : '<tr><td colspan="7" class="ops-table-empty">NO WARRANTIES YET</td></tr>'
+}
+
+// ── MANUAL WARRANTY ACTIVATE ──
+async function manualActivate(id) {
+  const now = new Date()
+  const end = new Date(now)
+  end.setFullYear(end.getFullYear() + 2)
+  const { error } = await _supabase.from('warranties').update({
+    status: 'active',
+    activated_at: now.toISOString(),
+    warranty_end: end.toISOString()
+  }).eq('id', id)
+  if (error) { toast('Error', 'error'); return }
+  toast('Warranty manually activated')
+  loadWarranties()
+}
+
+// ── CUSTOMERS ──
+async function loadCustomers() {
+  const { data } = await _supabase.from('customers').select('id, first_name, last_name, email, created_at').order('created_at', { ascending: false })
+  const customers = data || []
+  document.getElementById('customers-body').innerHTML = customers.length ? customers.map(c => `
+    <tr>
+      <td>${c.first_name || ''} ${c.last_name || ''}</td>
+      <td style="font-size:10px;">${c.email || '—'}</td>
+      <td>—</td>
+      <td>${new Date(c.created_at).toLocaleDateString('en-ZA')}</td>
+      <td>—</td>
+    </tr>`).join('') : '<tr><td colspan="5" class="ops-table-empty">NO CUSTOMERS YET</td></tr>'
+}
+
+// ── EMAILS VIA RESEND ──
+async function sendEmail(to, subject, html) {
+  try {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${RESEND_API_KEY}` },
+      body: JSON.stringify({ from: `${FROM_NAME} <${FROM_EMAIL}>`, to, subject, html })
+    })
+  } catch(e) { console.error('Email error:', e) }
+}
+
+async function sendOrderConfirmationEmail(orderId) {
+  const order = allOrders.find(o => o.id === orderId)
+  if (!order || !order.customers?.email) return
+  const name = order.customers.first_name || 'Valued Customer'
+  const orderNum = 'CAL-' + orderId.slice(0,8).toUpperCase()
+  const addr = order.shipping_address || {}
+  const html = `
+    <!DOCTYPE html><html><body style="background:#f2efe9;margin:0;padding:0;font-family:'Times New Roman',serif;">
+    <div style="max-width:560px;margin:0 auto;padding:60px 40px;">
+      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117" style="height:50px;filter:invert(1) brightness(0.3);margin-bottom:48px;" alt="Calcaterra"/>
+      <p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);margin-bottom:16px;">ORDER CONFIRMED</p>
+      <h1 style="font-size:36px;font-weight:300;color:#1a1814;margin-bottom:8px;line-height:1.1;">Your order is<br><em style="font-style:italic;color:rgba(26,24,20,0.4);">confirmed.</em></h1>
+      <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.55);line-height:2;margin:28px 0;">Dear ${name}, your Calcaterra timepiece has been confirmed and is being prepared with care. You will receive a shipping notification once your order is on its way.</p>
+      <div style="border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);padding:24px 0;margin:32px 0;">
+        <p style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.4em;color:rgba(26,24,20,0.4);margin-bottom:8px;">ORDER REFERENCE</p>
+        <p style="font-size:20px;font-weight:300;color:#1a1814;">${orderNum}</p>
+      </div>
+      <div style="margin:32px 0;">
+        <p style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.4em;color:rgba(26,24,20,0.4);margin-bottom:12px;">DELIVERING TO</p>
+        <p style="font-size:15px;font-weight:300;color:rgba(26,24,20,0.7);line-height:1.8;">${addr.line1 || ''}<br>${addr.city || ''}, ${addr.country || ''}</p>
+      </div>
+      <p style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-top:48px;border-top:1px solid rgba(26,24,20,0.08);padding-top:24px;">CALCATERRA · BUILT ON CONVICTION</p>
+    </div></body></html>`
+  await sendEmail(order.customers.email, `Order Confirmed — ${orderNum}`, html)
+}
+
+async function sendShippingEmail(orderId, tracking) {
+  const order = allOrders.find(o => o.id === orderId)
+  if (!order || !order.customers?.email) return
+  const name = order.customers.first_name || 'Valued Customer'
+  const orderNum = 'CAL-' + orderId.slice(0,8).toUpperCase()
+  const html = `
+    <!DOCTYPE html><html><body style="background:#f2efe9;margin:0;padding:0;font-family:'Times New Roman',serif;">
+    <div style="max-width:560px;margin:0 auto;padding:60px 40px;">
+      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117" style="height:50px;filter:invert(1) brightness(0.3);margin-bottom:48px;" alt="Calcaterra"/>
+      <p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);margin-bottom:16px;">YOUR ORDER IS ON ITS WAY</p>
+      <h1 style="font-size:36px;font-weight:300;color:#1a1814;margin-bottom:8px;line-height:1.1;">Your timepiece<br><em style="font-style:italic;color:rgba(26,24,20,0.4);">is en route.</em></h1>
+      <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.55);line-height:2;margin:28px 0;">Dear ${name}, your Calcaterra has been dispatched and is making its way to you. Use the tracking number below to follow its journey.</p>
+      <div style="border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);padding:24px 0;margin:32px 0;">
+        <p style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.4em;color:rgba(26,24,20,0.4);margin-bottom:8px;">TRACKING NUMBER</p>
+        <p style="font-size:20px;font-weight:300;color:#1a1814;letter-spacing:0.05em;">${tracking}</p>
+        <p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.4);margin-top:12px;">Track your shipment at <a href="https://www.17track.net/en/track?nums=${tracking}" style="color:#1a1814;">17track.net</a></p>
+      </div>
+      <div style="margin:32px 0;">
+        <p style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.4em;color:rgba(26,24,20,0.4);margin-bottom:8px;">ORDER REFERENCE</p>
+        <p style="font-size:15px;font-weight:300;color:rgba(26,24,20,0.7);">${orderNum}</p>
+      </div>
+      <p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.5);margin-top:12px;">Inside your package you will find an activation card. Register your watch at <a href="https://www.calcaterra.co/calcaterra-dashboard-21.html" style="color:#1a1814;">calcaterra.co</a> to activate your 2-year warranty.</p>
+      <p style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-top:48px;border-top:1px solid rgba(26,24,20,0.08);padding-top:24px;">CALCATERRA · BUILT ON CONVICTION</p>
+    </div></body></html>`
+  await sendEmail(order.customers.email, `Your Calcaterra is on its way — ${orderNum}`, html)
+}
+
+async function signOut() {
+  await _supabase.auth.signOut()
+  window.location.href = '/index.html'
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', initAdmin)
+</script>
+</body>
+</html>
+/* MOBILE OVERLAY */
+.ops-sidebar-overlay{position:fixed;inset:0;background:rgba(14,13,11,0.7);z-index:99;display:none;backdrop-filter:blur(2px);}
+.ops-sidebar-overlay.open{display:block;}
+
+/* MAIN */
+.ops-main{margin-left:220px;min-height:100vh;flex:1;min-width:0;}
+.ops-topbar{background:#141210;border-bottom:1px solid rgba(242,239,233,0.06);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.ops-topbar-left{display:flex;align-items:center;gap:16px;}
+.ops-topbar-title{font-size:9px;font-weight:400;letter-spacing:0.55em;color:rgba(242,239,233,0.4);}
+.ops-topbar-right{display:flex;align-items:center;gap:20px;}
+.ops-topbar-time{font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.25);}
+.ops-topbar-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px rgba(74,222,128,0.5);}
+.ops-menu-toggle{display:none;background:none;border:none;cursor:pointer;padding:4px;flex-direction:column;gap:4px;}
+.ops-menu-toggle span{display:block;width:18px;height:1.5px;background:rgba(242,239,233,0.6);transition:all .3s;}
+.ops-content{padding:40px 48px;}
+
+/* PANELS */
+.ops-panel{display:none;}
+.ops-panel.active{display:block;}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:2px;}
+.stats-grid-2{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:48px;}
+.stat-card{background:#141210;padding:28px 32px;}
+.stat-card-label{font-size:7px;font-weight:400;letter-spacing:0.55em;color:rgba(242,239,233,0.3);display:block;margin-bottom:16px;}
+.stat-card-value{font-family:'Times New Roman',Times,serif;font-size:clamp(28px,3vw,42px);font-weight:300;color:#f2efe9;line-height:1;margin-bottom:8px;}
+.stat-card-sub{font-size:7px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.25);}
+.stat-card-sub span{color:#4ade80;}
+.stat-card.urgent .stat-card-value{color:#ff9080;}
+
+/* SECTION HEADERS */
+.ops-section-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px;}
+.ops-section-title{font-family:'Times New Roman',Times,serif;font-size:clamp(22px,2.5vw,32px);font-weight:300;letter-spacing:0.03em;color:#f2efe9;}
+.ops-section-title em{font-style:italic;color:rgba(242,239,233,0.4);}
+.ops-section-eyebrow{font-size:7px;font-weight:400;letter-spacing:0.55em;color:rgba(242,239,233,0.3);display:block;margin-bottom:8px;}
+
+/* TABLES */
+.ops-table-wrap{background:#141210;overflow:hidden;}
+.ops-table{width:100%;border-collapse:collapse;}
+.ops-table th{font-size:6.5px;font-weight:500;letter-spacing:0.55em;color:rgba(242,239,233,0.25);padding:16px 20px;text-align:left;border-bottom:1px solid rgba(242,239,233,0.06);}
+.ops-table td{font-size:11px;font-weight:300;letter-spacing:0.05em;color:rgba(242,239,233,0.7);padding:18px 20px;border-bottom:1px solid rgba(242,239,233,0.04);vertical-align:middle;}
+.ops-table tr:last-child td{border-bottom:none;}
+.ops-table tr{transition:background .15s;cursor:pointer;}
+.ops-table tr:hover td{background:rgba(242,239,233,0.02);}
+.ops-table-empty{padding:48px;text-align:center;color:rgba(242,239,233,0.2);font-size:9px;letter-spacing:0.3em;}
+
+/* STATUS PILLS */
+.status-pill{display:inline-block;font-size:6.5px;font-weight:500;letter-spacing:0.4em;padding:4px 10px;border-radius:0;}
+.status-pending{background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);}
+.status-confirmed{background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.2);}
+.status-shipped{background:rgba(167,139,250,0.12);color:#a78bfa;border:1px solid rgba(167,139,250,0.2);}
+.status-delivered{background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.2);}
+.status-cancelled{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.2);}
+.status-active{background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.2);}
+.status-unactivated{background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);}
+.status-inactive{background:rgba(242,239,233,0.06);color:rgba(242,239,233,0.3);border:1px solid rgba(242,239,233,0.1);}
+.status-expired{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.2);}
+
+/* VARIANT TAGS */
+.variant-tag{display:inline-block;font-size:6.5px;font-weight:500;letter-spacing:0.4em;padding:3px 8px;border:1px solid rgba(242,239,233,0.12);color:rgba(242,239,233,0.5);}
+
+/* BUTTONS */
+.ops-btn{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:400;letter-spacing:0.45em;padding:12px 24px;border:none;cursor:pointer;transition:all .2s;}
+.ops-btn-primary{background:#f2efe9;color:#141210;}
+.ops-btn-primary:hover{background:#fff;}
+.ops-btn-ghost{background:none;color:rgba(242,239,233,0.5);border:1px solid rgba(242,239,233,0.15);}
+.ops-btn-ghost:hover{border-color:rgba(242,239,233,0.4);color:#f2efe9;}
+.ops-btn-danger{background:none;color:#f87171;border:1px solid rgba(248,113,113,0.2);}
+.ops-btn-danger:hover{background:rgba(248,113,113,0.08);}
+.ops-btn-sm{padding:8px 16px;font-size:7px;}
+.ops-btn-confirm{background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.25);}
+.ops-btn-confirm:hover{background:rgba(74,222,128,0.25);}
+.ops-btn-ship{background:rgba(167,139,250,0.15);color:#a78bfa;border:1px solid rgba(167,139,250,0.25);}
+.ops-btn-ship:hover{background:rgba(167,139,250,0.25);}
+
+/* ORDER DETAIL MODAL */
+.ops-modal-backdrop{position:fixed;inset:0;background:rgba(14,13,11,0.85);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.ops-modal-backdrop.open{display:flex;}
+.ops-modal{background:#141210;width:100%;max-width:760px;max-height:90vh;overflow-y:auto;border:1px solid rgba(242,239,233,0.08);}
+.ops-modal-header{padding:32px 40px;border-bottom:1px solid rgba(242,239,233,0.06);display:flex;justify-content:space-between;align-items:flex-start;}
+.ops-modal-title{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;color:#f2efe9;}
+.ops-modal-title em{font-style:italic;color:rgba(242,239,233,0.4);}
+.ops-modal-close{background:none;border:none;color:rgba(242,239,233,0.3);cursor:pointer;font-size:20px;transition:color .2s;padding:0;}
+.ops-modal-close:hover{color:#f2efe9;}
+.ops-modal-body{padding:40px;}
+.ops-modal-section{margin-bottom:32px;}
+.ops-modal-section-label{font-size:6.5px;font-weight:500;letter-spacing:0.6em;color:rgba(242,239,233,0.25);display:block;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(242,239,233,0.05);}
+.ops-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.ops-detail-item{}
+.ops-detail-item-label{font-size:6.5px;font-weight:400;letter-spacing:0.45em;color:rgba(242,239,233,0.25);display:block;margin-bottom:6px;}
+.ops-detail-item-value{font-size:13px;font-weight:300;color:rgba(242,239,233,0.8);letter-spacing:0.03em;}
+.ops-modal-actions{display:flex;gap:12px;flex-wrap:wrap;padding:24px 40px;border-top:1px solid rgba(242,239,233,0.06);}
+
+/* TRACKING INPUT */
+.ops-input-group{display:flex;gap:0;}
+.ops-input{background:#0e0d0b;border:1px solid rgba(242,239,233,0.1);padding:12px 16px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;color:#f2efe9;outline:none;width:100%;transition:border-color .2s;letter-spacing:0.03em;}
+.ops-input:focus{border-color:rgba(242,239,233,0.3);}
+.ops-input::placeholder{color:rgba(242,239,233,0.2);}
+.ops-select{background:#0e0d0b;border:1px solid rgba(242,239,233,0.1);padding:12px 16px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;color:#f2efe9;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;}
+
+/* CODE GENERATOR */
+.code-gen-box{background:#141210;padding:40px;margin-bottom:2px;}
+.code-gen-form{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:32px;}
+.code-gen-field{display:flex;flex-direction:column;gap:8px;}
+.code-gen-label{font-size:6.5px;font-weight:400;letter-spacing:0.5em;color:rgba(242,239,233,0.3);}
+.code-preview-list{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;max-height:320px;overflow-y:auto;}
+.code-preview-item{background:#0e0d0b;padding:14px 16px;font-size:11px;font-weight:400;letter-spacing:0.08em;color:rgba(242,239,233,0.6);display:flex;align-items:center;justify-content:space-between;}
+.code-preview-item .variant-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.dot-black{background:#1a1814;}
+.dot-navy{background:#1e3a5f;}
+.dot-silver{background:#9ca3af;}
+
+/* COUNTRY CHART */
+.country-list{display:flex;flex-direction:column;gap:2px;}
+.country-row{display:flex;align-items:center;gap:16px;padding:14px 20px;background:#141210;}
+.country-name{font-size:10px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.6);width:140px;flex-shrink:0;}
+.country-bar-wrap{flex:1;height:3px;background:rgba(242,239,233,0.06);}
+.country-bar{height:100%;background:rgba(242,239,233,0.25);transition:width .8s ease;}
+.country-count{font-size:9px;font-weight:400;letter-spacing:0.2em;color:rgba(242,239,233,0.35);width:40px;text-align:right;flex-shrink:0;}
+
+/* ASSIGN CODE SELECT */
+.code-assign-wrap{display:flex;gap:12px;align-items:center;padding:16px 20px;background:#0e0d0b;border:1px solid rgba(242,239,233,0.08);}
+.code-assign-label{font-size:7px;letter-spacing:0.4em;color:rgba(242,239,233,0.3);flex-shrink:0;}
+
+/* LOADING */
+.ops-loading{display:flex;align-items:center;justify-content:center;padding:80px;color:rgba(242,239,233,0.2);font-size:8px;letter-spacing:0.4em;}
+
+/* TOAST */
+.ops-toast{position:fixed;bottom:32px;right:32px;background:#141210;border:1px solid rgba(242,239,233,0.1);padding:16px 24px;font-size:9px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.7);z-index:999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;}
+.ops-toast.show{opacity:1;transform:translateY(0);}
+.ops-toast.success{border-color:rgba(74,222,128,0.3);color:#4ade80;}
+.ops-toast.error{border-color:rgba(248,113,113,0.3);color:#f87171;}
+
+/* DIVIDER */
+.ops-divider{height:1px;background:rgba(242,239,233,0.05);margin:40px 0;}
+
+/* WARRANTY TABLE */
+.warranty-meta{font-size:9px;font-weight:300;letter-spacing:0.1em;color:rgba(242,239,233,0.4);}
+
+@media(max-width:1024px){
+  .ops-sidebar{transform:translateX(-100%);}
+  .ops-sidebar.open{transform:translateX(0);}
+  .ops-main{margin-left:0;}
+  .ops-menu-toggle{display:flex;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .stats-grid-2{grid-template-columns:repeat(2,1fr);}
+  .code-preview-list{grid-template-columns:repeat(2,1fr);}
+  .ops-content{padding:24px;}
+  .ops-detail-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .stats-grid-2{grid-template-columns:1fr 1fr;}
+  .ops-modal-body{padding:24px;}
+  .ops-modal-header{padding:24px;}
+  .ops-modal-actions{padding:16px 24px;flex-direction:column;}
+  .ops-topbar{padding:0 16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="ops-shell">
+
+  <!-- SIDEBAR -->
+  <aside class="ops-sidebar" id="ops-sidebar">
+    <div class="ops-sidebar-logo">
+      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/>
+      <span class="ops-sidebar-label">OPERATIONS PANEL</span>
+    </div>
+    <nav class="ops-nav">
+      <a class="ops-nav-item active" data-panel="dashboard" onclick="showPanel('dashboard')" href="#">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        DASHBOARD
+      </a>
+      <a class="ops-nav-item" data-panel="orders" onclick="showPanel('orders')" href="#" id="nav-orders">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        ORDERS
+        <span class="ops-nav-badge urgent" id="pending-badge" style="display:none;">0</span>
+      </a>
+      <a class="ops-nav-item" data-panel="codes" onclick="showPanel('codes')" href="#">
+        <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        CODES
+      </a>
+      <a class="ops-nav-item" data-panel="warranties" onclick="showPanel('warranties')" href="#">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        WARRANTIES
+      </a>
+      <a class="ops-nav-item" data-panel="customers" onclick="showPanel('customers')" href="#">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        CUSTOMERS
+      </a>
+    </nav>
+    <div class="ops-sidebar-footer">
+      <a href="/index.html" class="ops-back-site">← BACK TO SITE</a>
+      <button class="ops-signout" onclick="signOut()">SIGN OUT</button>
+    </div>
+  </aside>
+
+  <!-- MOBILE OVERLAY -->
+  <div class="ops-sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- MAIN -->
+  <main class="ops-main">
+    <div class="ops-topbar">
+      <div class="ops-topbar-left">
+        <button class="ops-menu-toggle" id="menuToggle" onclick="toggleSidebar()" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+        <span class="ops-topbar-title" id="topbar-title">DASHBOARD</span>
+      </div>
+      <div class="ops-topbar-right">
+        <span class="ops-topbar-time" id="topbar-time"></span>
+        <div class="ops-topbar-dot"></div>
+      </div>
+    </div>
+
+    <div class="ops-content">
+
+      <!-- DASHBOARD PANEL -->
+      <div class="ops-panel active" id="panel-dashboard">
+        <div class="ops-section-header" style="margin-bottom:32px;">
+          <div>
+            <span class="ops-section-eyebrow">OVERVIEW</span>
+            <h1 class="ops-section-title">Operations <em>Centre.</em></h1>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-card-label">TOTAL ORDERS</span>
+            <div class="stat-card-value" id="stat-total-orders">—</div>
+            <span class="stat-card-sub"><span id="stat-today-orders">—</span> TODAY</span>
+          </div>
+          <div class="stat-card urgent" id="stat-pending-card">
+            <span class="stat-card-label">PENDING ORDERS</span>
+            <div class="stat-card-value" id="stat-pending">—</div>
+            <span class="stat-card-sub">NEEDS ATTENTION</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-label">TOTAL REVENUE</span>
+            <div class="stat-card-value" id="stat-revenue">—</div>
+            <span class="stat-card-sub"><span id="stat-today-revenue">—</span> TODAY</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-label">TOTAL CUSTOMERS</span>
+            <div class="stat-card-value" id="stat-customers">—</div>
+            <span class="stat-card-sub">REGISTERED ACCOUNTS</span>
+          </div>
+        </div>
+        <div class="stats-grid-2">
+          <div class="stat-card">
+            <span class="stat-card-label">ACTIVE WARRANTIES</span>
+            <div class="stat-card-value" id="stat-warranties">—</div>
+            <span class="stat-card-sub">REGISTERED WATCHES</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-label">AVAILABLE CODES</span>
+            <div class="stat-card-value" id="stat-codes">—</div>
+            <span class="stat-card-sub">UNASSIGNED IN STOCK</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-card-label">UNACTIVATED CODES</span>
+            <div class="stat-card-value" id="stat-unactivated">—</div>
+            <span class="stat-card-sub">AWAITING REGISTRATION</span>
+          </div>
+        </div>
+
+        <!-- COUNTRY BREAKDOWN -->
+        <div class="ops-section-header">
+          <div>
+            <span class="ops-section-eyebrow">GEOGRAPHY</span>
+            <h2 class="ops-section-title">Orders by <em>Country.</em></h2>
+          </div>
+        </div>
+        <div class="country-list" id="country-list">
+          <div class="ops-loading">LOADING DATA...</div>
+        </div>
+
+        <div class="ops-divider"></div>
+
+        <!-- RECENT ORDERS -->
+        <div class="ops-section-header">
+          <div>
+            <span class="ops-section-eyebrow">RECENT</span>
+            <h2 class="ops-section-title">Latest <em>Orders.</em></h2>
+          </div>
+          <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="showPanel('orders')">VIEW ALL</button>
+        </div>
+        <div class="ops-table-wrap">
+          <table class="ops-table">
+            <thead>
+              <tr>
+                <th>ORDER</th>
+                <th>CUSTOMER</th>
+                <th>VARIANT</th>
+                <th>TOTAL</th>
+                <th>STATUS</th>
+                <th>DATE</th>
+              </tr>
+            </thead>
+            <tbody id="recent-orders-body">
+              <tr><td colspan="6" class="ops-table-empty">LOADING...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ORDERS PANEL -->
+      <div class="ops-panel" id="panel-orders">
+        <div class="ops-section-header" style="margin-bottom:32px;">
+          <div>
+            <span class="ops-section-eyebrow">MANAGEMENT</span>
+            <h1 class="ops-section-title">All <em>Orders.</em></h1>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <select class="ops-select ops-btn-sm" id="order-filter" onchange="filterOrders()">
+              <option value="all">ALL STATUS</option>
+              <option value="pending">PENDING</option>
+              <option value="confirmed">CONFIRMED</option>
+              <option value="shipped">SHIPPED</option>
+              <option value="delivered">DELIVERED</option>
+            </select>
+          </div>
+        </div>
+        <div class="ops-table-wrap">
+          <table class="ops-table">
+            <thead>
+              <tr>
+                <th>ORDER</th>
+                <th>CUSTOMER</th>
+                <th>EMAIL</th>
+                <th>VARIANT</th>
+                <th>TOTAL</th>
+                <th>STATUS</th>
+                <th>DATE</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="orders-body">
+              <tr><td colspan="8" class="ops-table-empty">LOADING...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CODES PANEL -->
+      <div class="ops-panel" id="panel-codes">
+        <div class="ops-section-header" style="margin-bottom:32px;">
+          <div>
+            <span class="ops-section-eyebrow">ACTIVATION CODES</span>
+            <h1 class="ops-section-title">Code <em>Generator.</em></h1>
+          </div>
+        </div>
+
+        <div class="code-gen-box">
+          <div class="code-gen-form">
+            <div class="code-gen-field">
+              <span class="code-gen-label">VARIANT</span>
+              <select class="ops-input ops-select" id="gen-variant" style="width:160px;">
+                <option value="black">ROMA BLACK</option>
+                <option value="navy">ROMA NAVY</option>
+                <option value="silver">ROMA SILVER</option>
+              </select>
+            </div>
+            <div class="code-gen-field">
+              <span class="code-gen-label">QUANTITY</span>
+              <input class="ops-input" type="number" id="gen-qty" value="10" min="1" max="200" style="width:120px;">
+            </div>
+            <button class="ops-btn ops-btn-primary" onclick="generateCodes()">GENERATE CODES</button>
+          </div>
+          <div id="generated-codes-preview" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+              <span style="font-size:7px;letter-spacing:0.5em;color:rgba(242,239,233,0.3);" id="gen-preview-label">GENERATED CODES</span>
+              <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="printCodes()">PRINT LIST</button>
+            </div>
+            <div class="code-preview-list" id="codes-preview-list"></div>
+          </div>
+        </div>
+
+        <div class="ops-section-header" style="margin-top:40px;">
+          <div>
+            <span class="ops-section-eyebrow">INVENTORY</span>
+            <h2 class="ops-section-title">All <em>Codes.</em></h2>
+          </div>
+          <select class="ops-select ops-btn-sm" id="code-filter" onchange="filterCodes()">
+            <option value="all">ALL STATUS</option>
+            <option value="inactive">AVAILABLE</option>
+            <option value="unactivated">ASSIGNED</option>
+            <option value="active">ACTIVE</option>
+            <option value="expired">EXPIRED</option>
+          </select>
+        </div>
+        <div class="ops-table-wrap">
+          <table class="ops-table">
+            <thead>
+              <tr>
+                <th>CODE</th>
+                <th>VARIANT</th>
+                <th>STATUS</th>
+                <th>ORDER</th>
+                <th>GENERATED</th>
+                <th>ACTIVATED</th>
+              </tr>
+            </thead>
+            <tbody id="codes-body">
+              <tr><td colspan="6" class="ops-table-empty">LOADING...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- WARRANTIES PANEL -->
+      <div class="ops-panel" id="panel-warranties">
+        <div class="ops-section-header" style="margin-bottom:32px;">
+          <div>
+            <span class="ops-section-eyebrow">REGISTRATIONS</span>
+            <h1 class="ops-section-title">Warranty <em>Records.</em></h1>
+          </div>
+        </div>
+        <div class="ops-table-wrap">
+          <table class="ops-table">
+            <thead>
+              <tr>
+                <th>CUSTOMER</th>
+                <th>WATCH</th>
+                <th>SERIAL</th>
+                <th>REGISTERED</th>
+                <th>WARRANTY END</th>
+                <th>STATUS</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="warranties-body">
+              <tr><td colspan="7" class="ops-table-empty">LOADING...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CUSTOMERS PANEL -->
+      <div class="ops-panel" id="panel-customers">
+        <div class="ops-section-header" style="margin-bottom:32px;">
+          <div>
+            <span class="ops-section-eyebrow">ACCOUNTS</span>
+            <h1 class="ops-section-title">All <em>Customers.</em></h1>
+          </div>
+        </div>
+        <div class="ops-table-wrap">
+          <table class="ops-table">
+            <thead>
+              <tr>
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>ORDERS</th>
+                <th>REGISTERED</th>
+                <th>LOCATION</th>
+              </tr>
+            </thead>
+            <tbody id="customers-body">
+              <tr><td colspan="5" class="ops-table-empty">LOADING...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="ops-modal-backdrop" id="orderModal">
+  <div class="ops-modal">
+    <div class="ops-modal-header">
+      <div>
+        <span style="font-size:7px;letter-spacing:0.5em;color:rgba(242,239,233,0.3);display:block;margin-bottom:8px;">ORDER DETAIL</span>
+        <h2 class="ops-modal-title" id="modal-order-num">Order <em>#—</em></h2>
+      </div>
+      <button class="ops-modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="ops-modal-body">
+      <div class="ops-modal-section">
+        <span class="ops-modal-section-label">CUSTOMER DETAILS</span>
+        <div class="ops-detail-grid">
+          <div class="ops-detail-item"><span class="ops-detail-item-label">NAME</span><span class="ops-detail-item-value" id="modal-customer-name">—</span></div>
+          <div class="ops-detail-item"><span class="ops-detail-item-label">EMAIL</span><span class="ops-detail-item-value" id="modal-customer-email">—</span></div>
+        </div>
+      </div>
+      <div class="ops-modal-section">
+        <span class="ops-modal-section-label">SHIPPING ADDRESS</span>
+        <div class="ops-detail-grid">
+          <div class="ops-detail-item"><span class="ops-detail-item-label">ADDRESS</span><span class="ops-detail-item-value" id="modal-addr-line">—</span></div>
+          <div class="ops-detail-item"><span class="ops-detail-item-label">CITY</span><span class="ops-detail-item-value" id="modal-addr-city">—</span></div>
+          <div class="ops-detail-item"><span class="ops-detail-item-label">PROVINCE / STATE</span><span class="ops-detail-item-value" id="modal-addr-province">—</span></div>
+          <div class="ops-detail-item"><span class="ops-detail-item-label">COUNTRY</span><span class="ops-detail-item-value" id="modal-addr-country">—</span></div>
+          <div class="ops-detail-item"><span class="ops-detail-item-label">POSTAL CODE</span><span class="ops-detail-item-value" id="modal-addr-postal">—</span></div>
+        </div>
+      </div>
+      <div class="ops-modal-section">
+        <span class="ops-modal-section-label">ORDER ITEMS</span>
+        <div id="modal-items"></div>
+      </div>
+      <div class="ops-modal-section">
+        <span class="ops-modal-section-label">ORDER INFO</span>
+        <div class="ops-detail-grid">
+          <div class="ops-detail-item"><span class="ops-detail-item-label">ORDER TOTAL</span><span class="ops-detail-item-value" id="modal-total">—</span></div>
+          <div class="ops-detail-item"><span class="ops-detail-item-label">PAYMENT STATUS</span><span class="ops-detail-item-value" id="modal-payment">—</span></div>
+          <div class="ops-detail-item"><span class="ops-detail-item-label">ORDER STATUS</span><span class="ops-detail-item-value" id="modal-status">—</span></div>
+          <div class="ops-detail-item"><span class="ops-detail-item-label">ORDER DATE</span><span class="ops-detail-item-value" id="modal-date">—</span></div>
+          <div class="ops-detail-item"><span class="ops-detail-item-label">NOTES</span><span class="ops-detail-item-value" id="modal-notes">—</span></div>
+        </div>
+      </div>
+      <!-- ASSIGN CODE -->
+      <div class="ops-modal-section" id="modal-code-section" style="display:none;">
         <span class="ops-modal-section-label">ASSIGN ACTIVATION CODE</span>
         <div class="code-assign-wrap">
           <span class="code-assign-label">SELECT CODE</span>
