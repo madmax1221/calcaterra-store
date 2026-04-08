@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="CAL·OPS"/>
+<meta name="theme-color" content="#141210"/>
+<link rel="manifest" href="/manifest.json"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' fill='%23f2efe9'/><text x='90' y='125' font-size='90' text-anchor='middle' fill='%231a1814'>✦</text></svg>"/>
 <title>CAL·OPS — Calcaterra Operations</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -181,8 +188,15 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
 /* DIVIDER */
 .ops-divider{height:1px;background:rgba(242,239,233,0.05);margin:40px 0;}
 
-/* WARRANTY TABLE */
-.warranty-meta{font-size:9px;font-weight:300;letter-spacing:0.1em;color:rgba(242,239,233,0.4);}
+/* PWA INSTALL BANNER */
+.pwa-banner{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#141210;border:1px solid rgba(242,239,233,0.12);padding:16px 24px;display:flex;align-items:center;gap:16px;z-index:1000;min-width:300px;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.pwa-banner-text{font-size:9px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.7);flex:1;}
+.pwa-banner-btn{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:400;letter-spacing:0.4em;padding:10px 20px;background:#f2efe9;color:#141210;border:none;cursor:pointer;}
+.pwa-banner-close{background:none;border:none;color:rgba(242,239,233,0.3);cursor:pointer;font-size:16px;padding:0;line-height:1;}
+/* NOTIFICATION PERMISSION */
+.notif-prompt{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.notif-prompt-text{font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.6);}
+.notif-prompt button{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:400;letter-spacing:0.4em;padding:8px 16px;background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.25);cursor:pointer;}
 
 @media(max-width:1024px){
   .ops-sidebar{transform:translateX(-100%);}
@@ -271,6 +285,13 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
             <span class="ops-section-eyebrow">OVERVIEW</span>
             <h1 class="ops-section-title">Operations <em>Centre.</em></h1>
           </div>
+        </div>
+
+        <!-- NOTIFICATION PERMISSION PROMPT -->
+        <div class="notif-prompt" id="notif-prompt" style="display:none;">
+          <span class="notif-prompt-text">⚡ ENABLE PUSH NOTIFICATIONS TO GET ALERTED ON NEW ORDERS</span>
+          <button onclick="requestNotificationPermission()">ENABLE NOTIFICATIONS</button>
+          <button onclick="document.getElementById('notif-prompt').style.display='none'" style="background:none;border:none;color:rgba(242,239,233,0.3);cursor:pointer;font-size:14px;">×</button>
         </div>
 
         <div class="stats-grid">
@@ -598,6 +619,13 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
   </div>
 </div>
 
+<!-- PWA INSTALL BANNER -->
+<div class="pwa-banner" id="pwa-install-banner" style="display:none;">
+  <span class="pwa-banner-text">INSTALL CAL·OPS ON YOUR HOME SCREEN</span>
+  <button class="pwa-banner-btn" onclick="installPWA()">INSTALL</button>
+  <button class="pwa-banner-close" onclick="dismissInstallBanner()">×</button>
+</div>
+
 <!-- TOAST -->
 <div class="ops-toast" id="toast"></div>
 
@@ -641,6 +669,8 @@ async function initAdmin() {
   loadCodes()
   loadWarranties()
   loadCustomers()
+  startReminderChecks()
+  startRealtimeOrders()
 }
 
 function toggleSidebar() {
@@ -857,6 +887,37 @@ async function sendReminderEmail(warrantyId, email, name, code, variant, expires
     btn.disabled = false
     toast('Failed to send email', 'error')
   }
+}
+
+// ── REAL-TIME ORDER LISTENER ──
+let orderChannel = null
+function startRealtimeOrders() {
+  if (orderChannel) return
+  orderChannel = _supabase
+    .channel('new-orders')
+    .on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'orders'
+    }, payload => {
+      playCashRegister()
+      sendLocalNotification(
+        '💰 New Order!',
+        `Order CAL-${payload.new.id.slice(0,8).toUpperCase()} just came in — €${parseFloat(payload.new.total).toFixed(0)}`,
+        'new-order'
+      )
+      toast('NEW ORDER — CAL-' + payload.new.id.slice(0,8).toUpperCase())
+      loadDashboard()
+      loadOrders()
+      // update pending badge
+      const badge = document.getElementById('pending-badge')
+      if (badge) {
+        const current = parseInt(badge.textContent) || 0
+        badge.textContent = current + 1
+        badge.style.display = 'inline-block'
+      }
+    })
+    .subscribe()
 }
 
 // ── ORDERS ──
@@ -1334,8 +1395,216 @@ async function signOut() {
   window.location.href = '/index.html'
 }
 
+// ── VAPID PUBLIC KEY ──
+const VAPID_PUBLIC_KEY = 'BCBYVcM2EW1wY5nIhvrAVxcbNZZOhhLrt3dI6-CkMDmajZY6GkU3WhRHOejB5_-SSWi_zImbtlJODFZczcziMhs'
+
+// ── CASH REGISTER SOUND ──
+function playCashRegister() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    const play = (freq, start, duration, type = 'sine', vol = 0.3) => {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.type = type
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + start)
+      gain.gain.setValueAtTime(vol, ctx.currentTime + start)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + duration)
+      osc.start(ctx.currentTime + start)
+      osc.stop(ctx.currentTime + start + duration)
+    }
+    // cash register cha-ching: mechanical click + bell + register ring
+    play(800, 0, 0.05, 'square', 0.2)
+    play(1200, 0.05, 0.08, 'square', 0.15)
+    play(2500, 0.08, 0.12, 'sine', 0.25)
+    play(3200, 0.1, 0.15, 'sine', 0.2)
+    play(2800, 0.15, 0.2, 'sine', 0.15)
+    play(1800, 0.2, 0.3, 'sine', 0.1)
+    // satisfying ring tail
+    play(4000, 0.12, 0.4, 'sine', 0.12)
+    play(3600, 0.18, 0.5, 'sine', 0.08)
+  } catch(e) { console.log('Audio not supported') }
+}
+
+// ── SERVICE WORKER + PUSH ──
+let swRegistration = null
+
+async function initPWA() {
+  if (!('serviceWorker' in navigator)) return
+  try {
+    swRegistration = await navigator.serviceWorker.register('/sw.js')
+    console.log('SW registered')
+    // check notification permission
+    if (Notification.permission === 'default') {
+      document.getElementById('notif-prompt').style.display = 'flex'
+    } else if (Notification.permission === 'granted') {
+      await subscribeToPush()
+    }
+    // listen for messages from SW
+    navigator.serviceWorker.addEventListener('message', event => {
+      if (event.data?.type === 'NEW_ORDER') {
+        playCashRegister()
+        toast('NEW ORDER RECEIVED!', 'success')
+        loadDashboard()
+        loadOrders()
+      }
+    })
+  } catch(e) { console.error('SW error:', e) }
+}
+
+async function requestNotificationPermission() {
+  const permission = await Notification.requestPermission()
+  document.getElementById('notif-prompt').style.display = 'none'
+  if (permission === 'granted') {
+    await subscribeToPush()
+    toast('Notifications enabled!')
+    // send a test notification
+    setTimeout(() => {
+      sendLocalNotification('CAL·OPS Ready', 'You will now receive order alerts and reminders.', 'general')
+    }, 1000)
+  } else {
+    toast('Notifications blocked — check browser settings', 'error')
+  }
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const rawData = window.atob(base64)
+  return new Uint8Array([...rawData].map(char => char.charCodeAt(0)))
+}
+
+async function subscribeToPush() {
+  if (!swRegistration) return
+  try {
+    const existing = await swRegistration.pushManager.getSubscription()
+    if (existing) { savePushSubscription(existing); return }
+    const subscription = await swRegistration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    })
+    savePushSubscription(subscription)
+  } catch(e) { console.error('Push subscription error:', e) }
+}
+
+async function savePushSubscription(subscription) {
+  // save to Supabase so server can push to this device
+  const { data: { session } } = await _supabase.auth.getSession()
+  if (!session) return
+  const subJson = subscription.toJSON()
+  await _supabase.from('customers').update({
+    push_subscription: JSON.stringify(subJson)
+  }).eq('auth_user_id', session.user.id)
+}
+
+// ── LOCAL NOTIFICATION (in-app) ──
+function sendLocalNotification(title, body, type = 'general') {
+  if (Notification.permission === 'granted') {
+    const n = new Notification(title, {
+      body,
+      icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23f2efe9'/><text x='32' y='46' font-size='32' text-anchor='middle' fill='%231a1814'>✦</text></svg>",
+      badge: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23f2efe9'/><text x='32' y='46' font-size='32' text-anchor='middle' fill='%231a1814'>✦</text></svg>",
+      tag: type,
+      renotify: true
+    })
+    n.onclick = () => { window.focus(); n.close() }
+  }
+}
+
+// ── REMINDER NOTIFICATIONS ──
+let reminderCheckInterval = null
+
+function startReminderChecks() {
+  // check immediately then every 30 minutes
+  checkReminders()
+  reminderCheckInterval = setInterval(checkReminders, 30 * 60 * 1000)
+}
+
+async function checkReminders() {
+  const { data: { session } } = await _supabase.auth.getSession()
+  if (!session) return
+
+  const now = new Date()
+  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()
+  const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString()
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString()
+
+  // check pending orders older than 24hrs
+  const { data: pendingOld } = await _supabase.from('orders')
+    .select('id, created_at')
+    .eq('status', 'pending')
+    .lte('created_at', yesterday)
+  if (pendingOld && pendingOld.length > 0) {
+    sendLocalNotification(
+      `⚠ ${pendingOld.length} Order${pendingOld.length > 1 ? 's' : ''} Need Attention`,
+      `You have ${pendingOld.length} pending order${pendingOld.length > 1 ? 's' : ''} waiting to be confirmed.`,
+      'pending-reminder'
+    )
+  }
+
+  // check confirmed but unshipped orders older than 3 days
+  const { data: unshipped } = await _supabase.from('orders')
+    .select('id, created_at')
+    .eq('status', 'confirmed')
+    .lte('created_at', threeDaysAgo)
+  if (unshipped && unshipped.length > 0) {
+    sendLocalNotification(
+      `📦 ${unshipped.length} Order${unshipped.length > 1 ? 's' : ''} Ready to Ship`,
+      `${unshipped.length} confirmed order${unshipped.length > 1 ? 's' : ''} ${unshipped.length > 1 ? 'have' : 'has'} been waiting over 3 days.`,
+      'ship-reminder'
+    )
+  }
+
+  // check codes expiring within 24hrs
+  const { data: expiring } = await _supabase.from('warranties')
+    .select('id, activation_code')
+    .eq('status', 'unactivated')
+    .lte('expires_at', tomorrow)
+    .gte('expires_at', now.toISOString())
+  if (expiring && expiring.length > 0) {
+    sendLocalNotification(
+      `⏰ ${expiring.length} Activation Code${expiring.length > 1 ? 's' : ''} Expiring Tomorrow`,
+      `Send reminder emails to customers before their warranty windows close.`,
+      'expiry-reminder'
+    )
+  }
+}
+
+// ── PWA INSTALL PROMPT ──
+let deferredInstallPrompt = null
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault()
+  deferredInstallPrompt = e
+  // show install banner after 3 seconds
+  setTimeout(() => {
+    const banner = document.getElementById('pwa-install-banner')
+    if (banner && !localStorage.getItem('pwa-dismissed')) {
+      banner.style.display = 'flex'
+    }
+  }, 3000)
+})
+
+function installPWA() {
+  if (!deferredInstallPrompt) return
+  deferredInstallPrompt.prompt()
+  deferredInstallPrompt.userChoice.then(result => {
+    if (result.outcome === 'accepted') toast('CAL·OPS installed!')
+    deferredInstallPrompt = null
+    document.getElementById('pwa-install-banner').style.display = 'none'
+  })
+}
+
+function dismissInstallBanner() {
+  localStorage.setItem('pwa-dismissed', '1')
+  document.getElementById('pwa-install-banner').style.display = 'none'
+}
+
 // ── INIT ──
-window.addEventListener('DOMContentLoaded', initAdmin)
+window.addEventListener('DOMContentLoaded', () => {
+  initAdmin()
+  initPWA()
+})
 </script>
 </body>
 </html>
