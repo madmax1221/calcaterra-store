@@ -1,0 +1,32 @@
+{
+  "name": "CAL·OPS — Calcaterra",
+  "short_name": "CAL·OPS",
+  "description": "Calcaterra Operations Panel",
+  "start_url": "/cal-ops.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0e0d0b",
+  "theme_color": "#141210",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23f2efe9'/><text x='96' y='130' font-size='100' text-anchor='middle' fill='%231a1814'>✦</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23f2efe9'/><text x='256' y='340' font-size='260' text-anchor='middle' fill='%231a1814'>✦</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Orders",
+      "url": "/cal-ops.html#orders",
+      "description": "View pending orders"
+    }
+  ]
+}
