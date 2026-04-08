@@ -600,13 +600,31 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
       }).select().single()
       if (error) throw error
       orderId = order.id
-      await _supabase.from('order_items').insert(cartItems.map(item => ({
-        order_id: orderId,
-        product_id: null,
-        variant_id: item.variantId || null,
-        quantity: item.quantity,
-        unit_price: item.price
-      })))
+      const variantKeys = [...new Set(cartItems.map(i => i.variantKey).filter(Boolean))]
+const { data: variantData } = await _supabase
+  .from('product_variants')
+  .select('id, name')
+  .in('name', variantKeys.map(k => `Roma ${k.charAt(0).toUpperCase() + k.slice(1)}`))
+
+const variantMap = {}
+;(variantData || []).forEach(v => {
+  const key = v.name.toLowerCase().replace('roma ', '')
+  variantMap[key] = v.id
+})
+
+const { data: productData } = await _supabase
+  .from('products')
+  .select('id')
+  .eq('slug', 'roma')
+  .single()
+
+await _supabase.from('order_items').insert(cartItems.map(item => ({
+  order_id: orderId,
+  product_id: productData?.id || null,
+  variant_id: variantMap[item.variantKey] || null,
+  quantity: item.quantity,
+  unit_price: item.price
+})))
     } catch(err) { console.error('Order error:', err) }
 
     const orderNum = orderId ? 'CAL-' + orderId.slice(0,8).toUpperCase() : 'CAL-2026-' + Math.floor(1000 + Math.random() * 9000)
