@@ -350,7 +350,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
       </div>
       <!-- END PAYFAST ZONE ════════════════════════════════════════ -->
 
-      <button class="checkout-continue" onclick="placeOrder()">PLACE ORDER</button>
+      <button class="checkout-continue" id="place-order-btn" onclick="placeOrder()">PLACE ORDER</button>
       <button class="checkout-back" onclick="goToStep('shipping')">← BACK TO SHIPPING</button>
     </div>
 
@@ -578,6 +578,10 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
   function selectShipping(el) { document.querySelectorAll('.shipping-option').forEach(o => o.classList.remove('selected')); el.classList.add('selected') }
 
   async function placeOrder() {
+     const btn = document.getElementById('place-order-btn')
+if (btn.disabled) return
+btn.disabled = true
+btn.textContent = 'PROCESSING...'
     let shippingAddress = {}
     if (currentCustomer && selectedAddressId) {
       const addr = savedAddresses.find(a => a.id === selectedAddressId)
