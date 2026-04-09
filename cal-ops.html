@@ -1427,6 +1427,19 @@ function playCashRegister() {
   } catch(e) { console.log('Audio not supported') }
 }
 
+
+  // unlock audio on first interaction
+let audioUnlocked = false
+document.addEventListener('touchstart', () => {
+  if (audioUnlocked) return
+  const ctx = new (window.AudioContext || window.webkitAudioContext)()
+  const buf = ctx.createBuffer(1, 1, 22050)
+  const src = ctx.createBufferSource()
+  src.buffer = buf
+  src.connect(ctx.destination)
+  src.start(0)
+  audioUnlocked = true
+}, { once: true })
 // ── SERVICE WORKER + PUSH ──
 let swRegistration = null
 
