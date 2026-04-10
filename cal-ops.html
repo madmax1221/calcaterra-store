@@ -673,7 +673,7 @@ async function initAdmin() {
   loadCustomers()
   startReminderChecks()
   startRealtimeOrders()
-  document.addEventListener('visibilitychange', () => {
+ document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
       orderChannel = null
       startRealtimeOrders()
@@ -681,10 +681,9 @@ async function initAdmin() {
       loadOrders()
     }
   })
-// Capacitor native app state listener
-if (window.Capacitor) {
-  import('@capacitor/app').then(({ App }) => {
-    App.addListener('appStateChange', ({ isActive }) => {
+  // Capacitor native app state listener
+  if (window.Capacitor) {
+    window.Capacitor.Plugins.App?.addListener('appStateChange', ({ isActive }) => {
       if (isActive) {
         orderChannel = null
         startRealtimeOrders()
@@ -692,9 +691,8 @@ if (window.Capacitor) {
         loadOrders()
       }
     })
-  })
+  }
 }
-
 function toggleSidebar() {
   document.getElementById('ops-sidebar').classList.toggle('open')
   document.getElementById('sidebarOverlay').classList.toggle('open')
