@@ -681,6 +681,18 @@ async function initAdmin() {
       loadOrders()
     }
   })
+// Capacitor native app state listener
+if (window.Capacitor) {
+  import('@capacitor/app').then(({ App }) => {
+    App.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) {
+        orderChannel = null
+        startRealtimeOrders()
+        loadDashboard()
+        loadOrders()
+      }
+    })
+  })
 }
 
 function toggleSidebar() {
