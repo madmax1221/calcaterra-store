@@ -1,7 +1,5 @@
 {
-  "cleanUrls": true,
   "rewrites": [
-    { "source": "/", "destination": "/index.html" },
     { "source": "/contact", "destination": "/contact.html" },
     { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/returns", "destination": "/returns.html" },
@@ -21,5 +19,23 @@
     { "source": "/register", "destination": "/register.html" },
     { "source": "/forgot-password", "destination": "/forgot-password.html" },
     { "source": "/ops", "destination": "/ops.html" }
+  ],
+  "redirects": [
+    { "source": "/contact.html", "destination": "/contact", "permanent": true },
+    { "source": "/privacy.html", "destination": "/privacy", "permanent": true },
+    { "source": "/returns.html", "destination": "/returns", "permanent": true },
+    { "source": "/shipping.html", "destination": "/shipping", "permanent": true },
+    { "source": "/terms.html", "destination": "/terms", "permanent": true },
+    { "source": "/warranty.html", "destination": "/warranty", "permanent": true },
+    { "source": "/cart.html", "destination": "/cart", "permanent": true },
+    { "source": "/checkout.html", "destination": "/checkout", "permanent": true },
+    { "source": "/collections.html", "destination": "/collections", "permanent": true },
+    { "source": "/roma.html", "destination": "/collections/roma", "permanent": true },
+    { "source": "/roma-product.html", "destination": "/collections/roma", "permanent": true },
+    { "source": "/dashboard.html", "destination": "/dashboard", "permanent": true },
+    { "source": "/about.html", "destination": "/about", "permanent": true },
+    { "source": "/signin.html", "destination": "/signin", "permanent": true },
+    { "source": "/register.html", "destination": "/register", "permanent": true },
+    { "source": "/forgot-password.html", "destination": "/forgot-password", "permanent": true }
   ]
 }
