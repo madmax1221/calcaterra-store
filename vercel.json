@@ -21,6 +21,7 @@
     { "source": "/cal-ops", "destination": "/cal-ops.html" }
   ],
   "redirects": [
+    { "source": "/index.html", "destination": "/", "permanent": true },
     { "source": "/contact.html", "destination": "/contact", "permanent": true },
     { "source": "/privacy.html", "destination": "/privacy", "permanent": true },
     { "source": "/returns.html", "destination": "/returns", "permanent": true },
