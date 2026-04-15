@@ -1,0 +1,22 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/calcaterra-contact.html" },
+    { "source": "/privacy", "destination": "/calcaterra-privacy.html" },
+    { "source": "/returns", "destination": "/calcaterra-returns.html" },
+    { "source": "/shipping", "destination": "/calcaterra-shipping.html" },
+    { "source": "/terms", "destination": "/calcaterra-terms.html" },
+    { "source": "/warranty", "destination": "/calcaterra-warranty.html" },
+    { "source": "/cart", "destination": "/calcaterra-cart.html" },
+    { "source": "/checkout", "destination": "/calcaterra-checkout.html" },
+    { "source": "/collections", "destination": "/calcaterra-collections-2-2.html" },
+    { "source": "/dashboard", "destination": "/calcaterra-dashboard-21.html" },
+    { "source": "/about", "destination": "/calcaterra-our-story.html" },
+    { "source": "/signin", "destination": "/calcaterra-signin.html" },
+    { "source": "/register", "destination": "/calcaterra-register-4.html" },
+    { "source": "/roma", "destination": "/calcaterra-roma-collection-page.html" },
+    { "source": "/product", "destination": "/calcaterra-product-black-2.html" },
+    { "source": "/forgot-password", "destination": "/calcaterra-forgot-password.html" }
+  ]
+}
