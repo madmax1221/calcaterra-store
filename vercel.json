@@ -18,7 +18,7 @@
     { "source": "/signin", "destination": "/signin.html" },
     { "source": "/register", "destination": "/register.html" },
     { "source": "/forgot-password", "destination": "/forgot-password.html" },
-    { "source": "/ops", "destination": "/ops.html" }
+    { "source": "/cal-ops", "destination": "/cal-ops.html" }
   ],
   "redirects": [
     { "source": "/contact.html", "destination": "/contact", "permanent": true },
