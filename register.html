@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sign In — Calcaterra</title>
+<title>Create Account — Calcaterra</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -21,7 +21,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
 .nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
 .nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
-.nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;position:relative;}
+.nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;}
 .nav-icon-btn:hover{opacity:1;}
 .nav-icon-btn svg{width:18px;height:18px;stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .cart-wrap{position:relative;}
@@ -54,7 +54,6 @@ footer{background:#141210;padding:80px 52px 48px;}
 .register-image img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.75) saturate(0.8);}
 .register-image-overlay{position:absolute;inset:0;background:linear-gradient(to right, rgba(26,24,20,0.3), transparent);}
 .register-image-text{position:absolute;bottom:64px;left:52px;right:52px;}
-.register-image-eyebrow{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.6em;color:rgba(242,239,233,0.5);display:block;margin-bottom:16px;}
 .register-image-heading{font-size:clamp(28px,3vw,42px);font-weight:300;line-height:1.15;letter-spacing:0.03em;color:rgba(242,239,233,0.5);}
 .register-image-heading em{font-style:italic;color:#f2efe9;}
 .register-form-side{display:flex;flex-direction:column;justify-content:center;padding:140px 80px 80px;}
@@ -63,19 +62,29 @@ footer{background:#141210;padding:80px 52px 48px;}
 .register-title em{font-style:italic;color:rgba(26,24,20,0.4);}
 .register-subtitle{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;line-height:1.9;color:rgba(26,24,20,0.7);margin-bottom:52px;}
 .register-form{display:flex;flex-direction:column;gap:24px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
 .form-group{display:flex;flex-direction:column;gap:10px;}
 .form-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.5);}
 .form-input{width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;transition:border-color .25s;border-radius:0;-webkit-appearance:none;}
 .form-input:focus{border-bottom-color:rgba(26,24,20,0.6);}
 .form-input::placeholder{color:rgba(26,24,20,0.18);font-size:15px;}
+.form-toggles{display:flex;flex-direction:column;gap:18px;padding:8px 0;}
+.toggle-item{display:flex;align-items:flex-start;gap:16px;}
+.toggle-switch{position:relative;width:36px;height:20px;flex-shrink:0;margin-top:2px;}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute;}
+.toggle-slider{position:absolute;inset:0;background:rgba(26,24,20,0.1);border-radius:20px;cursor:pointer;transition:background .3s;}
+.toggle-slider::before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#f2efe9;border-radius:50%;transition:transform .3s;box-shadow:0 1px 3px rgba(26,24,20,0.2);}
+.toggle-switch input:checked + .toggle-slider{background:#1a1814;}
+.toggle-switch input:checked + .toggle-slider::before{transform:translateX(16px);}
+.toggle-text{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.55);line-height:1.9;}
+.toggle-text a{color:#1a1814;text-decoration:underline;text-underline-offset:2px;}
+.toggle-required{color:rgba(26,24,20,0.3);margin-left:2px;}
 .register-submit{display:block;width:100%;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.6em;color:#f2efe9;background:#1a1814;border:none;cursor:pointer;padding:22px;text-align:center;transition:background .3s;margin-top:8px;}
 .register-submit:hover{background:#2a2620;}
 .register-submit:disabled{opacity:0.5;cursor:not-allowed;}
-.form-forgot{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.4);text-decoration:none;text-align:right;display:block;align-self:flex-end;margin-top:4px;transition:color .2s;}
-.form-forgot:hover{color:#1a1814;}
 .register-discretion{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.5);text-align:center;margin-top:8px;}
 .register-signin{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.4);text-align:center;margin-top:4px;}
-.register-signin a{color:#1a1814;text-decoration:none;border-bottom:1px solid rgba(26,24,20,0.2);padding-bottom:1px;transition:border-color .2s;}
+.register-signin a{color:#1a1814;text-decoration:none;border-bottom:1px solid rgba(26,24,20,0.2);padding-bottom:1px;}
 .register-signin a:hover{border-color:#1a1814;}
 .error-msg{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:#c0392b;text-align:center;display:none;margin-top:4px;}
 .error-msg.show{display:block;}
@@ -86,6 +95,7 @@ footer{background:#141210;padding:80px 52px 48px;}
   .register-page{grid-template-columns:1fr;}
   .register-image{display:none;}
   .register-form-side{padding:140px 32px 80px;}
+  .form-row{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -99,9 +109,7 @@ footer{background:#141210;padding:80px 52px 48px;}
   </div>
   <div class="nav-center">
     <a href="/index.html">
-      <img class="nav-logo-img"
-        src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117"
-        alt="Calcaterra"/>
+      <img class="nav-logo-img" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/>
     </a>
   </div>
   <div class="nav-r">
@@ -123,8 +131,8 @@ footer{background:#141210;padding:80px 52px 48px;}
 <div id="menu-overlay" onclick="toggleMenu()"></div>
 <div id="menu-drawer">
   <nav class="drawer-nav">
-    <a href="/calcaterra-collections-2-2.html">Collection</a>
-    <a href="/calcaterra-our-story.html">About</a>
+    <a href="/collections.html">Collection</a>
+    <a href="/about.html">About</a>
     <a href="#">Contact</a>
     <a href="#">Notify Me</a>
     <a href="#">Stockists</a>
@@ -134,33 +142,60 @@ footer{background:#141210;padding:80px 52px 48px;}
 
 <div class="register-page">
   <div class="register-image">
-    <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_sfx3xvsfx3xvsfx3.png?v=1773595865" alt="Calcaterra Roma">
+    <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_bv2rodbv2rodbv2r.png?v=1773599485" alt="Calcaterra Roma">
     <div class="register-image-overlay"></div>
     <div class="register-image-text">
-      <h2 class="register-image-heading">Already <em>decided.</em></h2>
+      <h2 class="register-image-heading">Make the <em>decision.</em></h2>
     </div>
   </div>
-
   <div class="register-form-side">
-    <span class="register-eyebrow">SIGN IN</span>
-    <h1 class="register-title">Welcome <em>back.</em></h1>
-    <p class="register-subtitle">Sign in to access your orders, warranty, and watch registration.</p>
-
-    <form class="register-form" onsubmit="handleSignIn(event)">
+    <span class="register-eyebrow">CREATE ACCOUNT</span>
+    <h1 class="register-title">Join <em>Calcaterra.</em></h1>
+    <p class="register-subtitle">Create your account to track orders, register your watch, and access your warranty.</p>
+    <form class="register-form" onsubmit="handleRegister(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">FIRST NAME</label>
+          <input type="text" id="firstName" class="form-input" placeholder="First name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">LAST NAME</label>
+          <input type="text" id="lastName" class="form-input" placeholder="Last name" required>
+        </div>
+      </div>
       <div class="form-group">
         <label class="form-label">EMAIL ADDRESS</label>
         <input type="email" id="email" class="form-input" placeholder="your@email.com" required>
       </div>
       <div class="form-group">
         <label class="form-label">PASSWORD</label>
-        <input type="password" id="password" class="form-input" placeholder="••••••••" required>
-        <a href="/calcaterra-forgot-password.html" class="form-forgot">FORGOT PASSWORD</a>
+        <input type="password" id="password" class="form-input" placeholder="••••••••" required minlength="8">
+      </div>
+      <div class="form-toggles">
+        <div class="toggle-item">
+          <label class="toggle-switch">
+            <input type="checkbox" id="termsToggle" required>
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-text">
+            I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a><span class="toggle-required">*</span>
+          </span>
+        </div>
+        <div class="toggle-item">
+          <label class="toggle-switch">
+            <input type="checkbox" id="newsletterToggle">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-text">
+            Subscribe to new references, limited editions, and archive access. No noise.
+          </span>
+        </div>
       </div>
       <div class="error-msg" id="errorMsg"></div>
       <div class="success-msg" id="successMsg"></div>
-      <button type="submit" class="register-submit" id="submitBtn">SIGN IN</button>
+      <button type="submit" class="register-submit" id="submitBtn">CREATE ACCOUNT</button>
       <p class="register-discretion">Your details are handled with discretion.</p>
-      <p class="register-signin">New to Calcaterra? <a href="/calcaterra-register-4.html">CREATE AN ACCOUNT</a></p>
+      <p class="register-signin">Already have an account? <a href="/signin.html">SIGN IN</a></p>
     </form>
   </div>
 </div>
@@ -168,22 +203,20 @@ footer{background:#141210;padding:80px 52px 48px;}
 <footer>
   <div class="foot-grid">
     <div>
-      <img class="foot-logo" style="filter:invert(1) brightness(0.6);"
-        src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117"
-        alt="Calcaterra"/>
+      <img class="foot-logo" style="filter:invert(1) brightness(0.6);" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117" alt="Calcaterra"/>
       <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
       <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
     </div>
     <div class="foot-col">
       <h5>THE HOUSE</h5>
-      <a href="/calcaterra-our-story.html">Our Story</a>
+      <a href="/about.html">Our Story</a>
       <a href="#">Philosophy</a>
       <a href="#">Terms of Service</a>
       <a href="#">Privacy Policy</a>
     </div>
     <div class="foot-col">
       <h5>COLLECTIONS</h5>
-      <a href="/calcaterra-roma-collection-page.html">Roma</a>
+      <a href="/roma.html">Roma</a>
     </div>
     <div class="foot-col">
       <h5>SUPPORT</h5>
@@ -199,23 +232,24 @@ footer{background:#141210;padding:80px 52px 48px;}
 </footer>
 
 <script>
-  // Init Supabase
   const { createClient } = supabase
   const _supabase = createClient(
     'https://tnjuxcdcwcxoipbsowih.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
   )
 
-  // Check if already signed in — redirect to dashboard
   window.addEventListener('DOMContentLoaded', async () => {
     const { data: { session } } = await _supabase.auth.getSession()
-    if (session) window.location.href = '/calcaterra-dashboard-21.html'
+    if (session) window.location.href = '/dashboard.html'
   })
 
-  async function handleSignIn(e) {
+  async function handleRegister(e) {
     e.preventDefault()
-    const email = document.getElementById('email').value
+    const firstName = document.getElementById('firstName').value.trim()
+    const lastName = document.getElementById('lastName').value.trim()
+    const email = document.getElementById('email').value.trim()
     const password = document.getElementById('password').value
+    const newsletter = document.getElementById('newsletterToggle').checked
     const btn = document.getElementById('submitBtn')
     const errorMsg = document.getElementById('errorMsg')
     const successMsg = document.getElementById('successMsg')
@@ -223,23 +257,46 @@ footer{background:#141210;padding:80px 52px 48px;}
     errorMsg.classList.remove('show')
     successMsg.classList.remove('show')
     btn.disabled = true
-    btn.textContent = 'SIGNING IN...'
+    btn.textContent = 'CREATING ACCOUNT...'
 
-    const { data, error } = await _supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await _supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { first_name: firstName, last_name: lastName }
+      }
+    })
 
     if (error) {
       errorMsg.textContent = error.message.toUpperCase()
       errorMsg.classList.add('show')
       btn.disabled = false
-      btn.textContent = 'SIGN IN'
+      btn.textContent = 'CREATE ACCOUNT'
       return
     }
 
-    successMsg.textContent = 'WELCOME BACK.'
+    if (data.user) {
+      const { error: insertError } = await _supabase.from('customers').insert({
+        auth_user_id: data.user.id,
+        email,
+        first_name: firstName,
+        last_name: lastName
+      })
+      if (insertError) console.error('Customer insert error:', insertError)
+
+      if (newsletter) {
+        await _supabase.from('newsletter_subscribers').upsert(
+          { email, first_name: firstName },
+          { onConflict: 'email' }
+        )
+      }
+    }
+
+    successMsg.textContent = 'ACCOUNT CREATED. WELCOME TO CALCATERRA.'
     successMsg.classList.add('show')
     setTimeout(() => {
-      window.location.href = '/calcaterra-dashboard-21.html'
-    }, 800)
+      window.location.href = '/dashboard.html'
+    }, 1200)
   }
 
   function toggleMenu() {

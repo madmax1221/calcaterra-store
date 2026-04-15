@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Your Cart — Calcaterra</title>
+<title>Returns — Calcaterra</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -25,6 +25,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;position:relative;}
 .nav-icon-btn:hover{opacity:1;}
 .nav-icon-btn svg{width:18px;height:18px;stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.cart-wrap{position:relative;}
 #menu-overlay{position:fixed;inset:0;z-index:480;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
 #menu-drawer{position:fixed;top:0;left:0;bottom:0;width:300px;background:#f2efe9;z-index:490;transform:translateX(-100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;padding:120px 48px 60px;}
@@ -39,6 +40,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 #menu-drawer.open .drawer-nav a:nth-child(4){transition-delay:.25s;}
 #menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
 .drawer-footer{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.28);}
+.cart-badge{position:absolute;top:-5px;right:-6px;width:14px;height:14px;border-radius:50%;background:#1a1814;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;color:#f2efe9;display:none;align-items:center;justify-content:center;}
 #account-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:498;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
 #account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f2efe9;z-index:499;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.07);}
@@ -89,73 +91,58 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .cal-search-no-results{padding:64px 0;text-align:center;}
 .cal-search-no-results p{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;color:rgba(26,24,20,0.35);}
 .cal-search-hint{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.25);text-align:center;margin-top:48px;}
-.cart-page{min-height:100vh;padding:160px 52px 120px;max-width:1100px;margin:0 auto;}
-.cart-header{margin-bottom:64px;padding-bottom:40px;border-bottom:1px solid rgba(26,24,20,0.07);}
-.cart-eyebrow{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.5);display:block;margin-bottom:16px;}
-.cart-title{font-size:clamp(36px,4.5vw,64px);font-weight:300;line-height:1.08;letter-spacing:0.04em;color:#1a1814;}
-.cart-title em{font-style:italic;color:rgba(26,24,20,0.4);}
-.cart-count{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.45);margin-top:12px;display:block;}
-.cart-body{display:grid;grid-template-columns:1fr 380px;gap:80px;align-items:start;}
-.cart-item{display:grid;grid-template-columns:120px 1fr auto;gap:32px;padding:40px 0;border-bottom:1px solid rgba(26,24,20,0.06);align-items:start;}
-.cart-item:first-child{border-top:1px solid rgba(26,24,20,0.06);}
-.cart-item-img{aspect-ratio:1/1;background:#f2efe9;overflow:hidden;}
-.cart-item-img img{width:100%;height:100%;object-fit:contain;}
-.cart-item-brand{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.5);display:block;margin-bottom:10px;}
-.cart-item-name{font-size:clamp(20px,2vw,28px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:8px;}
-.cart-item-name em{font-style:italic;color:rgba(26,24,20,0.4);}
-.cart-item-variant{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.5);display:block;margin-bottom:28px;}
-.cart-item-qty{display:flex;align-items:center;gap:16px;}
-.qty-btn{width:28px;height:28px;background:none;border:1px solid rgba(26,24,20,0.15);cursor:pointer;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:300;color:rgba(26,24,20,0.6);display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s;}
-.qty-btn:hover{border-color:rgba(26,24,20,0.5);color:#1a1814;}
-.qty-num{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.2em;color:#1a1814;min-width:20px;text-align:center;}
-.cart-item-remove{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.4);background:none;border:none;cursor:pointer;margin-top:16px;display:block;transition:color .2s;text-align:left;padding:0;}
-.cart-item-remove:hover{color:rgba(26,24,20,0.7);}
-.cart-item-price{font-size:clamp(18px,1.8vw,24px);font-weight:300;letter-spacing:0.03em;color:#1a1814;text-align:right;padding-top:4px;white-space:nowrap;}
-.cart-empty{padding:120px 0;text-align:center;border-top:1px solid rgba(26,24,20,0.06);border-bottom:1px solid rgba(26,24,20,0.06);}
-.cart-empty-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.45);display:block;margin-bottom:28px;}
-.cart-empty-text{font-size:clamp(28px,3vw,44px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:12px;}
-.cart-empty-text em{font-style:italic;color:rgba(26,24,20,0.35);}
-.cart-empty-sub{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.45);margin-bottom:52px;}
-.cart-empty-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:#1a1814;border:1px solid rgba(26,24,20,0.25);padding:16px 40px;text-decoration:none;transition:background .25s,color .25s;}
-.cart-empty-cta:hover{background:#1a1814;color:#f2efe9;}
-.cart-summary{position:sticky;top:120px;border-top:1px solid rgba(26,24,20,0.07);padding-top:32px;}
-.cart-summary-header{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.5);display:block;margin-bottom:32px;}
-.summary-row{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-bottom:1px solid rgba(26,24,20,0.05);}
-.summary-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.55);}
-.summary-value{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.1em;color:#1a1814;}
-.summary-total{display:flex;justify-content:space-between;align-items:baseline;padding:28px 0;border-bottom:1px solid rgba(26,24,20,0.1);margin-bottom:8px;}
-.summary-total-label{font-size:clamp(22px,2vw,30px);font-weight:300;letter-spacing:0.03em;color:#1a1814;}
-.summary-total-label em{font-style:italic;color:rgba(26,24,20,0.4);}
-.summary-total-value{font-size:clamp(22px,2vw,30px);font-weight:300;letter-spacing:0.03em;color:#1a1814;}
-.summary-note{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.4);display:block;text-align:center;margin-bottom:24px;}
-.checkout-btn{display:block;width:100%;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:400;letter-spacing:0.35em;color:#f2efe9;background:#1a1814;border:none;cursor:pointer;padding:24px;text-align:center;text-decoration:none;transition:background .3s,letter-spacing .3s;margin-bottom:32px;}
-.checkout-btn:hover{background:#0e0d0b;letter-spacing:0.45em;}
-.cart-assurances{display:flex;flex-direction:column;gap:16px;}
-.assurance-item{display:flex;align-items:center;gap:14px;}
-.assurance-item svg{width:14px;height:14px;stroke:rgba(26,24,20,0.5);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
-.assurance-text{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.6);}
+@media(max-width:860px){#account-drawer{width:100%;top:96px;}}
+.page-hero{padding:180px 52px 80px;max-width:900px;margin:0 auto;text-align:center;}
+.page-eyebrow{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.72em;color:rgba(26,24,20,0.35);display:block;margin-bottom:32px;}
+.page-title{font-size:clamp(42px,6vw,86px);font-weight:300;line-height:1.08;letter-spacing:0.04em;color:#1a1814;margin-bottom:48px;}
+.page-title em{font-style:italic;}
+.page-intro{font-size:clamp(15px,1.8vw,19px);font-weight:300;line-height:1.9;letter-spacing:0.02em;color:rgba(26,24,20,0.6);max-width:580px;margin:0 auto;font-family:'Montserrat',sans-serif;}
+.hairline{width:1px;height:100px;background:rgba(26,24,20,0.09);margin:0 auto;}
+.hairline-h{width:80px;height:1px;background:rgba(26,24,20,0.09);margin:0 auto;}
+.content-section{padding:80px 52px;max-width:780px;margin:0 auto;}
+.section-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.3);display:block;margin-bottom:28px;}
+.section-heading{font-size:clamp(24px,3vw,40px);font-weight:300;line-height:1.25;letter-spacing:0.03em;color:#1a1814;margin-bottom:28px;}
+.section-heading em{font-style:italic;color:rgba(26,24,20,0.4);}
+.section-body{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.06em;line-height:2.1;color:rgba(26,24,20,0.6);}
+.steps-list{margin-top:40px;display:flex;flex-direction:column;gap:2px;}
+.step-item{display:flex;gap:32px;align-items:flex-start;background:#f2efe9;border:1px solid rgba(26,24,20,0.07);padding:32px;}
+.step-number{font-family:'Times New Roman',Times,serif;font-size:clamp(36px,4vw,56px);font-weight:300;color:rgba(26,24,20,0.1);line-height:1;flex-shrink:0;width:64px;}
+.step-content{}
+.step-title{font-size:clamp(16px,1.8vw,22px);font-weight:300;color:#1a1814;margin-bottom:8px;letter-spacing:0.02em;}
+.step-desc{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.06em;line-height:1.9;color:rgba(26,24,20,0.55);}
+.info-row{display:flex;justify-content:space-between;align-items:baseline;padding:20px 0;border-bottom:1px solid rgba(26,24,20,0.07);}
+.info-row:last-child{border-bottom:none;}
+.info-row-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:400;letter-spacing:0.45em;color:rgba(26,24,20,0.35);}
+.info-row-value{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.06em;color:rgba(26,24,20,0.7);text-align:right;max-width:60%;}
+.dark-interlude{background:#141210;padding:100px 52px;text-align:center;}
+.dark-quote{font-size:clamp(26px,3.8vw,52px);font-weight:300;line-height:1.25;letter-spacing:0.03em;color:#f2efe9;max-width:680px;margin:0 auto 16px;}
+.dark-quote em{font-style:italic;color:rgba(242,239,233,0.35);}
+.dark-sub{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.3);}
 footer{background:#141210;padding:80px 52px 48px;}
 .foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
 .foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
-.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;letter-spacing:0.04em;color:rgba(242,239,233,0.25);line-height:1.9;max-width:250px;}
-.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.6);margin-bottom:20px;}
-.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.4);text-decoration:none;margin-bottom:12px;transition:color .25s;}
-.foot-col a:hover{color:rgba(242,239,233,0.8);}
+.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;font-weight:400;letter-spacing:0.04em;color:rgba(242,239,233,0.2);line-height:1.9;max-width:250px;}
+.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;}
+.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.3);text-decoration:none;margin-bottom:12px;transition:color .25s;}
+.foot-col a:hover{color:rgba(242,239,233,0.72);}
 .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;}
-.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.2);}
-.fade{opacity:0;transform:translateY(24px);transition:opacity .95s ease,transform .95s ease;}
+.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.14);}
+.fade{opacity:0;transform:translateY(28px);transition:opacity 1s ease,transform 1s ease;}
 .fade.in{opacity:1;transform:translateY(0);}
-.fade-d1{transition-delay:.12s;}
-.fade-d2{transition-delay:.24s;}
+.fade-d1{transition-delay:.1s;}
+.fade-d2{transition-delay:.2s;}
+.fade-d3{transition-delay:.3s;}
+.conditions-list{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.06em;line-height:2.1;color:rgba(26,24,20,0.6);margin-top:20px;padding-left:20px;display:flex;flex-direction:column;gap:4px;}
+.conditions-list li{padding:4px 0;}
 @media(max-width:860px){
   #nav{padding:0 24px;}
-  .cart-page{padding:140px 24px 80px;}
-  .cart-body{grid-template-columns:1fr;gap:48px;}
-  .cart-summary{position:static;}
-  .cart-item{grid-template-columns:96px 1fr auto;gap:20px;}
-  #account-drawer{width:100%;top:96px;}
+  .page-hero{padding:140px 24px 60px;}
+  .content-section{padding:60px 24px;}
+  .dark-interlude{padding:80px 24px;}
   footer{padding:48px 24px 36px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+  .step-item{flex-direction:column;gap:12px;}
+  .step-number{width:auto;}
 }
 </style>
 </head>
@@ -179,14 +166,20 @@ footer{background:#141210;padding:80px 52px 48px;}
     <button class="nav-icon-btn" id="accountToggle" aria-label="Account">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
     </button>
+    <div class="cart-wrap">
+      <a href="/cart.html" class="nav-icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </a>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </div>
   </div>
 </nav>
 
 <div id="menu-overlay"></div>
 <div id="menu-drawer">
   <nav class="drawer-nav">
-    <a href="/calcaterra-collections-2-2.html">Collection</a>
-    <a href="/calcaterra-our-story.html">About</a>
+    <a href="/collections.html">Collection</a>
+    <a href="/about.html">About</a>
     <a href="#">Contact</a>
     <a href="#">Notify Me</a>
     <a href="#">Stockists</a>
@@ -201,8 +194,8 @@ footer{background:#141210;padding:80px 52px 48px;}
       <span class="acct-out-eyebrow">Your Collection.</span>
       <h2 class="acct-out-heading">Managed with <em>precision.</em></h2>
       <p class="acct-out-body">Access your registered timepieces and ownership records.</p>
-      <a href="/calcaterra-signin.html" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
-      <a href="/calcaterra-register-4.html" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
+      <a href="/signin.html" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
+      <a href="/register.html" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
     </div>
   </div>
 </div>
@@ -221,51 +214,96 @@ footer{background:#141210;padding:80px 52px 48px;}
   <p class="cal-search-hint">ESC TO CLOSE</p>
 </div>
 
-<main class="cart-page">
-  <div class="cart-header fade">
-    <span class="cart-eyebrow">YOUR SELECTION</span>
-    <h1 class="cart-title">Your <em>Cart.</em></h1>
-    <span class="cart-count" id="cartCount"></span>
+<section class="page-hero">
+  <span class="page-eyebrow fade">RETURNS & EXCHANGES</span>
+  <h1 class="page-title fade fade-d1">Returns <em>Policy.</em></h1>
+  <p class="page-intro fade fade-d2">We stand behind every timepiece we make. If something isn't right, we will make it right.</p>
+</section>
+
+<div class="hairline"></div>
+
+<section class="content-section">
+  <span class="section-label fade">THE POLICY</span>
+  <h2 class="section-heading fade fade-d1">14 days. <em>Conditions apply.</em></h2>
+  <p class="section-body fade fade-d2">Calcaterra offers a 14-day return window from the date of delivery. Returns are accepted where the following conditions are met:</p>
+
+  <ul class="conditions-list fade fade-d2">
+    <li>The timepiece is unworn and in original condition</li>
+    <li>All original packaging, documentation, and accessories are included</li>
+    <li>A return authorisation has been obtained from our team prior to dispatch</li>
+    <li>The return is initiated within 14 days of the delivery date</li>
+  </ul>
+
+  <div style="margin-top:48px;">
+    <div class="info-row">
+      <span class="info-row-label">RETURN WINDOW</span>
+      <span class="info-row-value">14 days from delivery date</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row-label">CONDITION REQUIRED</span>
+      <span class="info-row-value">Unworn, original packaging, all accessories included</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row-label">REFUND SCOPE</span>
+      <span class="info-row-value">Product price only. Original shipping costs are non-refundable.</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row-label">REFUND METHOD</span>
+      <span class="info-row-value">Original payment method, within 5–10 business days after inspection and approval</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row-label">RETURN SHIPPING</span>
+      <span class="info-row-value">Customer's responsibility unless item is faulty or incorrect</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row-label">EXCHANGES</span>
+      <span class="info-row-value">Available for different variants subject to stock availability</span>
+    </div>
   </div>
-  <div class="cart-body">
-    <div class="cart-items" id="cartItems"></div>
-    <div class="cart-summary fade fade-d1" id="cartSummary">
-      <span class="cart-summary-header">ORDER SUMMARY</span>
-      <div class="summary-row">
-        <span class="summary-label">SUBTOTAL</span>
-        <span class="summary-value" id="summarySubtotal">—</span>
+</section>
+
+<div class="hairline-h"></div>
+
+<section class="content-section">
+  <span class="section-label fade">HOW TO RETURN</span>
+  <h2 class="section-heading fade fade-d1">Three <em>steps.</em></h2>
+  <div class="steps-list fade fade-d1">
+    <div class="step-item">
+      <span class="step-number">01</span>
+      <div class="step-content">
+        <h4 class="step-title">Contact us first</h4>
+        <p class="step-desc">Email <a href="mailto:orders@calcaterra.co" style="color:#1a1814;">orders@calcaterra.co</a> with your order reference and reason for return. We will respond within 24 hours with a return authorisation.</p>
       </div>
-      <div class="summary-row">
-        <span class="summary-label">SHIPPING</span>
-        <span class="summary-value">Complimentary</span>
+    </div>
+    <div class="step-item">
+      <span class="step-number">02</span>
+      <div class="step-content">
+        <h4 class="step-title">Pack it carefully</h4>
+        <p class="step-desc">Repack the watch in its original Calcaterra box with all included accessories and documentation. Use the outer packaging or equivalent protective packaging for transit.</p>
       </div>
-      <div class="summary-row">
-        <span class="summary-label">DUTIES & TAXES</span>
-        <span class="summary-value">Included</span>
-      </div>
-      <div class="summary-total">
-        <span class="summary-total-label">Total <em>Due.</em></span>
-        <span class="summary-total-value" id="summaryTotal">—</span>
-      </div>
-      <span class="summary-note">SECURE CHECKOUT · SSL ENCRYPTED</span>
-      <a href="/calcaterra-checkout.html" class="checkout-btn" id="checkoutBtn">PROCEED TO CHECKOUT</a>
-      <div class="cart-assurances">
-        <div class="assurance-item">
-          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span class="assurance-text">2 YEAR INTERNATIONAL WARRANTY</span>
-        </div>
-        <div class="assurance-item">
-          <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-          <span class="assurance-text">COMPLIMENTARY WORLDWIDE SHIPPING</span>
-        </div>
-        <div class="assurance-item">
-          <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-          <span class="assurance-text">30 DAY RETURNS</span>
-        </div>
+    </div>
+    <div class="step-item">
+      <span class="step-number">03</span>
+      <div class="step-content">
+        <h4 class="step-title">Ship it back</h4>
+        <p class="step-desc">Send the parcel using a tracked and insured shipping service. Calcaterra cannot be held responsible for items lost or damaged in transit. Share the tracking number with us once dispatched.</p>
       </div>
     </div>
   </div>
-</main>
+</section>
+
+<div class="dark-interlude">
+  <span class="section-label" style="color:rgba(242,239,233,0.2);margin-bottom:20px;display:block;">IMPORTANT</span>
+  <blockquote class="dark-quote fade fade-d1">Returns without prior<br><em>authorisation will not be accepted.</em></blockquote>
+  <p class="dark-sub fade fade-d2">Always contact us before dispatching your return. Unauthorised returns may be refused on arrival.</p>
+</div>
+
+<section class="content-section">
+  <span class="section-label fade">EXCEPTIONS</span>
+  <h2 class="section-heading fade fade-d1">What we <em>cannot accept.</em></h2>
+  <p class="section-body fade fade-d2">Returns will not be accepted for items that show signs of wear, have been altered or resized, are missing components, are returned outside the 14-day window, or are dispatched without prior authorisation. Such returns may be refused on arrival and sent back at the customer's cost.</p>
+  <p class="section-body fade fade-d3" style="margin-top:24px;">If you are uncertain whether your return qualifies, contact us at <a href="mailto:orders@calcaterra.co" style="color:#1a1814;">orders@calcaterra.co</a> before dispatching.</p>
+</section>
 
 <footer>
   <div class="foot-grid">
@@ -274,11 +312,27 @@ footer{background:#141210;padding:80px 52px 48px;}
       <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
       <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
     </div>
-    <div class="foot-col"><h5>THE HOUSE</h5><a href="/calcaterra-our-story.html">Our Story</a><a href="#">Philosophy</a><a href="#">Terms of Service</a><a href="#">Privacy Policy</a></div>
-    <div class="foot-col"><h5>COLLECTIONS</h5><a href="/calcaterra-roma-collection-page.html">Roma</a></div>
-    <div class="foot-col"><h5>SUPPORT</h5><a href="#">Contact</a><a href="#">Warranty</a><a href="#">Shipping</a><a href="#">Returns</a></div>
+    <div class="foot-col">
+      <h5>THE HOUSE</h5>
+      <a href="/about.html">Our Story</a>
+      <a href="/terms.html">Terms of Service</a>
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+    <div class="foot-col">
+      <h5>COLLECTIONS</h5>
+      <a href="/roma.html">Roma</a>
+    </div>
+    <div class="foot-col">
+      <h5>SUPPORT</h5>
+      <a href="/contact.html">Contact</a>
+      <a href="/warranty.html">Warranty</a>
+      <a href="/shipping.html">Shipping</a>
+      <a href="/returns.html">Returns</a>
+    </div>
   </div>
-  <div class="foot-bottom"><span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span></div>
+  <div class="foot-bottom">
+    <span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span>
+  </div>
 </footer>
 
 <script>
@@ -287,68 +341,6 @@ footer{background:#141210;padding:80px 52px 48px;}
     'https://tnjuxcdcwcxoipbsowih.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
   )
-
-  function getCart() { return JSON.parse(localStorage.getItem('cal_cart') || '[]') }
-  function saveCart(cart) { localStorage.setItem('cal_cart', JSON.stringify(cart)) }
-
-  function renderCart() {
-    const cart = getCart()
-    const container = document.getElementById('cartItems')
-    const countEl = document.getElementById('cartCount')
-    const subtotalEl = document.getElementById('summarySubtotal')
-    const totalEl = document.getElementById('summaryTotal')
-    const summaryEl = document.getElementById('cartSummary')
-    const totalQty = cart.reduce((sum, i) => sum + i.quantity, 0)
-    const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0)
-    if (countEl) countEl.textContent = totalQty > 0 ? `${totalQty} ITEM${totalQty !== 1 ? 'S' : ''}` : ''
-    if (cart.length === 0) {
-      container.innerHTML = `
-        <div class="cart-empty fade in">
-          <span class="cart-empty-label">YOUR SELECTION</span>
-          <div class="cart-empty-text">Nothing <em>yet.</em></div>
-          <p class="cart-empty-sub">YOUR CART IS EMPTY</p>
-          <a href="/calcaterra-product-black-2.html" class="cart-empty-cta">DISCOVER THE ROMA</a>
-        </div>`
-      if (summaryEl) summaryEl.style.display = 'none'
-      return
-    }
-    if (summaryEl) summaryEl.style.display = ''
-    subtotalEl.textContent = `€${totalPrice}`
-    totalEl.textContent = `€${totalPrice}`
-    container.innerHTML = cart.map((item, idx) => `
-      <div class="cart-item fade in">
-        <div class="cart-item-img">
-          <img src="${item.image}" alt="${item.name}" loading="lazy">
-        </div>
-        <div class="cart-item-details">
-          <span class="cart-item-brand">CALCATERRA</span>
-          <div class="cart-item-name">Roma <em>${item.variantKey.charAt(0).toUpperCase() + item.variantKey.slice(1)}.</em></div>
-          <span class="cart-item-variant">QUARTZ &nbsp;&middot;&nbsp; 40MM &nbsp;&middot;&nbsp; STAINLESS STEEL</span>
-          <div class="cart-item-qty">
-            <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
-            <span class="qty-num">${item.quantity}</span>
-            <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
-          </div>
-          <button class="cart-item-remove" onclick="removeItem(${idx})">REMOVE</button>
-        </div>
-        <div class="cart-item-price">€${item.price * item.quantity}</div>
-      </div>`).join('')
-  }
-
-  function changeQty(idx, delta) {
-    const cart = getCart()
-    cart[idx].quantity += delta
-    if (cart[idx].quantity <= 0) cart.splice(idx, 1)
-    saveCart(cart)
-    renderCart()
-  }
-
-  function removeItem(idx) {
-    const cart = getCart()
-    cart.splice(idx, 1)
-    saveCart(cart)
-    renderCart()
-  }
 
   async function initAuth() {
     const { data: { session } } = await _supabase.auth.getSession()
@@ -365,11 +357,11 @@ footer{background:#141210;padding:80px 52px 48px;}
           <span class="acct-in-sub">Managed with precision.</span>
         </div>
         <nav class="acct-in-nav">
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
         </nav>
         <div class="acct-in-footer">
           <button id="signOutBtn" class="acct-in-signout">SIGN OUT</button>
@@ -379,6 +371,13 @@ footer{background:#141210;padding:80px 52px 48px;}
       const btn = document.getElementById('signOutBtn')
       if (btn) btn.addEventListener('click', async () => { await _supabase.auth.signOut(); window.location.reload() })
     }, 100)
+  }
+
+  function updateCartBadge() {
+    const cart = JSON.parse(localStorage.getItem('cal_cart') || '[]')
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0)
+    const badge = document.getElementById('cartBadge')
+    if (badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none' }
   }
 
   function toggleMenu() {
@@ -416,7 +415,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       const imgs = Array.isArray(v.images) ? v.images : JSON.parse(v.images || '[]')
       const img = imgs[0] || ''
       const slug = v.attributes?.slug || ''
-      const url = slug ? `/calcaterra-product-black-2.html?variant=${slug}` : '#'
+      const url = slug ? `/roma-product.html?variant=${slug}` : '#'
       html += `<a href="${url}" class="cal-search-result"><div class="cal-search-result-img">${img ? `<img src="${img}" alt="${v.name}" loading="lazy">` : ''}</div><div><span class="cal-search-result-ref">CALCATERRA ROMA</span><span class="cal-search-result-title">${v.name}</span><span class="cal-search-result-price">€329</span></div></a>`
     })
     document.getElementById('cal-search-results').innerHTML = html
@@ -429,8 +428,8 @@ footer{background:#141210;padding:80px 52px 48px;}
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    renderCart()
     initAuth()
+    updateCartBadge()
     document.getElementById('menuToggle').addEventListener('click', toggleMenu)
     document.getElementById('menu-overlay').addEventListener('click', toggleMenu)
     document.getElementById('accountToggle').addEventListener('click', e => {

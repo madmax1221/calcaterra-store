@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Returns — Calcaterra</title>
+<title>Contact — Calcaterra</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -25,7 +25,6 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;position:relative;}
 .nav-icon-btn:hover{opacity:1;}
 .nav-icon-btn svg{width:18px;height:18px;stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-.cart-wrap{position:relative;}
 #menu-overlay{position:fixed;inset:0;z-index:480;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
 #menu-drawer{position:fixed;top:0;left:0;bottom:0;width:300px;background:#f2efe9;z-index:490;transform:translateX(-100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;padding:120px 48px 60px;}
@@ -99,25 +98,36 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .page-intro{font-size:clamp(15px,1.8vw,19px);font-weight:300;line-height:1.9;letter-spacing:0.02em;color:rgba(26,24,20,0.6);max-width:580px;margin:0 auto;font-family:'Montserrat',sans-serif;}
 .hairline{width:1px;height:100px;background:rgba(26,24,20,0.09);margin:0 auto;}
 .hairline-h{width:80px;height:1px;background:rgba(26,24,20,0.09);margin:0 auto;}
-.content-section{padding:80px 52px;max-width:780px;margin:0 auto;}
-.section-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.3);display:block;margin-bottom:28px;}
-.section-heading{font-size:clamp(24px,3vw,40px);font-weight:300;line-height:1.25;letter-spacing:0.03em;color:#1a1814;margin-bottom:28px;}
-.section-heading em{font-style:italic;color:rgba(26,24,20,0.4);}
-.section-body{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.06em;line-height:2.1;color:rgba(26,24,20,0.6);}
-.steps-list{margin-top:40px;display:flex;flex-direction:column;gap:2px;}
-.step-item{display:flex;gap:32px;align-items:flex-start;background:#f2efe9;border:1px solid rgba(26,24,20,0.07);padding:32px;}
-.step-number{font-family:'Times New Roman',Times,serif;font-size:clamp(36px,4vw,56px);font-weight:300;color:rgba(26,24,20,0.1);line-height:1;flex-shrink:0;width:64px;}
-.step-content{}
-.step-title{font-size:clamp(16px,1.8vw,22px);font-weight:300;color:#1a1814;margin-bottom:8px;letter-spacing:0.02em;}
-.step-desc{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.06em;line-height:1.9;color:rgba(26,24,20,0.55);}
-.info-row{display:flex;justify-content:space-between;align-items:baseline;padding:20px 0;border-bottom:1px solid rgba(26,24,20,0.07);}
-.info-row:last-child{border-bottom:none;}
-.info-row-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:400;letter-spacing:0.45em;color:rgba(26,24,20,0.35);}
-.info-row-value{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.06em;color:rgba(26,24,20,0.7);text-align:right;max-width:60%;}
-.dark-interlude{background:#141210;padding:100px 52px;text-align:center;}
-.dark-quote{font-size:clamp(26px,3.8vw,52px);font-weight:300;line-height:1.25;letter-spacing:0.03em;color:#f2efe9;max-width:680px;margin:0 auto 16px;}
-.dark-quote em{font-style:italic;color:rgba(242,239,233,0.35);}
-.dark-sub{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.3);}
+.contact-split{display:grid;grid-template-columns:1fr 1fr;min-height:600px;}
+.contact-info{background:#1a1814;padding:80px 64px;display:flex;flex-direction:column;justify-content:space-between;}
+.contact-info-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;color:rgba(242,239,233,0.25);display:block;margin-bottom:32px;}
+.contact-info-heading{font-size:clamp(26px,3vw,42px);font-weight:300;color:#f2efe9;line-height:1.2;margin-bottom:40px;}
+.contact-info-heading em{font-style:italic;color:rgba(242,239,233,0.35);}
+.contact-channel{margin-bottom:32px;}
+.contact-channel-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:400;letter-spacing:0.5em;color:rgba(242,239,233,0.25);display:block;margin-bottom:8px;}
+.contact-channel-value{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:300;letter-spacing:0.04em;color:rgba(242,239,233,0.7);text-decoration:none;}
+a.contact-channel-value:hover{color:#f2efe9;}
+.contact-response{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.2);border-top:1px solid rgba(242,239,233,0.07);padding-top:24px;}
+.contact-form-wrap{background:#f2efe9;padding:80px 64px;}
+.form-eyebrow{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.3);display:block;margin-bottom:32px;}
+.form-title{font-size:clamp(22px,2.5vw,34px);font-weight:300;color:#1a1814;margin-bottom:40px;line-height:1.2;}
+.form-title em{font-style:italic;color:rgba(26,24,20,0.35);}
+.form-group{margin-bottom:24px;}
+.form-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:400;letter-spacing:0.5em;color:rgba(26,24,20,0.4);display:block;margin-bottom:10px;}
+.form-input{width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.15);padding:12px 0;font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:300;color:#1a1814;outline:none;transition:border-color .25s;}
+.form-input:focus{border-color:rgba(26,24,20,0.5);}
+.form-input::placeholder{color:rgba(26,24,20,0.25);font-size:15px;}
+textarea.form-input{resize:none;height:120px;padding-top:8px;}
+.form-select{width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.15);padding:12px 0;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;color:#1a1814;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;transition:border-color .25s;}
+.form-select:focus{border-color:rgba(26,24,20,0.5);}
+.form-submit{background:#1a1814;color:#f2efe9;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;padding:18px 40px;border:none;cursor:pointer;transition:background .25s;margin-top:8px;}
+.form-submit:hover{background:#2d2a25;}
+.form-submit:disabled{opacity:0.5;cursor:not-allowed;}
+.form-success{display:none;text-align:center;padding:40px 0;}
+.form-success-title{font-size:clamp(22px,2.5vw,34px);font-weight:300;color:#1a1814;margin-bottom:12px;}
+.form-success-title em{font-style:italic;color:rgba(26,24,20,0.35);}
+.form-success-sub{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.5);line-height:1.9;}
+.form-error{display:none;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.06em;color:#8b3a3a;padding:12px 0;line-height:1.7;}
 footer{background:#141210;padding:80px 52px 48px;}
 .foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
 .foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
@@ -131,18 +141,13 @@ footer{background:#141210;padding:80px 52px 48px;}
 .fade.in{opacity:1;transform:translateY(0);}
 .fade-d1{transition-delay:.1s;}
 .fade-d2{transition-delay:.2s;}
-.fade-d3{transition-delay:.3s;}
-.conditions-list{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.06em;line-height:2.1;color:rgba(26,24,20,0.6);margin-top:20px;padding-left:20px;display:flex;flex-direction:column;gap:4px;}
-.conditions-list li{padding:4px 0;}
 @media(max-width:860px){
   #nav{padding:0 24px;}
   .page-hero{padding:140px 24px 60px;}
-  .content-section{padding:60px 24px;}
-  .dark-interlude{padding:80px 24px;}
+  .contact-split{grid-template-columns:1fr;}
+  .contact-info,.contact-form-wrap{padding:60px 28px;}
   footer{padding:48px 24px 36px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
-  .step-item{flex-direction:column;gap:12px;}
-  .step-number{width:auto;}
 }
 </style>
 </head>
@@ -167,7 +172,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
     </button>
     <div class="cart-wrap">
-      <a href="/calcaterra-cart.html" class="nav-icon-btn" aria-label="Cart">
+      <a href="/cart.html" class="nav-icon-btn" aria-label="Cart">
         <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
       </a>
       <span class="cart-badge" id="cartBadge">0</span>
@@ -178,8 +183,8 @@ footer{background:#141210;padding:80px 52px 48px;}
 <div id="menu-overlay"></div>
 <div id="menu-drawer">
   <nav class="drawer-nav">
-    <a href="/calcaterra-collections-2-2.html">Collection</a>
-    <a href="/calcaterra-our-story.html">About</a>
+    <a href="/collections.html">Collection</a>
+    <a href="/about.html">About</a>
     <a href="#">Contact</a>
     <a href="#">Notify Me</a>
     <a href="#">Stockists</a>
@@ -194,8 +199,8 @@ footer{background:#141210;padding:80px 52px 48px;}
       <span class="acct-out-eyebrow">Your Collection.</span>
       <h2 class="acct-out-heading">Managed with <em>precision.</em></h2>
       <p class="acct-out-body">Access your registered timepieces and ownership records.</p>
-      <a href="/calcaterra-signin.html" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
-      <a href="/calcaterra-register-4.html" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
+      <a href="/signin.html" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
+      <a href="/register.html" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
     </div>
   </div>
 </div>
@@ -215,95 +220,72 @@ footer{background:#141210;padding:80px 52px 48px;}
 </div>
 
 <section class="page-hero">
-  <span class="page-eyebrow fade">RETURNS & EXCHANGES</span>
-  <h1 class="page-title fade fade-d1">Returns <em>Policy.</em></h1>
-  <p class="page-intro fade fade-d2">We stand behind every timepiece we make. If something isn't right, we will make it right.</p>
+  <span class="page-eyebrow fade">GET IN TOUCH</span>
+  <h1 class="page-title fade fade-d1">Contact <em>us.</em></h1>
+  <p class="page-intro fade fade-d2">All enquiries are handled directly by our team. We do not use automated responses.</p>
 </section>
 
 <div class="hairline"></div>
 
-<section class="content-section">
-  <span class="section-label fade">THE POLICY</span>
-  <h2 class="section-heading fade fade-d1">14 days. <em>Conditions apply.</em></h2>
-  <p class="section-body fade fade-d2">Calcaterra offers a 14-day return window from the date of delivery. Returns are accepted where the following conditions are met:</p>
+<div class="contact-split">
+  <div class="contact-info">
+    <div>
+      <span class="contact-info-label">THE HOUSE OF CALCATERRA</span>
+      <h2 class="contact-info-heading">We are<br><em>listening.</em></h2>
 
-  <ul class="conditions-list fade fade-d2">
-    <li>The timepiece is unworn and in original condition</li>
-    <li>All original packaging, documentation, and accessories are included</li>
-    <li>A return authorisation has been obtained from our team prior to dispatch</li>
-    <li>The return is initiated within 14 days of the delivery date</li>
-  </ul>
+      <div class="contact-channel">
+        <span class="contact-channel-label">SUPPORT</span>
+        <a href="mailto:support@calcaterra.co" class="contact-channel-value">support@calcaterra.co</a>
+      </div>
+      <div class="contact-channel">
+        <span class="contact-channel-label">ORDERS & RETURNS</span>
+        <a href="mailto:orders@calcaterra.co" class="contact-channel-value">orders@calcaterra.co</a>
+      </div>
+      <div class="contact-channel">
+        <span class="contact-channel-label">GENERAL</span>
+        <a href="mailto:info@calcaterra.co" class="contact-channel-value">info@calcaterra.co</a>
+      </div>
+    </div>
+    <p class="contact-response">RESPONSE WITHIN 48 HOURS · MONDAY TO FRIDAY</p>
+  </div>
 
-  <div style="margin-top:48px;">
-    <div class="info-row">
-      <span class="info-row-label">RETURN WINDOW</span>
-      <span class="info-row-value">14 days from delivery date</span>
+  <div class="contact-form-wrap">
+    <span class="form-eyebrow">SEND A MESSAGE</span>
+    <h2 class="form-title">We'll get back<br><em>to you.</em></h2>
+
+    <div id="contact-form">
+      <div class="form-group">
+        <label class="form-label" for="cf-name">YOUR NAME *</label>
+        <input type="text" class="form-input" id="cf-name" placeholder="First and last name" autocomplete="name" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cf-email">EMAIL ADDRESS *</label>
+        <input type="email" class="form-input" id="cf-email" placeholder="your@email.com" autocomplete="email" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cf-subject">SUBJECT</label>
+        <select class="form-select" id="cf-subject">
+          <option value="Order enquiry">Order enquiry</option>
+          <option value="Warranty claim">Warranty claim</option>
+          <option value="Return or exchange">Return or exchange</option>
+          <option value="Product question">Product question</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="cf-message">MESSAGE *</label>
+        <textarea class="form-input" id="cf-message" placeholder="How can we help you?" required></textarea>
+      </div>
+      <p class="form-error" id="cf-error"></p>
+      <button class="form-submit" id="cf-submit" onclick="submitContact()">SEND MESSAGE</button>
     </div>
-    <div class="info-row">
-      <span class="info-row-label">CONDITION REQUIRED</span>
-      <span class="info-row-value">Unworn, original packaging, all accessories included</span>
-    </div>
-    <div class="info-row">
-      <span class="info-row-label">REFUND SCOPE</span>
-      <span class="info-row-value">Product price only. Original shipping costs are non-refundable.</span>
-    </div>
-    <div class="info-row">
-      <span class="info-row-label">REFUND METHOD</span>
-      <span class="info-row-value">Original payment method, within 5–10 business days after inspection and approval</span>
-    </div>
-    <div class="info-row">
-      <span class="info-row-label">RETURN SHIPPING</span>
-      <span class="info-row-value">Customer's responsibility unless item is faulty or incorrect</span>
-    </div>
-    <div class="info-row">
-      <span class="info-row-label">EXCHANGES</span>
-      <span class="info-row-value">Available for different variants subject to stock availability</span>
+
+    <div class="form-success" id="contact-success">
+      <h3 class="form-success-title">Message <em>received.</em></h3>
+      <p class="form-success-sub">Thank you for reaching out. We will respond within 24–48 hours to the email address you provided.</p>
     </div>
   </div>
-</section>
-
-<div class="hairline-h"></div>
-
-<section class="content-section">
-  <span class="section-label fade">HOW TO RETURN</span>
-  <h2 class="section-heading fade fade-d1">Three <em>steps.</em></h2>
-  <div class="steps-list fade fade-d1">
-    <div class="step-item">
-      <span class="step-number">01</span>
-      <div class="step-content">
-        <h4 class="step-title">Contact us first</h4>
-        <p class="step-desc">Email <a href="mailto:orders@calcaterra.co" style="color:#1a1814;">orders@calcaterra.co</a> with your order reference and reason for return. We will respond within 24 hours with a return authorisation.</p>
-      </div>
-    </div>
-    <div class="step-item">
-      <span class="step-number">02</span>
-      <div class="step-content">
-        <h4 class="step-title">Pack it carefully</h4>
-        <p class="step-desc">Repack the watch in its original Calcaterra box with all included accessories and documentation. Use the outer packaging or equivalent protective packaging for transit.</p>
-      </div>
-    </div>
-    <div class="step-item">
-      <span class="step-number">03</span>
-      <div class="step-content">
-        <h4 class="step-title">Ship it back</h4>
-        <p class="step-desc">Send the parcel using a tracked and insured shipping service. Calcaterra cannot be held responsible for items lost or damaged in transit. Share the tracking number with us once dispatched.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="dark-interlude">
-  <span class="section-label" style="color:rgba(242,239,233,0.2);margin-bottom:20px;display:block;">IMPORTANT</span>
-  <blockquote class="dark-quote fade fade-d1">Returns without prior<br><em>authorisation will not be accepted.</em></blockquote>
-  <p class="dark-sub fade fade-d2">Always contact us before dispatching your return. Unauthorised returns may be refused on arrival.</p>
 </div>
-
-<section class="content-section">
-  <span class="section-label fade">EXCEPTIONS</span>
-  <h2 class="section-heading fade fade-d1">What we <em>cannot accept.</em></h2>
-  <p class="section-body fade fade-d2">Returns will not be accepted for items that show signs of wear, have been altered or resized, are missing components, are returned outside the 14-day window, or are dispatched without prior authorisation. Such returns may be refused on arrival and sent back at the customer's cost.</p>
-  <p class="section-body fade fade-d3" style="margin-top:24px;">If you are uncertain whether your return qualifies, contact us at <a href="mailto:orders@calcaterra.co" style="color:#1a1814;">orders@calcaterra.co</a> before dispatching.</p>
-</section>
 
 <footer>
   <div class="foot-grid">
@@ -314,20 +296,20 @@ footer{background:#141210;padding:80px 52px 48px;}
     </div>
     <div class="foot-col">
       <h5>THE HOUSE</h5>
-      <a href="/calcaterra-our-story.html">Our Story</a>
-      <a href="/calcaterra-terms.html">Terms of Service</a>
-      <a href="/calcaterra-privacy.html">Privacy Policy</a>
+      <a href="/about.html">Our Story</a>
+      <a href="/terms.html">Terms of Service</a>
+      <a href="/privacy.html">Privacy Policy</a>
     </div>
     <div class="foot-col">
       <h5>COLLECTIONS</h5>
-      <a href="/calcaterra-roma-collection-page.html">Roma</a>
+      <a href="/roma.html">Roma</a>
     </div>
     <div class="foot-col">
       <h5>SUPPORT</h5>
-      <a href="/calcaterra-contact.html">Contact</a>
-      <a href="/calcaterra-warranty.html">Warranty</a>
-      <a href="/calcaterra-shipping.html">Shipping</a>
-      <a href="/calcaterra-returns.html">Returns</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/warranty.html">Warranty</a>
+      <a href="/shipping.html">Shipping</a>
+      <a href="/returns.html">Returns</a>
     </div>
   </div>
   <div class="foot-bottom">
@@ -357,11 +339,11 @@ footer{background:#141210;padding:80px 52px 48px;}
           <span class="acct-in-sub">Managed with precision.</span>
         </div>
         <nav class="acct-in-nav">
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
         </nav>
         <div class="acct-in-footer">
           <button id="signOutBtn" class="acct-in-signout">SIGN OUT</button>
@@ -415,10 +397,52 @@ footer{background:#141210;padding:80px 52px 48px;}
       const imgs = Array.isArray(v.images) ? v.images : JSON.parse(v.images || '[]')
       const img = imgs[0] || ''
       const slug = v.attributes?.slug || ''
-      const url = slug ? `/calcaterra-product-black-2.html?variant=${slug}` : '#'
+      const url = slug ? `/roma-product.html?variant=${slug}` : '#'
       html += `<a href="${url}" class="cal-search-result"><div class="cal-search-result-img">${img ? `<img src="${img}" alt="${v.name}" loading="lazy">` : ''}</div><div><span class="cal-search-result-ref">CALCATERRA ROMA</span><span class="cal-search-result-title">${v.name}</span><span class="cal-search-result-price">€329</span></div></a>`
     })
     document.getElementById('cal-search-results').innerHTML = html
+  }
+
+  async function submitContact() {
+    const name = document.getElementById('cf-name').value.trim()
+    const email = document.getElementById('cf-email').value.trim()
+    const subject = document.getElementById('cf-subject').value
+    const message = document.getElementById('cf-message').value.trim()
+    const errorEl = document.getElementById('cf-error')
+    const btn = document.getElementById('cf-submit')
+    errorEl.style.display = 'none'
+    if (!name || !email || !message) {
+      errorEl.textContent = 'Please complete all required fields.'
+      errorEl.style.display = 'block'
+      return
+    }
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRe.test(email)) {
+      errorEl.textContent = 'Please enter a valid email address.'
+      errorEl.style.display = 'block'
+      return
+    }
+    btn.disabled = true
+    btn.textContent = 'SENDING...'
+    try {
+      const res = await fetch('https://tnjuxcdcwcxoipbsowih.supabase.co/functions/v1/contact-notify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
+        },
+        body: JSON.stringify({ name, email, subject, message })
+      })
+      if (!res.ok) throw new Error('Function returned ' + res.status)
+    } catch (err) {
+      btn.disabled = false
+      btn.textContent = 'SEND MESSAGE'
+      errorEl.textContent = 'Something went wrong. Please try again or email support@calcaterra.co directly.'
+      errorEl.style.display = 'block'
+      return
+    }
+    document.getElementById('contact-form').style.display = 'none'
+    document.getElementById('contact-success').style.display = 'block'
   }
 
   function reveal() {

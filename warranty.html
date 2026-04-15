@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Collections — Calcaterra</title>
+<title>Warranty — Calcaterra</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -25,8 +25,6 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;position:relative;}
 .nav-icon-btn:hover{opacity:1;}
 .nav-icon-btn svg{width:18px;height:18px;stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-.cart-wrap{position:relative;}
-.cart-badge{position:absolute;top:-5px;right:-6px;width:14px;height:14px;border-radius:50%;background:#1a1814;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;color:#f2efe9;display:none;align-items:center;justify-content:center;}
 #menu-overlay{position:fixed;inset:0;z-index:480;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
 #menu-drawer{position:fixed;top:0;left:0;bottom:0;width:300px;background:#f2efe9;z-index:490;transform:translateX(-100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;padding:120px 48px 60px;}
@@ -41,6 +39,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 #menu-drawer.open .drawer-nav a:nth-child(4){transition-delay:.25s;}
 #menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
 .drawer-footer{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.28);}
+.cart-badge{position:absolute;top:-5px;right:-6px;width:14px;height:14px;border-radius:50%;background:#1a1814;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;color:#f2efe9;display:none;align-items:center;justify-content:center;}
 #account-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:498;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
 #account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f2efe9;z-index:499;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.07);}
@@ -91,54 +90,74 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .cal-search-no-results{padding:64px 0;text-align:center;}
 .cal-search-no-results p{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;color:rgba(26,24,20,0.35);}
 .cal-search-hint{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.25);text-align:center;margin-top:48px;}
-.page-header{padding:180px 52px 80px;text-align:center;}
-.page-eyebrow{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.5);display:block;margin-bottom:24px;}
-.page-title{font-size:clamp(38px,5.5vw,72px);font-weight:300;line-height:1.08;letter-spacing:0.04em;color:#1a1814;margin-bottom:20px;}
-.page-title em{font-style:italic;color:rgba(26,24,20,0.4);}
-.page-subtitle{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.5);}
+@media(max-width:860px){#account-drawer{width:100%;top:96px;}}
+.page-hero{padding:180px 52px 80px;max-width:900px;margin:0 auto;text-align:center;}
+.page-eyebrow{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.72em;color:rgba(26,24,20,0.35);display:block;margin-bottom:32px;}
+.page-title{font-size:clamp(42px,6vw,86px);font-weight:300;line-height:1.08;letter-spacing:0.04em;color:#1a1814;margin-bottom:48px;}
+.page-title em{font-style:italic;}
+.page-intro{font-size:clamp(15px,1.8vw,19px);font-weight:300;line-height:1.9;letter-spacing:0.02em;color:rgba(26,24,20,0.6);max-width:580px;margin:0 auto;font-family:'Montserrat',sans-serif;}
+.hairline{width:1px;height:100px;background:rgba(26,24,20,0.09);margin:0 auto;}
 .hairline-h{width:80px;height:1px;background:rgba(26,24,20,0.09);margin:0 auto;}
-.collections-grid{padding:100px 52px 160px;display:grid;grid-template-columns:repeat(2,1fr);gap:2px;max-width:1200px;margin:0 auto;}
-.collection-card{position:relative;display:block;text-decoration:none;color:inherit;cursor:pointer;}
-.collection-card-img{position:relative;overflow:hidden;aspect-ratio:4/5;background:#141210;}
-.collection-card-img img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.82) saturate(0.88);transition:transform 1s cubic-bezier(.25,.46,.45,.94),filter .8s ease;}
-.collection-card:hover .collection-card-img img{transform:scale(1.05);filter:brightness(0.9) saturate(1);}
-.collection-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(14,13,11,0.85) 0%,rgba(14,13,11,0.2) 50%,transparent 100%);transition:opacity .5s ease;}
-.collection-card-inner{position:absolute;bottom:0;left:0;right:0;padding:48px;z-index:2;}
-.collection-card-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(242,239,233,0.4);display:block;margin-bottom:12px;}
-.collection-card-name{font-size:clamp(32px,4vw,56px);font-weight:300;line-height:1.1;letter-spacing:0.04em;color:#f2efe9;display:block;margin-bottom:8px;}
-.collection-card-name em{font-style:italic;color:rgba(242,239,233,0.6);}
-.collection-card-refs{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.45);display:block;margin-bottom:32px;}
-.collection-card-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(242,239,233,0.7);border:1px solid rgba(242,239,233,0.25);padding:13px 28px;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease,background .3s,color .3s,border-color .3s;}
-.collection-card:hover .collection-card-cta{opacity:1;transform:translateY(0);}
-.collection-card:hover .collection-card-cta:hover{background:#f2efe9;color:#141210;border-color:#f2efe9;}
-.collection-card.coming-soon .collection-card-img img{filter:brightness(0.42) saturate(0);}
-.collection-card.coming-soon .collection-card-overlay{background:linear-gradient(to top,rgba(14,13,11,0.95) 0%,rgba(14,13,11,0.5) 60%,rgba(14,13,11,0.2) 100%);}
-.coming-soon-badge{position:absolute;top:28px;right:28px;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(242,239,233,0.3);border:1px solid rgba(242,239,233,0.12);padding:8px 16px;z-index:3;}
-.collections-statement{padding:0 52px 160px;text-align:center;max-width:680px;margin:0 auto;}
-.collections-statement p{font-size:clamp(18px,2vw,24px);font-weight:300;line-height:1.7;letter-spacing:0.02em;color:rgba(26,24,20,0.55);}
-.collections-statement em{font-style:italic;color:rgba(26,24,20,0.35);}
+.content-section{padding:80px 52px;max-width:780px;margin:0 auto;}
+.section-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.3);display:block;margin-bottom:28px;}
+.section-heading{font-size:clamp(24px,3vw,40px);font-weight:300;line-height:1.25;letter-spacing:0.03em;color:#1a1814;margin-bottom:28px;}
+.section-heading em{font-style:italic;color:rgba(26,24,20,0.4);}
+.section-body{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.06em;line-height:2.1;color:rgba(26,24,20,0.6);}
+.warranty-hero-stat{text-align:center;padding:80px 52px;background:#1a1814;}
+.warranty-number{font-family:'Times New Roman',Times,serif;font-size:clamp(80px,12vw,160px);font-weight:300;color:#f2efe9;line-height:1;letter-spacing:-0.02em;}
+.warranty-unit{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.55em;color:rgba(242,239,233,0.3);margin-top:12px;}
+.warranty-sub{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.4em;color:rgba(242,239,233,0.2);margin-top:24px;}
+.coverage-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:40px;}
+.coverage-card{padding:40px;border:1px solid rgba(26,24,20,0.08);}
+.coverage-card.covered{background:#f2efe9;}
+.coverage-card.not-covered{background:#edeae3;}
+.coverage-card-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:500;letter-spacing:0.5em;color:rgba(26,24,20,0.3);display:block;margin-bottom:20px;}
+.coverage-card-label.covered-label{color:rgba(26,24,20,0.5);}
+.coverage-item{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.06em;color:rgba(26,24,20,0.6);padding:10px 0;border-bottom:1px solid rgba(26,24,20,0.06);display:flex;align-items:center;gap:10px;}
+.coverage-item:last-child{border-bottom:none;}
+.coverage-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.dot-yes{background:#1a1814;}
+.dot-no{background:rgba(26,24,20,0.2);}
+.steps-list{margin-top:40px;display:flex;flex-direction:column;gap:2px;}
+.step-item{display:flex;gap:32px;align-items:flex-start;background:#f2efe9;border:1px solid rgba(26,24,20,0.07);padding:32px;}
+.step-number{font-family:'Times New Roman',Times,serif;font-size:clamp(36px,4vw,56px);font-weight:300;color:rgba(26,24,20,0.1);line-height:1;flex-shrink:0;width:64px;}
+.step-title{font-size:clamp(16px,1.8vw,22px);font-weight:300;color:#1a1814;margin-bottom:8px;letter-spacing:0.02em;}
+.step-desc{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.06em;line-height:1.9;color:rgba(26,24,20,0.55);}
+.dark-interlude{background:#141210;padding:100px 52px;text-align:center;}
+.dark-quote{font-size:clamp(26px,3.8vw,52px);font-weight:300;line-height:1.25;letter-spacing:0.03em;color:#f2efe9;max-width:680px;margin:0 auto 16px;}
+.dark-quote em{font-style:italic;color:rgba(242,239,233,0.35);}
+.dark-sub{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.3);}
+.cta-section{padding:100px 52px;text-align:center;}
+.cta-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.25);display:block;margin-bottom:32px;}
+.cta-title{font-size:clamp(28px,4vw,56px);font-weight:300;line-height:1.15;color:#1a1814;margin-bottom:48px;}
+.cta-title em{font-style:italic;color:rgba(26,24,20,0.35);}
+.cta-btn{display:inline-block;background:#1a1814;color:#f2efe9;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;padding:20px 48px;text-decoration:none;transition:background .25s;}
+.cta-btn:hover{background:#2d2a25;}
 footer{background:#141210;padding:80px 52px 48px;}
 .foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
 .foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
-.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;letter-spacing:0.04em;color:rgba(242,239,233,0.25);line-height:1.9;max-width:250px;}
-.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.6);margin-bottom:20px;}
-.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.4);text-decoration:none;margin-bottom:12px;transition:color .25s;}
-.foot-col a:hover{color:rgba(242,239,233,0.8);}
+.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;font-weight:400;letter-spacing:0.04em;color:rgba(242,239,233,0.2);line-height:1.9;max-width:250px;}
+.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;}
+.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.3);text-decoration:none;margin-bottom:12px;transition:color .25s;}
+.foot-col a:hover{color:rgba(242,239,233,0.72);}
 .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;}
-.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.2);}
-.fade{opacity:0;transform:translateY(24px);transition:opacity .95s ease,transform .95s ease;}
+.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.14);}
+.fade{opacity:0;transform:translateY(28px);transition:opacity 1s ease,transform 1s ease;}
 .fade.in{opacity:1;transform:translateY(0);}
-.fade-d1{transition-delay:.12s;}
-.fade-d2{transition-delay:.24s;}
-.fade-d3{transition-delay:.36s;}
+.fade-d1{transition-delay:.1s;}
+.fade-d2{transition-delay:.2s;}
+.fade-d3{transition-delay:.3s;}
 @media(max-width:860px){
   #nav{padding:0 24px;}
-  .page-header{padding:140px 24px 60px;}
-  .collections-grid{grid-template-columns:1fr;padding:60px 24px 100px;}
-  .collections-statement{padding:0 24px 100px;}
-  #account-drawer{width:100%;top:96px;}
+  .page-hero{padding:140px 24px 60px;}
+  .content-section{padding:60px 24px;}
+  .coverage-grid{grid-template-columns:1fr;}
+  .dark-interlude,.cta-section{padding:80px 24px;}
   footer{padding:48px 24px 36px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+  .step-item{flex-direction:column;gap:12px;}
+  .step-number{width:auto;}
+  .warranty-hero-stat{padding:60px 24px;}
 }
 </style>
 </head>
@@ -163,7 +182,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
     </button>
     <div class="cart-wrap">
-      <a href="/calcaterra-cart.html" class="nav-icon-btn" aria-label="Cart">
+      <a href="/cart.html" class="nav-icon-btn" aria-label="Cart">
         <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
       </a>
       <span class="cart-badge" id="cartBadge">0</span>
@@ -174,8 +193,8 @@ footer{background:#141210;padding:80px 52px 48px;}
 <div id="menu-overlay"></div>
 <div id="menu-drawer">
   <nav class="drawer-nav">
-    <a href="/calcaterra-collections-2-2.html">Collection</a>
-    <a href="/calcaterra-our-story.html">About</a>
+    <a href="/collections.html">Collection</a>
+    <a href="/about.html">About</a>
     <a href="#">Contact</a>
     <a href="#">Notify Me</a>
     <a href="#">Stockists</a>
@@ -190,8 +209,8 @@ footer{background:#141210;padding:80px 52px 48px;}
       <span class="acct-out-eyebrow">Your Collection.</span>
       <h2 class="acct-out-heading">Managed with <em>precision.</em></h2>
       <p class="acct-out-body">Access your registered timepieces and ownership records.</p>
-      <a href="/calcaterra-signin.html" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
-      <a href="/calcaterra-register-4.html" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
+      <a href="/signin.html" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
+      <a href="/register.html" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
     </div>
   </div>
 </div>
@@ -210,43 +229,111 @@ footer{background:#141210;padding:80px 52px 48px;}
   <p class="cal-search-hint">ESC TO CLOSE</p>
 </div>
 
-<header class="page-header">
-  <span class="page-eyebrow fade">CALCATERRA</span>
-  <h1 class="page-title fade fade-d1">The <em>Collections.</em></h1>
-  <p class="page-subtitle fade fade-d2">The present chapter of Calcaterra.</p>
-</header>
+<section class="page-hero">
+  <span class="page-eyebrow fade">PEACE OF MIND</span>
+  <h1 class="page-title fade fade-d1">Warranty <em>Programme.</em></h1>
+  <p class="page-intro fade fade-d2">Every Calcaterra timepiece is built to last. The warranty exists as a statement of that conviction.</p>
+</section>
+
+<div class="hairline"></div>
+
+<div class="warranty-hero-stat">
+  <div class="warranty-number fade">2</div>
+  <p class="warranty-unit fade fade-d1">YEAR WARRANTY</p>
+  <p class="warranty-sub fade fade-d2">ON EVERY CALCATERRA TIMEPIECE · FROM DATE OF PURCHASE · NO REGISTRATION REQUIRED</p>
+</div>
+
+<section class="content-section">
+  <span class="section-label fade">WHAT'S COVERED</span>
+  <h2 class="section-heading fade fade-d1">Built with intention.<br><em>Backed with conviction.</em></h2>
+  <p class="section-body fade fade-d2">The Calcaterra warranty covers manufacturing defects in materials and workmanship for a period of two years from the date of purchase. Coverage is automatic — no registration is required. All Calcaterra timepieces are covered from the moment they leave our hands.</p>
+
+  <div class="coverage-grid" style="margin-top:40px;">
+    <div class="coverage-card covered">
+      <span class="coverage-card-label covered-label">✓ COVERED</span>
+      <div class="coverage-item"><span class="coverage-dot dot-yes"></span>Manufacturing defects in materials</div>
+      <div class="coverage-item"><span class="coverage-dot dot-yes"></span>Defective movement or mechanism</div>
+      <div class="coverage-item"><span class="coverage-dot dot-yes"></span>Case or crown defects from production</div>
+      <div class="coverage-item"><span class="coverage-dot dot-yes"></span>Dial printing or hand defects</div>
+      <div class="coverage-item"><span class="coverage-dot dot-yes"></span>Strap or bracelet structural defects</div>
+    </div>
+    <div class="coverage-card not-covered">
+      <span class="coverage-card-label">✗ NOT COVERED</span>
+      <div class="coverage-item"><span class="coverage-dot dot-no"></span>Normal wear and ageing</div>
+      <div class="coverage-item"><span class="coverage-dot dot-no"></span>Accidental damage or impact</div>
+      <div class="coverage-item"><span class="coverage-dot dot-no"></span>Water damage beyond rated resistance</div>
+      <div class="coverage-item"><span class="coverage-dot dot-no"></span>Unauthorised modification or repair</div>
+      <div class="coverage-item"><span class="coverage-dot dot-no"></span>Battery replacement (consumable)</div>
+    </div>
+  </div>
+</section>
 
 <div class="hairline-h"></div>
 
-<div class="collections-grid">
-  <a href="/calcaterra-roma-collection-page.html" class="collection-card fade">
-    <div class="collection-card-img">
-      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_ec8sfnec8sfnec8s.png?v=1773510119" alt="The Roma Collection">
-      <div class="collection-card-overlay"></div>
-    </div>
-    <div class="collection-card-inner">
-      <span class="collection-card-name">The Roma<br><em>Collection.</em></span>
-      <span class="collection-card-refs">III REFERENCES &nbsp;&middot;&nbsp; FROM 329 EUR</span>
-      <span class="collection-card-cta">DISCOVER THE ROMA</span>
-    </div>
-  </a>
+<section class="content-section">
+  <span class="section-label fade">WATCH REGISTRATION</span>
+  <h2 class="section-heading fade fade-d1">Register your <em>timepiece.</em></h2>
+  <p class="section-body fade fade-d2">Registration is optional, but recommended. Your warranty is automatic — registration simply connects your timepiece to your account for faster support, easier ownership tracking, and a permanent record in your name.</p>
 
-  <div class="collection-card coming-soon fade fade-d1">
-    <div class="collection-card-img">
-      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_ec8sfnec8sfnec8s.png?v=1773510119" alt="Coming Soon">
-      <div class="collection-card-overlay"></div>
+  <div class="steps-list" style="margin-top:40px;">
+    <div class="step-item fade fade-d1">
+      <span class="step-number">01</span>
+      <div>
+        <h4 class="step-title">Sign in to your account</h4>
+        <p class="step-desc">Visit calcaterra.co and sign in or create your account. Takes under a minute.</p>
+      </div>
     </div>
-    <span class="coming-soon-badge">COMING SOON</span>
-    <div class="collection-card-inner">
-      <span class="collection-card-name" style="color:rgba(242,239,233,0.2);">The Next<br><em>Chapter.</em></span>
-      <span class="collection-card-refs" style="color:rgba(242,239,233,0.15);">IN DEVELOPMENT</span>
+    <div class="step-item fade fade-d2">
+      <span class="step-number">02</span>
+      <div>
+        <h4 class="step-title">Link your timepiece</h4>
+        <p class="step-desc">Enter your order reference and the reference number found on the caseback of your watch. This connects the timepiece to your account.</p>
+      </div>
+    </div>
+    <div class="step-item fade fade-d3">
+      <span class="step-number">03</span>
+      <div>
+        <h4 class="step-title">Access your records</h4>
+        <p class="step-desc">Your dashboard will show your registered timepieces with a permanent ownership record. Useful for warranty claims, resale, or servicing.</p>
+      </div>
     </div>
   </div>
+</section>
+
+<div class="hairline-h"></div>
+
+<section class="content-section">
+  <span class="section-label fade">CLAIM RESOLUTION</span>
+  <h2 class="section-heading fade fade-d1">How we <em>resolve claims.</em></h2>
+  <p class="section-body fade fade-d2">To submit a warranty claim, email <a href="mailto:orders@calcaterra.co" style="color:#1a1814;">orders@calcaterra.co</a> with your order reference and a description of the issue. Include photographs where possible. Our team will assess and respond within 2 business days.</p>
+
+  <div style="margin-top:48px;">
+    <div class="info-row">
+      <span class="info-row-label">STEP ONE</span>
+      <span class="info-row-value">Repair — the defect will be remedied at no cost to you</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row-label">STEP TWO</span>
+      <span class="info-row-value">Replacement — if repair is not possible, a replacement will be issued</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row-label">STEP THREE</span>
+      <span class="info-row-value">Refund — if neither is available, a full refund will be provided</span>
+    </div>
+  </div>
+</section>
+
+<div class="dark-interlude">
+  <span class="section-label" style="color:rgba(242,239,233,0.2);margin-bottom:20px;display:block;">WARRANTY CLAIMS</span>
+  <blockquote class="dark-quote fade fade-d1">A genuine claim<br><em>will be assessed and resolved.</em></blockquote>
+  <p class="dark-sub fade fade-d2">Email orders@calcaterra.co with your order reference and a description of the issue.</p>
 </div>
 
-<div class="collections-statement fade">
-  <p>One collection at a time.<br><em>Each one complete in itself.</em></p>
-</div>
+<section class="cta-section">
+  <span class="cta-label fade">OPTIONAL BUT RECOMMENDED</span>
+  <h2 class="cta-title fade fade-d1">Register your<br><em>timepiece.</em></h2>
+  <a href="/dashboard.html" class="cta-btn fade fade-d2">GO TO YOUR ACCOUNT</a>
+</section>
 
 <footer>
   <div class="foot-grid">
@@ -255,11 +342,27 @@ footer{background:#141210;padding:80px 52px 48px;}
       <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
       <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
     </div>
-    <div class="foot-col"><h5>THE HOUSE</h5><a href="/calcaterra-our-story.html">Our Story</a><a href="#">Philosophy</a><a href="#">Terms of Service</a><a href="#">Privacy Policy</a></div>
-    <div class="foot-col"><h5>COLLECTIONS</h5><a href="/calcaterra-roma-collection-page.html">Roma</a></div>
-    <div class="foot-col"><h5>SUPPORT</h5><a href="#">Contact</a><a href="#">Warranty</a><a href="#">Shipping</a><a href="#">Returns</a></div>
+    <div class="foot-col">
+      <h5>THE HOUSE</h5>
+      <a href="/about.html">Our Story</a>
+      <a href="/terms.html">Terms of Service</a>
+      <a href="/privacy.html">Privacy Policy</a>
+    </div>
+    <div class="foot-col">
+      <h5>COLLECTIONS</h5>
+      <a href="/roma.html">Roma</a>
+    </div>
+    <div class="foot-col">
+      <h5>SUPPORT</h5>
+      <a href="/contact.html">Contact</a>
+      <a href="/warranty.html">Warranty</a>
+      <a href="/shipping.html">Shipping</a>
+      <a href="/returns.html">Returns</a>
+    </div>
   </div>
-  <div class="foot-bottom"><span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span></div>
+  <div class="foot-bottom">
+    <span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span>
+  </div>
 </footer>
 
 <script>
@@ -284,11 +387,11 @@ footer{background:#141210;padding:80px 52px 48px;}
           <span class="acct-in-sub">Managed with precision.</span>
         </div>
         <nav class="acct-in-nav">
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
         </nav>
         <div class="acct-in-footer">
           <button id="signOutBtn" class="acct-in-signout">SIGN OUT</button>
@@ -342,7 +445,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       const imgs = Array.isArray(v.images) ? v.images : JSON.parse(v.images || '[]')
       const img = imgs[0] || ''
       const slug = v.attributes?.slug || ''
-      const url = slug ? `/calcaterra-product-black-2.html?variant=${slug}` : '#'
+      const url = slug ? `/roma-product.html?variant=${slug}` : '#'
       html += `<a href="${url}" class="cal-search-result"><div class="cal-search-result-img">${img ? `<img src="${img}" alt="${v.name}" loading="lazy">` : ''}</div><div><span class="cal-search-result-ref">CALCATERRA ROMA</span><span class="cal-search-result-title">${v.name}</span><span class="cal-search-result-price">€329</span></div></a>`
     })
     document.getElementById('cal-search-results').innerHTML = html
@@ -379,4 +482,4 @@ footer{background:#141210;padding:80px 52px 48px;}
   })
 </script>
 </body>
-</html>  
+</html>

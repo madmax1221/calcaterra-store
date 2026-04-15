@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Contact — Calcaterra</title>
+<title>Collections — Calcaterra</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -25,6 +25,8 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;position:relative;}
 .nav-icon-btn:hover{opacity:1;}
 .nav-icon-btn svg{width:18px;height:18px;stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.cart-wrap{position:relative;}
+.cart-badge{position:absolute;top:-5px;right:-6px;width:14px;height:14px;border-radius:50%;background:#1a1814;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;color:#f2efe9;display:none;align-items:center;justify-content:center;}
 #menu-overlay{position:fixed;inset:0;z-index:480;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
 #menu-drawer{position:fixed;top:0;left:0;bottom:0;width:300px;background:#f2efe9;z-index:490;transform:translateX(-100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;padding:120px 48px 60px;}
@@ -39,7 +41,6 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 #menu-drawer.open .drawer-nav a:nth-child(4){transition-delay:.25s;}
 #menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
 .drawer-footer{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.28);}
-.cart-badge{position:absolute;top:-5px;right:-6px;width:14px;height:14px;border-radius:50%;background:#1a1814;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;color:#f2efe9;display:none;align-items:center;justify-content:center;}
 #account-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:498;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
 #account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f2efe9;z-index:499;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.07);}
@@ -90,62 +91,52 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .cal-search-no-results{padding:64px 0;text-align:center;}
 .cal-search-no-results p{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;color:rgba(26,24,20,0.35);}
 .cal-search-hint{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.25);text-align:center;margin-top:48px;}
-@media(max-width:860px){#account-drawer{width:100%;top:96px;}}
-.page-hero{padding:180px 52px 80px;max-width:900px;margin:0 auto;text-align:center;}
-.page-eyebrow{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.72em;color:rgba(26,24,20,0.35);display:block;margin-bottom:32px;}
-.page-title{font-size:clamp(42px,6vw,86px);font-weight:300;line-height:1.08;letter-spacing:0.04em;color:#1a1814;margin-bottom:48px;}
-.page-title em{font-style:italic;}
-.page-intro{font-size:clamp(15px,1.8vw,19px);font-weight:300;line-height:1.9;letter-spacing:0.02em;color:rgba(26,24,20,0.6);max-width:580px;margin:0 auto;font-family:'Montserrat',sans-serif;}
-.hairline{width:1px;height:100px;background:rgba(26,24,20,0.09);margin:0 auto;}
+.page-header{padding:180px 52px 80px;text-align:center;}
+.page-eyebrow{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.5);display:block;margin-bottom:24px;}
+.page-title{font-size:clamp(38px,5.5vw,72px);font-weight:300;line-height:1.08;letter-spacing:0.04em;color:#1a1814;margin-bottom:20px;}
+.page-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.page-subtitle{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.5);}
 .hairline-h{width:80px;height:1px;background:rgba(26,24,20,0.09);margin:0 auto;}
-.contact-split{display:grid;grid-template-columns:1fr 1fr;min-height:600px;}
-.contact-info{background:#1a1814;padding:80px 64px;display:flex;flex-direction:column;justify-content:space-between;}
-.contact-info-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;color:rgba(242,239,233,0.25);display:block;margin-bottom:32px;}
-.contact-info-heading{font-size:clamp(26px,3vw,42px);font-weight:300;color:#f2efe9;line-height:1.2;margin-bottom:40px;}
-.contact-info-heading em{font-style:italic;color:rgba(242,239,233,0.35);}
-.contact-channel{margin-bottom:32px;}
-.contact-channel-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:400;letter-spacing:0.5em;color:rgba(242,239,233,0.25);display:block;margin-bottom:8px;}
-.contact-channel-value{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:300;letter-spacing:0.04em;color:rgba(242,239,233,0.7);text-decoration:none;}
-a.contact-channel-value:hover{color:#f2efe9;}
-.contact-response{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.2);border-top:1px solid rgba(242,239,233,0.07);padding-top:24px;}
-.contact-form-wrap{background:#f2efe9;padding:80px 64px;}
-.form-eyebrow{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.3);display:block;margin-bottom:32px;}
-.form-title{font-size:clamp(22px,2.5vw,34px);font-weight:300;color:#1a1814;margin-bottom:40px;line-height:1.2;}
-.form-title em{font-style:italic;color:rgba(26,24,20,0.35);}
-.form-group{margin-bottom:24px;}
-.form-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:400;letter-spacing:0.5em;color:rgba(26,24,20,0.4);display:block;margin-bottom:10px;}
-.form-input{width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.15);padding:12px 0;font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:300;color:#1a1814;outline:none;transition:border-color .25s;}
-.form-input:focus{border-color:rgba(26,24,20,0.5);}
-.form-input::placeholder{color:rgba(26,24,20,0.25);font-size:15px;}
-textarea.form-input{resize:none;height:120px;padding-top:8px;}
-.form-select{width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.15);padding:12px 0;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;color:#1a1814;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;transition:border-color .25s;}
-.form-select:focus{border-color:rgba(26,24,20,0.5);}
-.form-submit{background:#1a1814;color:#f2efe9;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;padding:18px 40px;border:none;cursor:pointer;transition:background .25s;margin-top:8px;}
-.form-submit:hover{background:#2d2a25;}
-.form-submit:disabled{opacity:0.5;cursor:not-allowed;}
-.form-success{display:none;text-align:center;padding:40px 0;}
-.form-success-title{font-size:clamp(22px,2.5vw,34px);font-weight:300;color:#1a1814;margin-bottom:12px;}
-.form-success-title em{font-style:italic;color:rgba(26,24,20,0.35);}
-.form-success-sub{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.5);line-height:1.9;}
-.form-error{display:none;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.06em;color:#8b3a3a;padding:12px 0;line-height:1.7;}
+.collections-grid{padding:100px 52px 160px;display:grid;grid-template-columns:repeat(2,1fr);gap:2px;max-width:1200px;margin:0 auto;}
+.collection-card{position:relative;display:block;text-decoration:none;color:inherit;cursor:pointer;}
+.collection-card-img{position:relative;overflow:hidden;aspect-ratio:4/5;background:#141210;}
+.collection-card-img img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.82) saturate(0.88);transition:transform 1s cubic-bezier(.25,.46,.45,.94),filter .8s ease;}
+.collection-card:hover .collection-card-img img{transform:scale(1.05);filter:brightness(0.9) saturate(1);}
+.collection-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(14,13,11,0.85) 0%,rgba(14,13,11,0.2) 50%,transparent 100%);transition:opacity .5s ease;}
+.collection-card-inner{position:absolute;bottom:0;left:0;right:0;padding:48px;z-index:2;}
+.collection-card-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(242,239,233,0.4);display:block;margin-bottom:12px;}
+.collection-card-name{font-size:clamp(32px,4vw,56px);font-weight:300;line-height:1.1;letter-spacing:0.04em;color:#f2efe9;display:block;margin-bottom:8px;}
+.collection-card-name em{font-style:italic;color:rgba(242,239,233,0.6);}
+.collection-card-refs{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.45);display:block;margin-bottom:32px;}
+.collection-card-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(242,239,233,0.7);border:1px solid rgba(242,239,233,0.25);padding:13px 28px;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease,background .3s,color .3s,border-color .3s;}
+.collection-card:hover .collection-card-cta{opacity:1;transform:translateY(0);}
+.collection-card:hover .collection-card-cta:hover{background:#f2efe9;color:#141210;border-color:#f2efe9;}
+.collection-card.coming-soon .collection-card-img img{filter:brightness(0.42) saturate(0);}
+.collection-card.coming-soon .collection-card-overlay{background:linear-gradient(to top,rgba(14,13,11,0.95) 0%,rgba(14,13,11,0.5) 60%,rgba(14,13,11,0.2) 100%);}
+.coming-soon-badge{position:absolute;top:28px;right:28px;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.45em;color:rgba(242,239,233,0.3);border:1px solid rgba(242,239,233,0.12);padding:8px 16px;z-index:3;}
+.collections-statement{padding:0 52px 160px;text-align:center;max-width:680px;margin:0 auto;}
+.collections-statement p{font-size:clamp(18px,2vw,24px);font-weight:300;line-height:1.7;letter-spacing:0.02em;color:rgba(26,24,20,0.55);}
+.collections-statement em{font-style:italic;color:rgba(26,24,20,0.35);}
 footer{background:#141210;padding:80px 52px 48px;}
 .foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
 .foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
-.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;font-weight:400;letter-spacing:0.04em;color:rgba(242,239,233,0.2);line-height:1.9;max-width:250px;}
-.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;}
-.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.3);text-decoration:none;margin-bottom:12px;transition:color .25s;}
-.foot-col a:hover{color:rgba(242,239,233,0.72);}
+.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;letter-spacing:0.04em;color:rgba(242,239,233,0.25);line-height:1.9;max-width:250px;}
+.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.6);margin-bottom:20px;}
+.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.4);text-decoration:none;margin-bottom:12px;transition:color .25s;}
+.foot-col a:hover{color:rgba(242,239,233,0.8);}
 .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;}
-.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.14);}
-.fade{opacity:0;transform:translateY(28px);transition:opacity 1s ease,transform 1s ease;}
+.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.2);}
+.fade{opacity:0;transform:translateY(24px);transition:opacity .95s ease,transform .95s ease;}
 .fade.in{opacity:1;transform:translateY(0);}
-.fade-d1{transition-delay:.1s;}
-.fade-d2{transition-delay:.2s;}
+.fade-d1{transition-delay:.12s;}
+.fade-d2{transition-delay:.24s;}
+.fade-d3{transition-delay:.36s;}
 @media(max-width:860px){
   #nav{padding:0 24px;}
-  .page-hero{padding:140px 24px 60px;}
-  .contact-split{grid-template-columns:1fr;}
-  .contact-info,.contact-form-wrap{padding:60px 28px;}
+  .page-header{padding:140px 24px 60px;}
+  .collections-grid{grid-template-columns:1fr;padding:60px 24px 100px;}
+  .collections-statement{padding:0 24px 100px;}
+  #account-drawer{width:100%;top:96px;}
   footer{padding:48px 24px 36px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
 }
@@ -172,7 +163,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
     </button>
     <div class="cart-wrap">
-      <a href="/calcaterra-cart.html" class="nav-icon-btn" aria-label="Cart">
+      <a href="/cart.html" class="nav-icon-btn" aria-label="Cart">
         <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
       </a>
       <span class="cart-badge" id="cartBadge">0</span>
@@ -183,8 +174,8 @@ footer{background:#141210;padding:80px 52px 48px;}
 <div id="menu-overlay"></div>
 <div id="menu-drawer">
   <nav class="drawer-nav">
-    <a href="/calcaterra-collections-2-2.html">Collection</a>
-    <a href="/calcaterra-our-story.html">About</a>
+    <a href="/collections.html">Collection</a>
+    <a href="/about.html">About</a>
     <a href="#">Contact</a>
     <a href="#">Notify Me</a>
     <a href="#">Stockists</a>
@@ -199,8 +190,8 @@ footer{background:#141210;padding:80px 52px 48px;}
       <span class="acct-out-eyebrow">Your Collection.</span>
       <h2 class="acct-out-heading">Managed with <em>precision.</em></h2>
       <p class="acct-out-body">Access your registered timepieces and ownership records.</p>
-      <a href="/calcaterra-signin.html" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
-      <a href="/calcaterra-register-4.html" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
+      <a href="/signin.html" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
+      <a href="/register.html" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
     </div>
   </div>
 </div>
@@ -219,72 +210,42 @@ footer{background:#141210;padding:80px 52px 48px;}
   <p class="cal-search-hint">ESC TO CLOSE</p>
 </div>
 
-<section class="page-hero">
-  <span class="page-eyebrow fade">GET IN TOUCH</span>
-  <h1 class="page-title fade fade-d1">Contact <em>us.</em></h1>
-  <p class="page-intro fade fade-d2">All enquiries are handled directly by our team. We do not use automated responses.</p>
-</section>
+<header class="page-header">
+  <span class="page-eyebrow fade">CALCATERRA</span>
+  <h1 class="page-title fade fade-d1">The <em>Collections.</em></h1>
+  <p class="page-subtitle fade fade-d2">The present chapter of Calcaterra.</p>
+</header>
 
-<div class="hairline"></div>
+<div class="hairline-h"></div>
 
-<div class="contact-split">
-  <div class="contact-info">
-    <div>
-      <span class="contact-info-label">THE HOUSE OF CALCATERRA</span>
-      <h2 class="contact-info-heading">We are<br><em>listening.</em></h2>
-
-      <div class="contact-channel">
-        <span class="contact-channel-label">SUPPORT</span>
-        <a href="mailto:support@calcaterra.co" class="contact-channel-value">support@calcaterra.co</a>
-      </div>
-      <div class="contact-channel">
-        <span class="contact-channel-label">ORDERS & RETURNS</span>
-        <a href="mailto:orders@calcaterra.co" class="contact-channel-value">orders@calcaterra.co</a>
-      </div>
-      <div class="contact-channel">
-        <span class="contact-channel-label">GENERAL</span>
-        <a href="mailto:info@calcaterra.co" class="contact-channel-value">info@calcaterra.co</a>
-      </div>
+<div class="collections-grid">
+  <a href="/roma.html" class="collection-card fade">
+    <div class="collection-card-img">
+      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_ec8sfnec8sfnec8s.png?v=1773510119" alt="The Roma Collection">
+      <div class="collection-card-overlay"></div>
     </div>
-    <p class="contact-response">RESPONSE WITHIN 48 HOURS · MONDAY TO FRIDAY</p>
-  </div>
-
-  <div class="contact-form-wrap">
-    <span class="form-eyebrow">SEND A MESSAGE</span>
-    <h2 class="form-title">We'll get back<br><em>to you.</em></h2>
-
-    <div id="contact-form">
-      <div class="form-group">
-        <label class="form-label" for="cf-name">YOUR NAME *</label>
-        <input type="text" class="form-input" id="cf-name" placeholder="First and last name" autocomplete="name" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="cf-email">EMAIL ADDRESS *</label>
-        <input type="email" class="form-input" id="cf-email" placeholder="your@email.com" autocomplete="email" required>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="cf-subject">SUBJECT</label>
-        <select class="form-select" id="cf-subject">
-          <option value="Order enquiry">Order enquiry</option>
-          <option value="Warranty claim">Warranty claim</option>
-          <option value="Return or exchange">Return or exchange</option>
-          <option value="Product question">Product question</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="cf-message">MESSAGE *</label>
-        <textarea class="form-input" id="cf-message" placeholder="How can we help you?" required></textarea>
-      </div>
-      <p class="form-error" id="cf-error"></p>
-      <button class="form-submit" id="cf-submit" onclick="submitContact()">SEND MESSAGE</button>
+    <div class="collection-card-inner">
+      <span class="collection-card-name">The Roma<br><em>Collection.</em></span>
+      <span class="collection-card-refs">III REFERENCES &nbsp;&middot;&nbsp; FROM 329 EUR</span>
+      <span class="collection-card-cta">DISCOVER THE ROMA</span>
     </div>
+  </a>
 
-    <div class="form-success" id="contact-success">
-      <h3 class="form-success-title">Message <em>received.</em></h3>
-      <p class="form-success-sub">Thank you for reaching out. We will respond within 24–48 hours to the email address you provided.</p>
+  <div class="collection-card coming-soon fade fade-d1">
+    <div class="collection-card-img">
+      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_ec8sfnec8sfnec8s.png?v=1773510119" alt="Coming Soon">
+      <div class="collection-card-overlay"></div>
+    </div>
+    <span class="coming-soon-badge">COMING SOON</span>
+    <div class="collection-card-inner">
+      <span class="collection-card-name" style="color:rgba(242,239,233,0.2);">The Next<br><em>Chapter.</em></span>
+      <span class="collection-card-refs" style="color:rgba(242,239,233,0.15);">IN DEVELOPMENT</span>
     </div>
   </div>
+</div>
+
+<div class="collections-statement fade">
+  <p>One collection at a time.<br><em>Each one complete in itself.</em></p>
 </div>
 
 <footer>
@@ -294,27 +255,11 @@ footer{background:#141210;padding:80px 52px 48px;}
       <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
       <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
     </div>
-    <div class="foot-col">
-      <h5>THE HOUSE</h5>
-      <a href="/calcaterra-our-story.html">Our Story</a>
-      <a href="/calcaterra-terms.html">Terms of Service</a>
-      <a href="/calcaterra-privacy.html">Privacy Policy</a>
-    </div>
-    <div class="foot-col">
-      <h5>COLLECTIONS</h5>
-      <a href="/calcaterra-roma-collection-page.html">Roma</a>
-    </div>
-    <div class="foot-col">
-      <h5>SUPPORT</h5>
-      <a href="/calcaterra-contact.html">Contact</a>
-      <a href="/calcaterra-warranty.html">Warranty</a>
-      <a href="/calcaterra-shipping.html">Shipping</a>
-      <a href="/calcaterra-returns.html">Returns</a>
-    </div>
+    <div class="foot-col"><h5>THE HOUSE</h5><a href="/about.html">Our Story</a><a href="#">Philosophy</a><a href="#">Terms of Service</a><a href="#">Privacy Policy</a></div>
+    <div class="foot-col"><h5>COLLECTIONS</h5><a href="/roma.html">Roma</a></div>
+    <div class="foot-col"><h5>SUPPORT</h5><a href="#">Contact</a><a href="#">Warranty</a><a href="#">Shipping</a><a href="#">Returns</a></div>
   </div>
-  <div class="foot-bottom">
-    <span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span>
-  </div>
+  <div class="foot-bottom"><span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span></div>
 </footer>
 
 <script>
@@ -339,11 +284,11 @@ footer{background:#141210;padding:80px 52px 48px;}
           <span class="acct-in-sub">Managed with precision.</span>
         </div>
         <nav class="acct-in-nav">
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
-          <a href="/calcaterra-dashboard-21.html" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard.html" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
         </nav>
         <div class="acct-in-footer">
           <button id="signOutBtn" class="acct-in-signout">SIGN OUT</button>
@@ -397,52 +342,10 @@ footer{background:#141210;padding:80px 52px 48px;}
       const imgs = Array.isArray(v.images) ? v.images : JSON.parse(v.images || '[]')
       const img = imgs[0] || ''
       const slug = v.attributes?.slug || ''
-      const url = slug ? `/calcaterra-product-black-2.html?variant=${slug}` : '#'
+      const url = slug ? `/roma-product.html?variant=${slug}` : '#'
       html += `<a href="${url}" class="cal-search-result"><div class="cal-search-result-img">${img ? `<img src="${img}" alt="${v.name}" loading="lazy">` : ''}</div><div><span class="cal-search-result-ref">CALCATERRA ROMA</span><span class="cal-search-result-title">${v.name}</span><span class="cal-search-result-price">€329</span></div></a>`
     })
     document.getElementById('cal-search-results').innerHTML = html
-  }
-
-  async function submitContact() {
-    const name = document.getElementById('cf-name').value.trim()
-    const email = document.getElementById('cf-email').value.trim()
-    const subject = document.getElementById('cf-subject').value
-    const message = document.getElementById('cf-message').value.trim()
-    const errorEl = document.getElementById('cf-error')
-    const btn = document.getElementById('cf-submit')
-    errorEl.style.display = 'none'
-    if (!name || !email || !message) {
-      errorEl.textContent = 'Please complete all required fields.'
-      errorEl.style.display = 'block'
-      return
-    }
-    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRe.test(email)) {
-      errorEl.textContent = 'Please enter a valid email address.'
-      errorEl.style.display = 'block'
-      return
-    }
-    btn.disabled = true
-    btn.textContent = 'SENDING...'
-    try {
-      const res = await fetch('https://tnjuxcdcwcxoipbsowih.supabase.co/functions/v1/contact-notify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
-        },
-        body: JSON.stringify({ name, email, subject, message })
-      })
-      if (!res.ok) throw new Error('Function returned ' + res.status)
-    } catch (err) {
-      btn.disabled = false
-      btn.textContent = 'SEND MESSAGE'
-      errorEl.textContent = 'Something went wrong. Please try again or email support@calcaterra.co directly.'
-      errorEl.style.display = 'block'
-      return
-    }
-    document.getElementById('contact-form').style.display = 'none'
-    document.getElementById('contact-success').style.display = 'block'
   }
 
   function reveal() {
@@ -476,4 +379,4 @@ footer{background:#141210;padding:80px 52px 48px;}
   })
 </script>
 </body>
-</html>
+</html>  
