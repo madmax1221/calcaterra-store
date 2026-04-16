@@ -72,6 +72,18 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
 .ops-table tr{transition:background .15s;cursor:pointer;}
 .ops-table tr:hover td{background:rgba(242,239,233,0.02);}
 .ops-table-empty{padding:48px;text-align:center;color:rgba(242,239,233,0.2);font-size:9px;letter-spacing:0.3em;}
+.watch-variant-badge{display:inline-flex;align-items:center;gap:6px;font-size:7px;font-weight:500;letter-spacing:0.35em;padding:4px 10px;border:1px solid rgba(242,239,233,0.12);color:rgba(242,239,233,0.55);margin-right:4px;margin-bottom:4px;cursor:default;}
+.watch-variant-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.watch-variant-dot.black{background:#1a1814;}
+.watch-variant-dot.navy{background:#1e2d4a;}
+.watch-variant-dot.silver{background:#b0aaa0;}
+.customer-expand-btn{font-size:7px;font-weight:400;letter-spacing:0.35em;color:rgba(242,239,233,0.25);background:none;border:1px solid rgba(242,239,233,0.08);padding:5px 12px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.customer-expand-btn:hover{color:rgba(242,239,233,0.6);border-color:rgba(242,239,233,0.2);}
+.customer-watches-detail{padding:20px 24px;background:rgba(242,239,233,0.02);border-bottom:1px solid rgba(242,239,233,0.06);}
+.customer-watches-detail table{width:100%;border-collapse:collapse;}
+.customer-watches-detail th{font-size:6.5px;font-weight:500;letter-spacing:0.5em;color:rgba(242,239,233,0.2);padding:8px 12px;text-align:left;border-bottom:1px solid rgba(242,239,233,0.06);}
+.customer-watches-detail td{font-size:10px;font-weight:300;letter-spacing:0.05em;color:rgba(242,239,233,0.55);padding:12px 12px;border-bottom:1px solid rgba(242,239,233,0.04);}
+.customer-watches-detail tr:last-child td{border-bottom:none;}
 .status-pill{display:inline-block;font-size:6.5px;font-weight:500;letter-spacing:0.4em;padding:4px 10px;border-radius:0;}
 .status-pending{background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.2);}
 .status-confirmed{background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.2);}
@@ -317,7 +329,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
         <div class="ops-section-header" style="margin-bottom:32px;"><div><span class="ops-section-eyebrow">ACCOUNTS</span><h1 class="ops-section-title">All <em>Customers.</em></h1></div></div>
         <div class="ops-table-wrap">
           <table class="ops-table">
-            <thead><tr><th>NAME</th><th>EMAIL</th><th>ORDERS</th><th>REGISTERED</th><th>LOCATION</th></tr></thead>
+            <thead><tr><th>NAME</th><th>EMAIL</th><th>WATCHES</th><th>REGISTERED</th><th></th></tr></thead>
             <tbody id="customers-body"><tr><td colspan="5" class="ops-table-empty">LOADING...</td></tr></tbody>
           </table>
         </div>
@@ -454,6 +466,7 @@ function showPanel(id) {
   document.querySelectorAll('.ops-nav-item').forEach(n => { if (n.getAttribute('data-panel') === id) n.classList.add('active') })
   const titles = { dashboard:'DASHBOARD', orders:'ORDERS', codes:'CODES', warranties:'WARRANTIES', customers:'CUSTOMERS' }
   document.getElementById('topbar-title').textContent = titles[id] || id.toUpperCase()
+  if (id === 'dashboard') loadDashboard()
   if (window.innerWidth <= 1024) {
     document.getElementById('ops-sidebar').classList.remove('open')
     document.getElementById('sidebarOverlay').classList.remove('open')
@@ -471,7 +484,7 @@ async function loadDashboard() {
   const today = new Date().toISOString().split('T')[0]
   const [ordersRes, customersRes, warrantiesRes, codesRes] = await Promise.all([
     _supabase.from('orders').select('id, total, status, created_at, shipping_address, customer_id'),
-    _supabase.from('customers').select('id', { count: 'exact' }),
+    _supabase.from('customers').select('id'),
     _supabase.from('warranties').select('id, status', { count: 'exact' }),
     _supabase.from('warranties').select('id, status, activation_code, expires_at')
   ])
@@ -487,7 +500,7 @@ async function loadDashboard() {
   document.getElementById('stat-pending').textContent = pendingOrders.length
   document.getElementById('stat-revenue').textContent = '€' + totalRevenue.toFixed(0)
   document.getElementById('stat-today-revenue').textContent = '€' + todayRevenue.toFixed(0)
-  document.getElementById('stat-customers').textContent = customersRes.count || 0
+  document.getElementById('stat-customers').textContent = (customersRes.data || []).length
   document.getElementById('stat-warranties').textContent = warranties.filter(w => w.status === 'active').length
   document.getElementById('stat-codes').textContent = codes.filter(c => c.status === 'inactive').length
   document.getElementById('stat-unactivated').textContent = codes.filter(c => c.status === 'unactivated').length
@@ -828,9 +841,70 @@ async function manualActivate(id) {
 }
 
 async function loadCustomers() {
-  const { data } = await _supabase.from('customers').select('id, first_name, last_name, email, created_at').order('created_at', { ascending: false })
-  document.getElementById('customers-body').innerHTML = (data || []).length ? (data || []).map(c => `
-    <tr><td>${c.first_name || ''} ${c.last_name || ''}</td><td style="font-size:10px;">${c.email || '—'}</td><td>—</td><td>${new Date(c.created_at).toLocaleDateString('en-ZA')}</td><td>—</td></tr>`).join('') : '<tr><td colspan="5" class="ops-table-empty">NO CUSTOMERS YET</td></tr>'
+  const [{ data: customers }, { data: watches }] = await Promise.all([
+    _supabase.from('customers').select('id, first_name, last_name, email, created_at').order('created_at', { ascending: false }),
+    _supabase.from('warranties').select('customer_id, variant, activation_code, activated_at, purchase_date').eq('status', 'active')
+  ])
+  const watchMap = {}
+  ;(watches || []).forEach(w => {
+    if (!watchMap[w.customer_id]) watchMap[w.customer_id] = []
+    watchMap[w.customer_id].push(w)
+  })
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+  const variantLabels = { black: 'BLACK', navy: 'NAVY', silver: 'SILVER' }
+  if (!(customers || []).length) {
+    document.getElementById('customers-body').innerHTML = '<tr><td colspan="5" class="ops-table-empty">NO CUSTOMERS YET</td></tr>'
+    return
+  }
+  let html = ''
+  ;(customers || []).forEach(c => {
+    const cWatches = watchMap[c.id] || []
+    const badgesHtml = cWatches.length
+      ? cWatches.map(w => {
+          const v = w.variant || 'black'
+          return `<span class="watch-variant-badge"><span class="watch-variant-dot ${v}"></span>${variantLabels[v] || v.toUpperCase()}</span>`
+        }).join('')
+      : '<span style="font-size:10px;color:rgba(242,239,233,0.2);letter-spacing:0.05em;">—</span>'
+    const expandBtn = cWatches.length
+      ? `<button class="customer-expand-btn" onclick="toggleCustomerWatches('${c.id}',this)">VIEW ${cWatches.length} WATCH${cWatches.length>1?'ES':''}</button>`
+      : ''
+    html += `<tr>
+      <td>${c.first_name || ''} ${c.last_name || ''}</td>
+      <td style="font-size:10px;">${c.email || '—'}</td>
+      <td>${badgesHtml}</td>
+      <td>${new Date(c.created_at).toLocaleDateString('en-ZA')}</td>
+      <td>${expandBtn}</td>
+    </tr>
+    <tr id="cw-${c.id}" style="display:none;">
+      <td colspan="5" style="padding:0;">
+        <div class="customer-watches-detail">
+          <table>
+            <thead><tr><th>VARIANT</th><th>ACTIVATION CODE</th><th>PURCHASE DATE</th><th>REGISTERED</th></tr></thead>
+            <tbody>${cWatches.map(w => {
+              const v = w.variant || 'black'
+              const regDate = w.activated_at ? (() => { const d = new Date(w.activated_at); return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear() })() : '—'
+              const purDate = w.purchase_date ? (() => { const d = new Date(w.purchase_date); return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear() })() : '—'
+              return `<tr>
+                <td><span class="watch-variant-badge"><span class="watch-variant-dot ${v}"></span>${variantLabels[v]||v.toUpperCase()} ROMA</span></td>
+                <td style="font-family:monospace;letter-spacing:0.1em;">${w.activation_code || '—'}</td>
+                <td>${purDate}</td>
+                <td>${regDate}</td>
+              </tr>`
+            }).join('')}</tbody>
+          </table>
+        </div>
+      </td>
+    </tr>`
+  })
+  document.getElementById('customers-body').innerHTML = html
+}
+
+function toggleCustomerWatches(customerId, btn) {
+  const row = document.getElementById('cw-' + customerId)
+  if (!row) return
+  const isOpen = row.style.display !== 'none'
+  row.style.display = isOpen ? 'none' : 'table-row'
+  if (btn) btn.textContent = isOpen ? btn.textContent.replace('HIDE','VIEW') : btn.textContent.replace('VIEW','HIDE')
 }
 
 // ── EMAIL VIA SUPABASE EDGE FUNCTION ──
