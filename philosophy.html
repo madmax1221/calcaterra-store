@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Terms of Service — Calcaterra</title>
+<title>Philosophy — Calcaterra</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -12,6 +12,7 @@ html{scroll-behavior:smooth;}
 body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;overflow-x:hidden;}
 ::-webkit-scrollbar{width:1px;}
 ::-webkit-scrollbar-thumb{background:rgba(26,24,20,0.15);}
+::selection{background:rgba(26,24,20,0.08);}
 #nav{position:fixed;top:0;left:0;right:0;z-index:500;height:96px;display:flex;justify-content:space-between;align-items:center;padding:18px 52px;background:rgba(242,239,233,0.95);border-bottom:1px solid rgba(26,24,20,0.07);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
 .nav-l,.nav-r{display:flex;gap:28px;align-items:center;}
 .nav-center{position:absolute;left:50%;transform:translateX(-50%);}
@@ -24,6 +25,8 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;position:relative;}
 .nav-icon-btn:hover{opacity:1;}
 .nav-icon-btn svg{width:18px;height:18px;stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.cart-wrap{position:relative;}
+.cart-badge{position:absolute;top:-5px;right:-6px;width:14px;height:14px;border-radius:50%;background:#1a1814;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;color:#f2efe9;display:none;align-items:center;justify-content:center;}
 #menu-overlay{position:fixed;inset:0;z-index:480;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
 #menu-drawer{position:fixed;top:0;left:0;bottom:0;width:300px;background:#f2efe9;z-index:490;transform:translateX(-100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;padding:120px 48px 60px;}
@@ -38,7 +41,6 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 #menu-drawer.open .drawer-nav a:nth-child(4){transition-delay:.25s;}
 #menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
 .drawer-footer{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.28);}
-.cart-badge{position:absolute;top:-5px;right:-6px;width:14px;height:14px;border-radius:50%;background:#1a1814;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;color:#f2efe9;display:none;align-items:center;justify-content:center;}
 #account-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:498;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
 #account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
 #account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f2efe9;z-index:499;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.07);}
@@ -91,21 +93,76 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .cal-search-no-results p{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;color:rgba(26,24,20,0.35);}
 .cal-search-hint{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.25);text-align:center;margin-top:48px;}
 @media(max-width:860px){#account-drawer{width:100%;top:96px;}}
-.page-hero{padding:180px 52px 80px;max-width:900px;margin:0 auto;text-align:center;}
-.page-eyebrow{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.72em;color:rgba(26,24,20,0.35);display:block;margin-bottom:32px;}
-.page-title{font-size:clamp(42px,6vw,86px);font-weight:300;line-height:1.08;letter-spacing:0.04em;color:#1a1814;margin-bottom:32px;}
-.page-title em{font-style:italic;}
-.page-date{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.3);}
-.hairline{width:1px;height:80px;background:rgba(26,24,20,0.09);margin:0 auto;}
-.legal-content{max-width:720px;margin:0 auto;padding:80px 52px 120px;}
-.legal-section{margin-bottom:56px;}
-.legal-section-num{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:400;letter-spacing:0.5em;color:rgba(26,24,20,0.25);display:block;margin-bottom:12px;}
-.legal-section-title{font-size:clamp(20px,2.5vw,30px);font-weight:300;color:#1a1814;margin-bottom:20px;line-height:1.2;}
-.legal-section-title em{font-style:italic;color:rgba(26,24,20,0.4);}
-.legal-body{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.05em;line-height:2.1;color:rgba(26,24,20,0.6);}
-.legal-body + .legal-body{margin-top:16px;}
-.legal-body a{color:#1a1814;text-decoration:underline;text-underline-offset:3px;}
-.legal-divider{height:1px;background:rgba(26,24,20,0.07);margin:56px 0;}
+
+/* OPENING */
+.opening{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 52px 100px;position:relative;overflow:hidden;}
+.opening-bg{position:absolute;inset:0;background:#141210;z-index:0;}
+.opening-grain{position:absolute;inset:0;z-index:1;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");opacity:0.4;pointer-events:none;}
+.opening-line{position:absolute;top:0;left:52px;bottom:0;width:1px;background:linear-gradient(to bottom,transparent 0%,rgba(242,239,233,0.06) 30%,rgba(242,239,233,0.06) 70%,transparent 100%);z-index:2;}
+.opening-content{position:relative;z-index:3;max-width:860px;}
+.opening-eyebrow{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.72em;color:rgba(242,239,233,0.32);display:block;margin-bottom:40px;}
+.opening-title{font-size:clamp(52px,8vw,112px);font-weight:300;line-height:1.0;letter-spacing:0.02em;color:#f2efe9;}
+.opening-title em{font-style:italic;color:rgba(242,239,233,0.28);}
+.opening-sub{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.1em;line-height:2;color:rgba(242,239,233,0.48);max-width:520px;margin-top:52px;padding-top:52px;border-top:1px solid rgba(242,239,233,0.07);}
+.opening-sub strong{color:rgba(242,239,233,0.72);font-weight:300;}
+.scroll-cue{position:absolute;bottom:48px;right:52px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.scroll-cue-line{width:1px;height:60px;background:linear-gradient(to bottom,rgba(242,239,233,0.15),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+@keyframes scrollPulse{0%,100%{opacity:0.3;}50%{opacity:0.8;}}
+.scroll-cue-label{font-family:'Montserrat',sans-serif;font-size:6.5px;font-weight:300;letter-spacing:0.5em;color:rgba(242,239,233,0.12);writing-mode:vertical-rl;}
+
+/* TENETS */
+.tenets{background:#f2efe9;padding:140px 52px;}
+.tenets-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:100px;border-bottom:1px solid rgba(26,24,20,0.07);padding-bottom:40px;}
+.tenets-eyebrow{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.65em;color:rgba(26,24,20,0.25);}
+.tenets-count{font-family:'Times New Roman',Times,serif;font-size:11px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.18);}
+.tenet{display:grid;grid-template-columns:80px 1fr 1fr;gap:0;padding:64px 0;border-bottom:1px solid rgba(26,24,20,0.06);align-items:start;}
+.tenet:last-child{border-bottom:none;}
+.tenet-num{font-family:'Times New Roman',Times,serif;font-size:clamp(48px,5vw,72px);font-weight:300;color:rgba(26,24,20,0.07);line-height:1;padding-top:4px;}
+.tenet-heading{font-size:clamp(26px,3.2vw,44px);font-weight:300;line-height:1.18;letter-spacing:0.02em;color:#1a1814;padding-right:80px;}
+.tenet-heading em{font-style:italic;color:rgba(26,24,20,0.32);}
+.tenet-body{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.06em;line-height:2.1;color:rgba(26,24,20,0.68);padding-top:8px;}
+
+/* POSITION */
+.position{background:#141210;padding:160px 52px;position:relative;overflow:hidden;}
+.position-bg-word{position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:'Times New Roman',Times,serif;font-size:clamp(160px,22vw,320px);font-weight:300;color:rgba(242,239,233,0.025);letter-spacing:-0.04em;pointer-events:none;user-select:none;line-height:1;white-space:nowrap;}
+.position-content{position:relative;z-index:2;max-width:780px;}
+.position-eyebrow{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.65em;color:rgba(242,239,233,0.30);display:block;margin-bottom:72px;}
+.position-line{font-size:clamp(28px,4.5vw,62px);font-weight:300;line-height:1.25;letter-spacing:0.01em;color:rgba(242,239,233,0.18);padding:14px 0;border-bottom:1px solid rgba(242,239,233,0.04);opacity:0;transform:translateX(-20px);transition:opacity .8s ease,transform .8s ease,color .5s ease;}
+.position-line.in{opacity:1;transform:translateX(0);}
+.position-line.lit{color:rgba(242,239,233,0.75);}
+.position-line:nth-child(1){transition-delay:.05s;}
+.position-line:nth-child(2){transition-delay:.15s;}
+.position-line:nth-child(3){transition-delay:.25s;}
+.position-line:last-child{border-bottom:none;font-size:clamp(32px,5vw,70px);transition-delay:.35s;}
+.position-line:last-child.in{color:#f2efe9;}
+.position-line em{font-style:italic;}
+
+/* CONVICTION */
+.conviction{background:#e9e5de;padding:160px 52px;}
+.conviction-inner{max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1.5fr;gap:120px;align-items:start;}
+.conviction-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.65em;color:rgba(26,24,20,0.25);display:block;margin-bottom:32px;}
+.conviction-heading{font-size:clamp(36px,4.5vw,62px);font-weight:300;line-height:1.1;letter-spacing:0.02em;color:#1a1814;position:sticky;top:120px;}
+.conviction-heading em{font-style:italic;color:rgba(26,24,20,0.28);}
+.conviction-body{font-family:'Montserrat',sans-serif;font-size:13.5px;font-weight:300;letter-spacing:0.06em;line-height:2.15;color:rgba(26,24,20,0.72);}
+.conviction-body+.conviction-body{margin-top:28px;}
+.conviction-pull{font-family:'Times New Roman',Times,serif;font-size:clamp(20px,2.5vw,30px);font-weight:300;line-height:1.5;letter-spacing:0.02em;color:#1a1814;border-left:2px solid rgba(26,24,20,0.15);padding-left:28px;margin:48px 0;}
+.conviction-pull em{font-style:italic;color:rgba(26,24,20,0.35);}
+.conviction-rules{margin-top:56px;border-top:1px solid rgba(26,24,20,0.1);}
+.conviction-rule{display:flex;align-items:baseline;gap:20px;padding:20px 0;border-bottom:1px solid rgba(26,24,20,0.07);}
+.conviction-rule-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:400;letter-spacing:0.5em;color:rgba(26,24,20,0.28);flex-shrink:0;width:110px;}
+.conviction-rule-value{font-size:clamp(15px,1.8vw,20px);font-weight:300;color:#1a1814;letter-spacing:0.02em;}
+.conviction-rule-value em{font-style:italic;color:rgba(26,24,20,0.32);}
+
+/* CLOSING */
+.closing{background:#f2efe9;padding:220px 52px 180px;text-align:center;}
+.closing-mark{font-family:'Times New Roman',Times,serif;font-size:10px;letter-spacing:0.8em;color:rgba(26,24,20,0.1);display:block;margin-bottom:80px;}
+.closing-statement{font-size:clamp(48px,8vw,120px);font-weight:300;line-height:0.95;letter-spacing:0.01em;color:#1a1814;max-width:860px;margin:0 auto;}
+.closing-statement em{font-style:italic;color:rgba(26,24,20,0.22);}
+.closing-word{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.7em;color:rgba(26,24,20,0.22);display:block;margin-top:56px;}
+.closing-cta{margin-top:80px;display:inline-block;background:#1a1814;color:#f2efe9;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;padding:20px 56px;text-decoration:none;transition:background .25s;}
+.closing-cta:hover{background:#2d2a25;}
+
+/* FOOTER */
 footer{background:#141210;padding:80px 52px 48px;}
 .foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
 .foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
@@ -115,12 +172,34 @@ footer{background:#141210;padding:80px 52px 48px;}
 .foot-col a:hover{color:rgba(242,239,233,0.72);}
 .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;}
 .foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.14);}
+
+/* FADE */
+.fade{opacity:0;transform:translateY(28px);transition:opacity 1s ease,transform 1s ease;}
+.fade.in{opacity:1;transform:translateY(0);}
+.fade-d1{transition-delay:.1s;}
+.fade-d2{transition-delay:.2s;}
+.fade-d3{transition-delay:.3s;}
+.fade-d4{transition-delay:.4s;}
+
+@media(max-width:1024px){
+  .tenet{grid-template-columns:60px 1fr;gap:0 32px;}
+  .tenet-body{grid-column:2;grid-row:2;padding-top:20px;}
+  .tenet-heading{padding-right:0;}
+  .conviction-inner{grid-template-columns:1fr;gap:60px;}
+  .conviction-heading{position:static;}
+}
 @media(max-width:860px){
   #nav{padding:0 24px;}
-  .page-hero{padding:140px 24px 60px;}
-  .legal-content{padding:60px 24px 80px;}
+  .opening{padding:0 24px 80px;}
+  .opening-line{left:24px;}
+  .tenets{padding:80px 24px;}
+  .position{padding:100px 24px;}
+  .conviction{padding:80px 24px;}
+  .closing{padding:120px 24px 100px;}
   footer{padding:48px 24px 36px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+  .tenet{grid-template-columns:50px 1fr;}
+  .scroll-cue{display:none;}
 }
 </style>
 </head>
@@ -158,11 +237,10 @@ footer{background:#141210;padding:80px 52px 48px;}
   <nav class="drawer-nav">
     <a href="/collections">Collection</a>
     <a href="/about">About</a>
+    <a href="/philosophy">Philosophy</a>
     <a href="/contact">Contact</a>
-    <a href="#">Notify Me</a>
-    <a href="#">Stockists</a>
   </nav>
-  <span class="drawer-footer">CALCATERRA</span>
+  <span class="drawer-footer">CALCATERRA &mdash; EST. MMXXVI</span>
 </div>
 
 <div id="account-overlay"></div>
@@ -192,100 +270,123 @@ footer{background:#141210;padding:80px 52px 48px;}
   <p class="cal-search-hint">ESC TO CLOSE</p>
 </div>
 
-<section class="page-hero">
-  <span class="page-eyebrow">LEGAL</span>
-  <h1 class="page-title">Terms of <em>Service.</em></h1>
-  <p class="page-date">LAST UPDATED: APRIL 2026</p>
+<!-- OPENING -->
+<section class="opening">
+  <div class="opening-bg"></div>
+  <div class="opening-grain"></div>
+  <div class="opening-line"></div>
+  <div class="opening-content">
+    <span class="opening-eyebrow fade">THE CALCATERRA PHILOSOPHY</span>
+    <h1 class="opening-title fade fade-d1">How we<br><em>think.</em></h1>
+    <p class="opening-sub fade fade-d2">
+      Most things are made by default. Options are left open, and the result reflects the process — hesitant, compromised, predictable.<br><br>
+      <strong>Calcaterra begins where that ends.</strong><br><br>
+      Everything made here is made once, made deliberately, and held to. Not a method. A standard.
+    </p>
+  </div>
+  <div class="scroll-cue">
+    <div class="scroll-cue-line"></div>
+    <span class="scroll-cue-label">SCROLL</span>
+  </div>
 </section>
 
-<div class="hairline"></div>
-
-<div class="legal-content">
-
-  <div class="legal-section">
-    <span class="legal-section-num">01</span>
-    <h2 class="legal-section-title">Agreement to <em>terms.</em></h2>
-    <p class="legal-body">By accessing or using calcaterra.co and placing an order with Calcaterra, you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you may not use our services. These terms apply to all visitors, users, and customers of the website.</p>
+<!-- TENETS -->
+<section class="tenets">
+  <div class="tenets-header fade">
+    <span class="tenets-eyebrow">DESIGN PRINCIPLES</span>
+    <span class="tenets-count">FIVE TENETS</span>
   </div>
 
-  <div class="legal-divider"></div>
-
-  <div class="legal-section">
-    <span class="legal-section-num">02</span>
-    <h2 class="legal-section-title">Products & <em>pricing.</em></h2>
-    <p class="legal-body">All products are sold subject to availability. Prices are displayed in Euros (€) and are inclusive of any applicable taxes unless otherwise stated. Calcaterra reserves the right to modify prices at any time without notice, although any price change will not affect an order that has already been confirmed.</p>
-    <p class="legal-body">Product images are as accurate as commercially possible but may vary slightly from the physical product due to screen settings and photography conditions.</p>
+  <div class="tenet">
+    <span class="tenet-num fade">I</span>
+    <h2 class="tenet-heading fade fade-d1">Restraint is<br>not a <em>style.</em></h2>
+    <p class="tenet-body fade fade-d2">It is what remains after everything unnecessary has been removed. Decoration is easy to add and impossible to justify. We do not add it.</p>
   </div>
 
-  <div class="legal-divider"></div>
-
-  <div class="legal-section">
-    <span class="legal-section-num">03</span>
-    <h2 class="legal-section-title">Order <em>confirmation.</em></h2>
-    <p class="legal-body">Placing an order constitutes an offer to purchase. A contract is formed only when we confirm your order and process your payment. We reserve the right to refuse or cancel any order at our discretion, in which case a full refund will be issued promptly.</p>
-    <p class="legal-body">An order confirmation email will be sent once your order is received. A separate shipping confirmation will be sent when your order is dispatched.</p>
+  <div class="tenet">
+    <span class="tenet-num fade">II</span>
+    <h2 class="tenet-heading fade fade-d1">The permanent<br>over the <em>current.</em></h2>
+    <p class="tenet-body fade fade-d2">Trend belongs to consensus, which means it belongs to no one. We are not interested in the first impression. We are building for the second decade of ownership — when nothing has changed, because nothing needed to.</p>
   </div>
 
-  <div class="legal-divider"></div>
-
-  <div class="legal-section">
-    <span class="legal-section-num">04</span>
-    <h2 class="legal-section-title">Payment & <em>security.</em></h2>
-    <p class="legal-body">Payment is processed at the time of order. We accept major credit and debit cards. All payment information is processed securely by our payment provider. Calcaterra does not store, access, or retain your full card details at any point.</p>
-    <p class="legal-body">By submitting your payment details, you confirm that you are authorised to use the payment method provided.</p>
+  <div class="tenet">
+    <span class="tenet-num fade">III</span>
+    <h2 class="tenet-heading fade fade-d1">Proportion<br>before <em>everything.</em></h2>
+    <p class="tenet-body fade fade-d2">Before material. Before finish. Before function. A watch that is correctly proportioned communicates something before it is touched. We start there.</p>
   </div>
 
-  <div class="legal-divider"></div>
-
-  <div class="legal-section">
-    <span class="legal-section-num">05</span>
-    <h2 class="legal-section-title">Shipping & <em>delivery.</em></h2>
-    <p class="legal-body">Shipping terms, estimated delivery times, and international shipping conditions are set out in our <a href="/shipping">Shipping Policy</a>. Delivery timeframes are estimates only. Calcaterra is not liable for delays caused by third-party carriers or customs processes beyond our control.</p>
+  <div class="tenet">
+    <span class="tenet-num fade">IV</span>
+    <h2 class="tenet-heading fade fade-d1">Honesty<br>in <em>material.</em></h2>
+    <p class="tenet-body fade fade-d2">We do not use materials to imply what is not present. What you see was chosen because it is right — not because it suggests something it is not.</p>
   </div>
 
-  <div class="legal-divider"></div>
-
-  <div class="legal-section">
-    <span class="legal-section-num">06</span>
-    <h2 class="legal-section-title">Returns & <em>refunds.</em></h2>
-    <p class="legal-body">Our returns and refund process is set out in our <a href="/returns">Returns Policy</a>. Refunds will be issued to the original payment method within 5–10 business days of receiving the returned item in acceptable condition.</p>
+  <div class="tenet">
+    <span class="tenet-num fade">V</span>
+    <h2 class="tenet-heading fade fade-d1">One<br><em>direction.</em></h2>
+    <p class="tenet-body fade fade-d2">Every process reaches a point where all options have been considered and one remains. That is the direction taken. We do not revisit it.</p>
   </div>
+</section>
 
-  <div class="legal-divider"></div>
-
-  <div class="legal-section">
-    <span class="legal-section-num">07</span>
-    <h2 class="legal-section-title">Intellectual <em>property.</em></h2>
-    <p class="legal-body">All content on calcaterra.co — including imagery, copy, design, and the Calcaterra name and mark — is the property of Calcaterra and protected by applicable intellectual property laws. You may not reproduce, distribute, or use any content from this website without prior written permission.</p>
+<!-- POSITION -->
+<section class="position">
+  <div class="position-bg-word">DECIDES</div>
+  <div class="position-content">
+    <span class="position-eyebrow fade">THE CALCATERRA POSITION</span>
+    <div class="position-line">There are houses that <em>follow.</em></div>
+    <div class="position-line">There are houses that <em>react.</em></div>
+    <div class="position-line">There are houses that <em>explain themselves.</em></div>
+    <div class="position-line">Calcaterra does <em>none of these things.</em></div>
   </div>
+</section>
 
-  <div class="legal-divider"></div>
-
-  <div class="legal-section">
-    <span class="legal-section-num">08</span>
-    <h2 class="legal-section-title">Limitation of <em>liability.</em></h2>
-    <p class="legal-body">To the fullest extent permitted by law, Calcaterra shall not be liable for any indirect, incidental, or consequential damages arising from your use of our website or products. Our total liability in any matter shall not exceed the amount paid by you for the relevant order.</p>
+<!-- CONVICTION -->
+<section class="conviction">
+  <div class="conviction-inner">
+    <div>
+      <span class="conviction-label fade">AT ITS CORE</span>
+      <h2 class="conviction-heading fade fade-d1">A standard,<br>not an<br><em>ambition.</em></h2>
+    </div>
+    <div class="conviction-right">
+      <p class="conviction-body fade fade-d1">The objects we make are the result of a standard, not an ambition.</p>
+      <div class="conviction-pull fade fade-d2">
+        Ambition wants to impress.<br>
+        A standard wants to be <em>correct.</em><br>
+        The difference is visible in the work.
+      </div>
+      <p class="conviction-body fade fade-d2">The name Calcaterra is a standard. Every object made under it is held to the same demand: is this right? That question — asked once, answered honestly — has shaped everything this house has produced.</p>
+      <p class="conviction-body fade fade-d3">What you carry is not a statement. It is a choice, made once, worn indefinitely.</p>
+      <div class="conviction-rules">
+        <div class="conviction-rule fade fade-d1">
+          <span class="conviction-rule-label">THE OBJECT</span>
+          <span class="conviction-rule-value">Considered before <em>created.</em></span>
+        </div>
+        <div class="conviction-rule fade fade-d2">
+          <span class="conviction-rule-label">THE DESIGN</span>
+          <span class="conviction-rule-value">Reduced until <em>correct.</em></span>
+        </div>
+        <div class="conviction-rule fade fade-d3">
+          <span class="conviction-rule-label">THE PRICE</span>
+          <span class="conviction-rule-value">Honest. <em>Always.</em></span>
+        </div>
+        <div class="conviction-rule fade fade-d4">
+          <span class="conviction-rule-label">THE RESULT</span>
+          <span class="conviction-rule-value">Worn <em>indefinitely.</em></span>
+        </div>
+      </div>
+    </div>
   </div>
+</section>
 
-  <div class="legal-divider"></div>
+<!-- CLOSING -->
+<section class="closing">
+  <span class="closing-mark fade">✦ &nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp; ✦</span>
+  <h2 class="closing-statement fade fade-d1">Precision<br>over <em>everything.</em></h2>
+  <span class="closing-word fade fade-d2">ALWAYS.</span>
+  <a href="/collections/roma" class="closing-cta fade fade-d3">EXPLORE THE COLLECTION</a>
+</section>
 
-  <div class="legal-section">
-    <span class="legal-section-num">09</span>
-    <h2 class="legal-section-title">Changes to these <em>terms.</em></h2>
-    <p class="legal-body">We may update these Terms of Service from time to time. The current version will always be available at calcaterra.co/terms.html. Continued use of our website following any changes constitutes your acceptance of the revised terms.</p>
-    <p class="legal-body">For any questions about these terms, contact <a href="mailto:support@calcaterra.co">support@calcaterra.co</a>.</p>
-  </div>
-
-  <div class="legal-divider"></div>
-
-  <div class="legal-section">
-    <span class="legal-section-num">10</span>
-    <h2 class="legal-section-title">Governing <em>law.</em></h2>
-    <p class="legal-body">These Terms of Service are governed by applicable law. Nothing in these terms affects your statutory rights as a consumer under the laws of your country of residence. In the event of any dispute, we will first seek to resolve the matter directly and in good faith. You retain the right to bring a claim before the courts of your own jurisdiction at all times.</p>
-  </div>
-
-</div>
-
+<!-- FOOTER -->
 <footer>
   <div class="foot-grid">
     <div>
@@ -331,7 +432,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     const firstName = customer?.first_name || session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || 'Member'
     const lastName = customer?.last_name || session.user.user_metadata?.last_name || ''
     const name = `${firstName} ${lastName}`.trim()
-      const isAdmin = customer?.role === 'admin' || session.user.app_metadata?.role === 'admin'
+    const isAdmin = customer?.role === 'admin' || session.user.app_metadata?.role === 'admin'
     document.getElementById('accountContent').innerHTML = `
       <div class="acct-in">
         <div class="acct-in-header">
@@ -345,7 +446,7 @@ footer{background:#141210;padding:80px 52px 48px;}
           <a href="/dashboard?tab=watches" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
           <a href="/dashboard?tab=addresses" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
           <a href="/dashboard?tab=details" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
-            ${isAdmin ? '<a href="/cal-ops" class="acct-in-item acct-in-admin">CAL OPS <span class="acct-in-arrow">→</span></a>' : ''}
+          ${isAdmin ? '<a href="/cal-ops" class="acct-in-item acct-in-admin">CAL OPS <span class="acct-in-arrow">→</span></a>' : ''}
         </nav>
         <div class="acct-in-footer">
           <button id="signOutBtn" class="acct-in-signout">SIGN OUT</button>
@@ -399,7 +500,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       const imgs = Array.isArray(v.images) ? v.images : JSON.parse(v.images || '[]')
       const img = imgs[0] || ''
       const slug = v.attributes?.slug || ''
-      const url = slug ? `/roma-product.html?variant=${slug}` : '#'
+      const url = slug ? `/collections/roma/${slug}` : '#'
       html += `<a href="${url}" class="cal-search-result"><div class="cal-search-result-img">${img ? `<img src="${img}" alt="${v.name}" loading="lazy">` : ''}</div><div><span class="cal-search-result-ref">CALCATERRA ROMA</span><span class="cal-search-result-title">${v.name}</span><span class="cal-search-result-price">€329</span></div></a>`
     })
     document.getElementById('cal-search-results').innerHTML = html
@@ -408,6 +509,9 @@ footer{background:#141210;padding:80px 52px 48px;}
   function reveal() {
     document.querySelectorAll('.fade:not(.in)').forEach(el => {
       if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('in')
+    })
+    document.querySelectorAll('.position-line:not(.in)').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight - 60) el.classList.add('in')
     })
   }
 
@@ -431,9 +535,27 @@ footer{background:#141210;padding:80px 52px 48px;}
       if (query.length < 2) { document.getElementById('cal-search-results').innerHTML = ''; return }
       debounceTimer = setTimeout(() => fetchSearchResults(query), 250)
     })
-    setTimeout(reveal, 300)
     window.addEventListener('scroll', reveal, { passive: true })
+    reveal()
   })
+
+  // Position lines light up progressively as user scrolls through section
+  ;(function(){
+    var lines = document.querySelectorAll('.position-line')
+    var section = document.querySelector('.position')
+    if (!section || !lines.length) return
+    window.addEventListener('scroll', function(){
+      var rect = section.getBoundingClientRect()
+      var sectionH = rect.height
+      var scrolled = -rect.top
+      var progress = Math.max(0, Math.min(1, scrolled / Math.max(1, sectionH - window.innerHeight * 0.6)))
+      var lit = Math.floor(progress * (lines.length + 1))
+      lines.forEach(function(line, i){
+        if (i < lit) line.classList.add('lit')
+        else line.classList.remove('lit')
+      })
+    }, { passive: true })
+  })()
 </script>
 </body>
 </html>

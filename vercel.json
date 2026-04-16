@@ -18,7 +18,8 @@
     { "source": "/signin", "destination": "/signin.html" },
     { "source": "/register", "destination": "/register.html" },
     { "source": "/forgot-password", "destination": "/forgot-password.html" },
-    { "source": "/cal-ops", "destination": "/cal-ops.html" }
+    { "source": "/cal-ops", "destination": "/cal-ops.html" },
+    { "source": "/philosophy", "destination": "/philosophy.html" }
   ],
   "redirects": [
     { "source": "/index.html", "destination": "/", "permanent": true },
