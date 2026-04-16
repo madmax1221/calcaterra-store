@@ -64,6 +64,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .acct-in-item:hover{color:#1a1814;}
 .acct-in-arrow{opacity:0;font-size:10px;letter-spacing:0;transition:opacity .25s,transform .25s;transform:translateX(-4px);}
 .acct-in-item:hover .acct-in-arrow{opacity:0.4;transform:translateX(0);}
+.acct-in-admin{border-top:2px solid rgba(26,24,20,0.09);margin-top:6px;color:rgba(26,24,20,0.85);}
 .acct-in-footer{padding:32px 44px;border-top:1px solid rgba(26,24,20,0.05);flex-shrink:0;}
 .acct-in-signout{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.3);cursor:pointer;transition:color .25s;padding:0;}
 .acct-in-signout:hover{color:rgba(26,24,20,0.55);}
@@ -325,10 +326,11 @@ footer{background:#141210;padding:80px 52px 48px;}
   async function initAuth() {
     const { data: { session } } = await _supabase.auth.getSession()
     if (!session) return
-    const { data: customer } = await _supabase.from('customers').select('first_name, last_name, id').eq('auth_user_id', session.user.id).single()
+    const { data: customer } = await _supabase.from('customers').select('first_name, last_name, id, role').eq('auth_user_id', session.user.id).single()
     const firstName = customer?.first_name || session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || 'Member'
     const lastName = customer?.last_name || session.user.user_metadata?.last_name || ''
     const name = `${firstName} ${lastName}`.trim()
+      const isAdmin = customer?.role === 'admin'
     document.getElementById('accountContent').innerHTML = `
       <div class="acct-in">
         <div class="acct-in-header">
@@ -342,6 +344,7 @@ footer{background:#141210;padding:80px 52px 48px;}
           <a href="/dashboard" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
           <a href="/dashboard" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
           <a href="/dashboard" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
+            ${isAdmin ? '<a href="/cal-ops" class="acct-in-item acct-in-admin">CAL OPS <span class="acct-in-arrow">→</span></a>' : ''}
         </nav>
         <div class="acct-in-footer">
           <button id="signOutBtn" class="acct-in-signout">SIGN OUT</button>
