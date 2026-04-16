@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /checkout
+Disallow: /cart
+Disallow: /signin
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /cal-ops
+
+Sitemap: https://calcaterra.co/sitemap.xml
