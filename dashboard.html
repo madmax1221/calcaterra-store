@@ -526,6 +526,11 @@ footer{background:#141210;padding:80px 52px 48px;}
     loadWatches(customer?.id)
     loadAddresses(customer?.id)
 
+    if (!emailJustVerified) {
+      const tabParam = searchParams.get('tab')
+      if (tabParam) showSection(tabParam)
+    }
+
     document.getElementById('signOutBtn').addEventListener('click', async () => {
       await _supabase.auth.signOut()
       window.location.href = '/index.html'
@@ -716,6 +721,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     const map = { orders:0, watches:1, register:2, details:3, addresses:4 }
     const items = document.querySelectorAll('.dash-nav-item')
     if (map[id] !== undefined && items[map[id]]) items[map[id]].classList.add('active')
+    window.history.replaceState({}, '', '/dashboard?tab=' + id)
   }
 
   function toggleEditForm() {
