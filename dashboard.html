@@ -493,7 +493,10 @@ footer{background:#141210;padding:80px 52px 48px;}
     const type = hashParams.get('type') || searchParams.get('type') || ''
     const emailJustVerified = type === 'email_change'
 
-    const { data: { session } } = await _supabase.auth.getSession()
+    const { data: refreshed } = await _supabase.auth.refreshSession()
+    const { data: { session } } = refreshed.session
+      ? { data: refreshed }
+      : await _supabase.auth.getSession()
     if (!session) { window.location.href = '/signin.html'; return }
     currentSession = session
 
