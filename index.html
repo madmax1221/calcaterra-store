@@ -184,7 +184,7 @@ footer{background:#141210;padding:80px 52px 48px;}
   .pillars{grid-template-columns:1fr;padding:40px 24px 80px;gap:36px;}
   .manifesto{padding:100px 24px;}
   .split{grid-template-columns:1fr;}
-  .split-img{height:320px;}
+  .split-img{aspect-ratio:16/9;height:auto;}
   .split-text{padding:56px 28px;}
   .numbers{flex-direction:column;gap:40px;padding:60px 24px;}
   .num-item{border-bottom:1px solid rgba(26,24,20,0.07);padding:0 0 32px;}
@@ -192,6 +192,12 @@ footer{background:#141210;padding:80px 52px 48px;}
   .notify-sec{padding:80px 24px;}
   footer{padding:36px 24px 40px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+}
+@media(max-width:480px){
+  .hero-copy{bottom:48px;}
+  .split-img{aspect-ratio:4/3;}
+  .conviction{padding:60px 24px 40px;}
+  .manifesto{padding:72px 24px;}
 }
 </style>
 </head>

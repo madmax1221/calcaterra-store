@@ -148,11 +148,17 @@ footer{background:#141210;padding:80px 52px 48px;}
   .story-section{padding:60px 24px;}
   .dark-interlude{padding:80px 24px;}
   .story-split{grid-template-columns:1fr;}
-  .story-split-img{height:360px;}
+  .story-split-img{aspect-ratio:16/9;height:auto;min-height:240px;}
   .story-split-text{padding:56px 28px;}
   .story-closing{padding:100px 24px;}
   footer{padding:48px 24px 36px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+}
+@media(max-width:480px){
+  .page-hero{padding:120px 24px 48px;}
+  .story-split-img{aspect-ratio:4/3;}
+  .story-section{padding:48px 24px;}
+  .dark-interlude{padding:60px 24px;}
 }
 </style>
 </head>

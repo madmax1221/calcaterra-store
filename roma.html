@@ -214,18 +214,28 @@ footer{background:#141210;padding:80px 52px 48px;}
   #nav{padding:0 24px;}
   .roma-hero-inner{padding:0 24px 60px;}
   .philosophy-section{grid-template-columns:1fr;}
-  .philosophy-img{height:400px;position:relative;}
+  .philosophy-img{height:clamp(280px,55vw,400px);position:relative;}
   .philosophy-text{padding:60px 28px;}
   .references-section{padding:60px 24px 100px;}
-  .references-grid{grid-template-columns:1fr;}
-  .editorial-strip{height:45vh;}
+  .references-grid{grid-template-columns:repeat(2,1fr);}
+  .feature-image{height:55vh;min-height:280px;}
+  .feature-image-caption{bottom:20px;right:24px;}
+  .editorial-strip{height:38vh;}
   .specs-section{padding:80px 24px;}
   .specs-inner{grid-template-columns:1fr;}
   .specs-header{grid-column:1;}
-  .cinematic-block{height:70vh;}
+  .cinematic-block{height:55vh;}
   #account-drawer{width:100%;top:96px;}
   footer{padding:48px 24px 36px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+}
+@media(max-width:480px){
+  .references-grid{grid-template-columns:1fr;}
+  .roma-hero{min-height:100svh;}
+  .feature-image{height:48vh;min-height:240px;}
+  .cinematic-block{height:48vh;}
+  .editorial-strip{height:32vh;}
+  .philosophy-img{height:clamp(220px,70vw,320px);}
 }
 </style>
 </head>
