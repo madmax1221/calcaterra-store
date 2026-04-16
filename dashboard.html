@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="format-detection" content="telephone=no, address=no, email=no"/>
 <title>My Account — Calcaterra</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -98,6 +99,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .details-field{display:flex;flex-direction:column;gap:8px;}
 .details-label{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.35);}
 .details-value{font-size:18px;font-weight:300;letter-spacing:0.02em;color:#1a1814;padding:12px 0;border-bottom:1px solid rgba(26,24,20,0.08);}
+.details-value a{color:inherit;text-decoration:none;pointer-events:none;}
 .details-edit{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.4);border:1px solid rgba(26,24,20,0.15);padding:12px 28px;text-decoration:none;cursor:pointer;margin-top:32px;transition:color .2s,border-color .2s;background:none;}
 .details-edit:hover{color:#1a1814;border-color:rgba(26,24,20,0.35);}
 .address-card{border:1px solid rgba(26,24,20,0.08);padding:28px;margin-bottom:16px;max-width:400px;position:relative;}
@@ -514,8 +516,7 @@ footer{background:#141210;padding:80px 52px 48px;}
 
     const firstName = customer?.first_name || session.user.user_metadata?.first_name || ''
     const lastName = customer?.last_name || session.user.user_metadata?.last_name || ''
-    // Always use auth email as source of truth
-    const email = session.user.email || customer?.email || ''
+    const email = customer?.email || session.user.email || ''
 
     updateDisplay(firstName, lastName, email)
     loadOrders(customer?.id)
