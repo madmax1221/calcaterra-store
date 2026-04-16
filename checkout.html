@@ -592,55 +592,41 @@ btn.textContent = 'PROCESSING...'
     const email = currentSession ? (currentCustomer?.email || currentSession.user.email) : document.getElementById('info-email').value.trim()
     let orderId = null
     try {
-      const { data: order, error } = await _supabase.from('orders').insert({
-        customer_id: currentCustomer?.id || null,
-        status: 'pending',
-        total: orderTotal,
-        discount_amount: 0,
-        shipping_address: shippingAddress,
-        notes: null
-      }).select().single()
+      // Resolve variant IDs first
+      const variantKeys = [...new Set(cartItems.map(i => i.variantKey).filter(Boolean))]
+      const { data: variantData } = await _supabase.from('product_variants').select('id, name')
+        .in('name', variantKeys.map(k => `Roma ${k.charAt(0).toUpperCase() + k.slice(1)}`))
+      const variantMap = {}
+      ;(variantData || []).forEach(v => { variantMap[v.name.toLowerCase().replace('roma ', '')] = v.id })
+      const { data: productData } = await _supabase.from('products').select('id').eq('slug', 'roma').single()
+
+      // Use SECURITY DEFINER RPC — bypasses RLS for both guests and logged-in users
+      const items = cartItems.map(item => ({
+        product_id: productData?.id || null,
+        variant_id: variantMap[item.variantKey] || null,
+        quantity: item.quantity,
+        unit_price: item.price
+      }))
+      const { data: newOrderId, error } = await _supabase.rpc('place_order', {
+        p_customer_id: currentCustomer?.id ?? null,
+        p_total: orderTotal,
+        p_shipping_address: shippingAddress,
+        p_items: items
+      })
       if (error) throw error
-      orderId = order.id
-      // auto-save address for logged-in users who typed into the guest form
+      orderId = newOrderId
+
+      // Auto-save address for logged-in users who typed in the guest form
       if (currentCustomer && !selectedAddressId && shippingAddress.line1) {
         const { data: savedAddr } = await _supabase.from('addresses').insert({
           customer_id: currentCustomer.id,
-          line1: shippingAddress.line1,
-          line2: shippingAddress.line2 || null,
-          city: shippingAddress.city,
-          province: shippingAddress.province || null,
+          line1: shippingAddress.line1, line2: shippingAddress.line2 || null,
+          city: shippingAddress.city, province: shippingAddress.province || null,
           postal_code: shippingAddress.postal_code || null,
-          country: shippingAddress.country,
-          is_default: savedAddresses.length === 0
+          country: shippingAddress.country, is_default: savedAddresses.length === 0
         }).select().single()
         if (savedAddr) { savedAddresses.push(savedAddr); selectedAddressId = savedAddr.id }
       }
-      const variantKeys = [...new Set(cartItems.map(i => i.variantKey).filter(Boolean))]
-const { data: variantData } = await _supabase
-  .from('product_variants')
-  .select('id, name')
-  .in('name', variantKeys.map(k => `Roma ${k.charAt(0).toUpperCase() + k.slice(1)}`))
-
-const variantMap = {}
-;(variantData || []).forEach(v => {
-  const key = v.name.toLowerCase().replace('roma ', '')
-  variantMap[key] = v.id
-})
-
-const { data: productData } = await _supabase
-  .from('products')
-  .select('id')
-  .eq('slug', 'roma')
-  .single()
-
-await _supabase.from('order_items').insert(cartItems.map(item => ({
-  order_id: orderId,
-  product_id: productData?.id || null,
-  variant_id: variantMap[item.variantKey] || null,
-  quantity: item.quantity,
-  unit_price: item.price
-})))
     } catch(err) { console.error('Order error:', err) }
 
     const orderNum = orderId ? 'CAL-' + orderId.slice(0,8).toUpperCase() : 'CAL-2026-' + Math.floor(1000 + Math.random() * 9000)
