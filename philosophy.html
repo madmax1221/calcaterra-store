@@ -124,7 +124,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 
 /* POSITION */
 .position{background:#141210;padding:160px 52px;position:relative;overflow:hidden;}
-.position-bg-word{display:none;}
+.position-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:clamp(280px,38vw,560px);opacity:.04;pointer-events:none;filter:invert(1);}
 .position-content{position:relative;z-index:2;max-width:780px;}
 .position-eyebrow{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.65em;color:rgba(242,239,233,0.30);display:block;margin-bottom:72px;}
 .position-line{font-size:clamp(28px,4.5vw,62px);font-weight:300;line-height:1.35;letter-spacing:0.01em;color:rgba(242,239,233,0.18);padding:10px 0;opacity:0;transform:translateX(-20px);transition:opacity .8s ease,transform .8s ease,color .5s ease;}
@@ -330,7 +330,7 @@ footer{background:#141210;padding:80px 52px 48px;}
 
 <!-- POSITION -->
 <section class="position">
-  <div class="position-bg-word">DECIDES</div>
+  <img class="position-mark" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt=""/>
   <div class="position-content">
     <span class="position-eyebrow fade">THE CALCATERRA POSITION</span>
     <div class="position-line">There are houses that <em>follow.</em></div>
@@ -383,7 +383,7 @@ footer{background:#141210;padding:80px 52px 48px;}
   <span class="closing-mark fade">✦ &nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp; ✦</span>
   <h2 class="closing-statement fade fade-d1">Precision<br>over <em>everything.</em></h2>
   <span class="closing-word fade fade-d2">ALWAYS.</span>
-  <a href="/collections/roma" class="closing-cta fade fade-d3">EXPLORE THE COLLECTION</a>
+  <a href="/collections" class="closing-cta fade fade-d3">EXPLORE THE COLLECTION</a>
 </section>
 
 <!-- FOOTER -->
