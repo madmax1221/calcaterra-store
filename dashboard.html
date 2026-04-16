@@ -694,7 +694,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       const { data: result, error } = await _supabase.rpc('activate_warranty', {
         p_code: code,
         p_purchase_date: date,
-        p_customer_id: currentCustomer?.id
+        p_customer_id: currentCustomer?.id ?? null
       })
       if (error) throw error
       if (result?.error) throw new Error(result.error)
