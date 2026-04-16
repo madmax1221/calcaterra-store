@@ -61,9 +61,9 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 #menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
 .drawer-footer{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.28);}
 /* ── CART DRAWER ── */
-#cart-overlay{position:fixed;inset:0;z-index:494;background:rgba(26,24,20,0);pointer-events:none;transition:background .4s ease;backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);}
-#cart-overlay.open{background:rgba(26,24,20,0.45);pointer-events:all;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);}
-#cart-drawer{position:fixed;top:0;right:0;bottom:0;z-index:495;width:420px;background:#f2efe9;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.08);}
+#cart-overlay{position:fixed;inset:0;z-index:494;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
+#cart-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
+#cart-drawer{position:fixed;top:96px;right:0;bottom:0;z-index:495;width:420px;background:#f2efe9;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.08);}
 #cart-drawer.open{transform:translateX(0);}
 .cd-header{padding:36px 40px 28px;border-bottom:1px solid rgba(26,24,20,0.07);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
 .cd-eyebrow{font-size:7px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.3);font-family:'Montserrat',sans-serif;display:block;margin-bottom:6px;}
@@ -91,7 +91,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .cd-item-price{font-family:'Times New Roman',Times,serif;font-size:18px;font-weight:300;color:#1a1814;letter-spacing:0.02em;}
 .cd-item-remove{background:none;border:none;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.2);margin-top:10px;padding:0;transition:color .2s;display:block;}
 .cd-item-remove:hover{color:rgba(26,24,20,0.5);}
-.cd-footer{padding:28px 40px 36px;border-top:1px solid rgba(26,24,20,0.07);flex-shrink:0;background:#f2efe9;}
+.cd-footer{padding:28px 40px 36px;border-top:1px solid rgba(26,24,20,0.07);flex-shrink:0;background:#f2efe9;display:flex;flex-direction:column;}
 .cd-subtotal{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:28px;}
 .cd-subtotal-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.35);}
 .cd-subtotal-value{font-family:'Times New Roman',Times,serif;font-size:26px;font-weight:300;color:#1a1814;}
@@ -439,8 +439,8 @@ footer{background:#141210;padding:80px 52px 48px;}
   </div>
   <div class="cd-footer" id="cd-footer">
     <div class="cd-subtotal">
-      <span style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.45);">SUBTOTAL</span>
-      <span class="cd-subtotal-val" id="cd-subtotal-val">€0</span>
+      <span class="cd-subtotal-label">SUBTOTAL</span>
+      <span class="cd-subtotal-value" id="cd-subtotal-val">€0</span>
     </div>
     <span class="cd-note">SHIPPING &amp; TAXES CALCULATED AT CHECKOUT</span>
     <button class="cd-btn-checkout" onclick="window.location.href='/checkout'">PROCEED TO CHECKOUT</button>
@@ -624,7 +624,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       return
     }
     emptyEl.style.display = 'none'
-    footerEl.style.display = 'flex'
+    footerEl.style.display = 'block'
     let subtotal = 0
     let html = ''
     items.forEach((item, idx) => {
