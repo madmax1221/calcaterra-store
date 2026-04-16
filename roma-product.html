@@ -177,7 +177,7 @@ footer{background:#141210;padding:80px 52px 48px;}
   <div class="nav-l">
     <button class="nav-hamburger" id="menuToggle" aria-label="Menu">
       <span></span><span></span><span></span>
-    
+    </button>
   </div>
   <div class="nav-center">
     <a href="/">
@@ -187,10 +187,11 @@ footer{background:#141210;padding:80px 52px 48px;}
   <div class="nav-r">
     <button class="nav-icon-btn" id="calSearchBtn" aria-label="Search">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
-    
+    </button>
     <button class="nav-icon-btn" id="accountToggle" aria-label="Account">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-    
+    </button>
+
     <div class="cart-wrap">
       <a href="/cart" class="nav-icon-btn" aria-label="Cart">
         <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
@@ -422,7 +423,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     const firstName = customer?.first_name || session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || 'Member'
     const lastName = customer?.last_name || session.user.user_metadata?.last_name || ''
     const name = `${firstName} ${lastName}`.trim()
-      const isAdmin = customer?.role === 'admin'
+      const isAdmin = customer?.role === 'admin' || session.user.app_metadata?.role === 'admin'
     document.getElementById('accountContent').innerHTML = `
       <div class="acct-in">
         <div class="acct-in-header">

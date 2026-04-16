@@ -332,7 +332,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     const firstName = customer?.first_name || session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || 'Member'
     const lastName = customer?.last_name || session.user.user_metadata?.last_name || ''
     const name = `${firstName} ${lastName}`.trim()
-      const isAdmin = customer?.role === 'admin'
+      const isAdmin = customer?.role === 'admin' || session.user.app_metadata?.role === 'admin'
     document.getElementById('accountContent').innerHTML = `
       <div class="acct-in">
         <div class="acct-in-header">
