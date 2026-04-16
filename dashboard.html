@@ -235,12 +235,12 @@ footer{background:#141210;padding:80px 52px 48px;}
           <input type="date" id="reg-date" class="form-input" required>
         </div>
         <button type="submit" class="reg-submit" id="reg-btn">REGISTER MY WATCH</button>
-        <p class="reg-note">Registration activates your 2 year international warranty from date of purchase.</p>
+        <p class="reg-note">Your watch will be permanently linked to your account.</p>
       </form>
       <div id="reg-thanks" style="display:none;padding:60px 0;text-align:center;">
         <span class="dash-section-eyebrow" style="display:block;margin-bottom:16px;">REGISTRATION COMPLETE</span>
         <h3 style="font-size:clamp(24px,2.5vw,34px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:12px;">Your watch is <em style="font-style:italic;color:rgba(26,24,20,0.4);">registered.</em></h3>
-        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.1em;color:rgba(26,24,20,0.4);margin-bottom:40px;">Your 2 year warranty is now active.</p>
+        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.1em;color:rgba(26,24,20,0.4);margin-bottom:40px;">Permanently linked to your account.</p>
         <a class="dash-cta" onclick="showSection('watches'); return false;" href="#">VIEW MY WATCHES</a>
       </div>
     </div>
@@ -512,9 +512,17 @@ footer{background:#141210;padding:80px 52px 48px;}
       setTimeout(() => banner.classList.remove('show'), 6000)
     }
 
-    const { data: customer, error } = await _supabase
+    let { data: customer } = await _supabase
       .from('customers').select('*').eq('auth_user_id', session.user.id).single()
-    if (error) console.error('Customer fetch error:', error)
+    if (!customer) {
+      const { data: created } = await _supabase.from('customers').insert({
+        auth_user_id: session.user.id,
+        email: session.user.email,
+        first_name: session.user.user_metadata?.first_name || '',
+        last_name: session.user.user_metadata?.last_name || ''
+      }).select().single()
+      customer = created
+    }
     currentCustomer = customer
 
     const firstName = customer?.first_name || session.user.user_metadata?.first_name || ''
