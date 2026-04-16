@@ -496,8 +496,8 @@ function toast(msg, type = 'success') {
 async function loadDashboard() {
   const today = new Date().toISOString().split('T')[0]
   const [ordersRes, customersRes, warrantiesRes, codesRes] = await Promise.all([
-    _supabase.from('orders').select('id, total, status, created_at, shipping_address, customer_id'),
-    _supabase.from('customers').select('id'),
+    _supabase.rpc('get_all_orders'),
+    _supabase.rpc('get_all_customers'),
     _supabase.from('warranties').select('id, status'),
     _supabase.from('warranties').select('id, status, activation_code')
   ])
@@ -575,26 +575,19 @@ function startRealtimeOrders() {
 }
 
 async function loadOrders() {
-  const { data: orders } = await _supabase.from('orders').select(`
-    id, status, total, created_at, shipping_address, notes, customer_id, tracking_number,
-    customers(first_name, last_name, email),
-    order_items(id, quantity, unit_price, variant_id, serial_number, product_variants(name))
-  `).order('created_at', { ascending: false })
+  const { data: orders } = await _supabase.rpc('get_all_orders')
   allOrders = orders || []
   renderOrders(allOrders)
 }
 
 function renderOrders(orders) {
   document.getElementById('orders-body').innerHTML = orders.length ? orders.map(o => {
-    const customer = o.customers
-    const name = customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Guest'
-    const items = o.order_items || []
-    const totalQty = items.reduce((s, i) => s + (i.quantity || 1), 0)
-    const itemSummary = totalQty === 1 ? (items[0]?.product_variants?.name || 'Roma Watch') : `${totalQty} ITEMS`
+    const name = (o.customer_first_name || o.customer_last_name)
+      ? `${o.customer_first_name || ''} ${o.customer_last_name || ''}`.trim() : 'Guest'
     return `<tr onclick="openOrder('${o.id}')">
       <td style="font-family:'Times New Roman',serif;font-size:13px;">CAL-${o.id.slice(0,8).toUpperCase()}</td>
-      <td>${name}</td><td style="font-size:10px;">${customer?.email || '—'}</td>
-      <td><span class="variant-tag">${itemSummary.toUpperCase()}</span></td>
+      <td>${name}</td><td style="font-size:10px;">${o.customer_email || '—'}</td>
+      <td><span class="variant-tag">ROMA WATCH</span></td>
       <td>€${parseFloat(o.total).toFixed(0)}</td>
       <td><span class="status-pill status-${o.status}">${o.status.toUpperCase()}</span></td>
       <td>${new Date(o.created_at).toLocaleDateString('en-ZA')}</td>
@@ -855,7 +848,7 @@ async function manualActivate(id) {
 
 async function loadCustomers() {
   const [{ data: customers }, { data: watches }] = await Promise.all([
-    _supabase.from('customers').select('id, first_name, last_name, email, created_at').order('created_at', { ascending: false }),
+    _supabase.rpc('get_all_customers'),
     _supabase.from('warranties').select('customer_id, variant, activation_code, activated_at, purchase_date').eq('status', 'active')
   ])
   const watchMap = {}
