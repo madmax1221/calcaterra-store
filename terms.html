@@ -452,6 +452,99 @@ footer{background:#141210;padding:80px 52px 48px;}
     if (badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none' }
   }
 
+
+  function _anyDrawerOpen() {
+    return document.getElementById('menu-drawer').classList.contains('open') ||
+           document.getElementById('account-drawer') && document.getElementById('account-drawer').classList.contains('open') ||
+           document.getElementById('cart-drawer').classList.contains('open')
+  }
+
+  async function openCartDrawer() {
+    const { data: { session } } = await _supabase.auth.getSession()
+    if (!session) {
+      const signinBtn = document.querySelector('.acct-out-btn-primary')
+      if (signinBtn) signinBtn.href = '/signin?redirect=/cart'
+      openAccount()
+      return
+    }
+    closeAccount()
+    document.getElementById('menu-drawer').classList.remove('open')
+    document.getElementById('menu-overlay').classList.remove('open')
+    document.getElementById('menuToggle').classList.remove('open')
+    renderCartDrawer()
+    document.getElementById('cart-drawer').classList.add('open')
+    document.getElementById('cart-overlay').classList.add('open')
+    document.body.style.overflow = 'hidden'
+  }
+
+  function closeCartDrawer() {
+    document.getElementById('cart-drawer').classList.remove('open')
+    document.getElementById('cart-overlay').classList.remove('open')
+    if (!_anyDrawerOpen()) { document.body.style.overflow = '' }
+  }
+
+  function renderCartDrawer() {
+    const items = JSON.parse(localStorage.getItem('cal_cart') || '[]')
+    const itemsEl = document.getElementById('cd-items')
+    const emptyEl = document.getElementById('cd-empty')
+    const footerEl = document.getElementById('cd-footer')
+    if (!items.length) {
+      itemsEl.innerHTML = ''
+      emptyEl.style.display = 'flex'
+      footerEl.style.display = 'none'
+      return
+    }
+    emptyEl.style.display = 'none'
+    footerEl.style.display = 'block'
+    let subtotal = 0
+    let html = ''
+    items.forEach((item, idx) => {
+      const price = item.price || 329
+      subtotal += price * item.quantity
+      const img = item.image ? '<img src="' + item.image + '" alt="' + (item.name||'') + '" style="width:100%;height:100%;object-fit:cover;">' : ''
+      html += '<div class="cd-item">' +
+        '<div class="cd-item-img">' + img + '</div>' +
+        '<div class="cd-item-info">' +
+          '<div>' +
+            '<span class="cd-item-brand">CALCATERRA</span>' +
+            '<span class="cd-item-name">' + (item.name || 'Roma') + '</span>' +
+            '<span class="cd-item-variant">' + (item.variantLabel || '') + '</span>' +
+          '</div>' +
+          '<div>' +
+            '<div class="cd-item-bottom">' +
+              '<div class="cd-item-qty">' +
+                '<button class="cd-qty-btn" onclick="cdUpdateQty(' + idx + ',-1)">&#8722;</button>' +
+                '<span class="cd-qty-num">' + item.quantity + '</span>' +
+                '<button class="cd-qty-btn" onclick="cdUpdateQty(' + idx + ',1)">+</button>' +
+              '</div>' +
+              '<span class="cd-item-price">\u20ac' + (price * item.quantity) + '</span>' +
+            '</div>' +
+            '<button class="cd-item-remove" onclick="cdRemoveItem(' + idx + ')">REMOVE</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    })
+    itemsEl.innerHTML = html
+    document.getElementById('cd-subtotal-val').textContent = '\u20ac' + subtotal
+  }
+
+  function cdUpdateQty(idx, delta) {
+    const items = JSON.parse(localStorage.getItem('cal_cart') || '[]')
+    if (!items[idx]) return
+    items[idx].quantity = Math.max(1, items[idx].quantity + delta)
+    localStorage.setItem('cal_cart', JSON.stringify(items))
+    updateCartBadge()
+    renderCartDrawer()
+  }
+
+  function cdRemoveItem(idx) {
+    const items = JSON.parse(localStorage.getItem('cal_cart') || '[]')
+    items.splice(idx, 1)
+    localStorage.setItem('cal_cart', JSON.stringify(items))
+    updateCartBadge()
+    renderCartDrawer()
+  }
+
   function toggleMenu() {
     const toggle = document.getElementById('menuToggle')
     const drawer = document.getElementById('menu-drawer')
