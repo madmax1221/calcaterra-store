@@ -232,6 +232,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
       </div>
       <div class="ops-topbar-right">
         <span class="ops-topbar-time" id="topbar-time"></span>
+        <button id="refresh-btn" onclick="refreshAll()" style="background:none;border:1px solid rgba(242,239,233,0.1);color:rgba(242,239,233,0.3);font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.4em;padding:6px 14px;cursor:pointer;transition:all .2s;" onmouseover="this.style.color='rgba(242,239,233,0.7)';this.style.borderColor='rgba(242,239,233,0.25)'" onmouseout="this.style.color='rgba(242,239,233,0.3)';this.style.borderColor='rgba(242,239,233,0.1)'">REFRESH</button>
         <div class="ops-topbar-dot"></div>
       </div>
     </div>
@@ -473,6 +474,18 @@ function showPanel(id) {
   }
 }
 
+async function refreshAll() {
+  const btn = document.getElementById('refresh-btn')
+  btn.textContent = '...'
+  btn.disabled = true
+  await Promise.all([loadDashboard(), loadOrders(), loadCodes(), loadWarranties(), loadCustomers()])
+  orderChannel = null
+  startRealtimeOrders()
+  btn.textContent = 'REFRESH'
+  btn.disabled = false
+  toast('REFRESHED')
+}
+
 function toast(msg, type = 'success') {
   const t = document.getElementById('toast')
   t.textContent = msg
@@ -485,8 +498,8 @@ async function loadDashboard() {
   const [ordersRes, customersRes, warrantiesRes, codesRes] = await Promise.all([
     _supabase.from('orders').select('id, total, status, created_at, shipping_address, customer_id'),
     _supabase.from('customers').select('id'),
-    _supabase.from('warranties').select('id, status', { count: 'exact' }),
-    _supabase.from('warranties').select('id, status, activation_code, expires_at')
+    _supabase.from('warranties').select('id, status'),
+    _supabase.from('warranties').select('id, status, activation_code')
   ])
   const orders = ordersRes.data || []
   const todayOrders = orders.filter(o => o.created_at?.startsWith(today))
@@ -816,7 +829,7 @@ function filterCodes() {
 }
 
 async function loadWarranties() {
-  const { data } = await _supabase.from('warranties').select(`id, status, serial_number, activation_code, activated_at, warranty_end, expires_at, variant, customers(first_name, last_name, email)`).neq('status', 'inactive').order('activated_at', { ascending: false })
+  const { data } = await _supabase.from('warranties').select(`id, status, serial_number, activation_code, activated_at, warranty_end, variant, customers(first_name, last_name, email)`).neq('status', 'inactive').order('activated_at', { ascending: false })
   document.getElementById('warranties-body').innerHTML = (data || []).length ? (data || []).map(w => {
     const customer = w.customers
     const name = customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Guest'
