@@ -635,7 +635,10 @@ footer{background:#141210;padding:80px 52px 48px;}
       const authUpdate = { data: { first_name: firstName, last_name: lastName } }
       if (emailChanged) authUpdate.email = email
       if (newPass && newPass.length >= 8) authUpdate.password = newPass
-      const { error: authError } = await _supabase.auth.updateUser(authUpdate)
+      const { error: authError } = await _supabase.auth.updateUser(
+        authUpdate,
+        emailChanged ? { emailRedirectTo: window.location.origin + '/dashboard' } : undefined
+      )
       if (authError) throw authError
 
       if (emailChanged) {
