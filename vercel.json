@@ -21,6 +21,16 @@
     { "source": "/cal-ops", "destination": "/cal-ops.html" },
     { "source": "/philosophy", "destination": "/philosophy.html" }
   ],
+  "headers": [
+    {
+      "source": "/sitemap.xml",
+      "headers": [{ "key": "Content-Type", "value": "application/xml" }]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [{ "key": "Content-Type", "value": "text/plain" }]
+    }
+  ],
   "redirects": [
     { "source": "/index.html", "destination": "/", "permanent": true },
     { "source": "/contact.html", "destination": "/contact", "permanent": true },
