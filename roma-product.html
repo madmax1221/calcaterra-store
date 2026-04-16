@@ -176,7 +176,7 @@ footer{background:#141210;padding:80px 52px 48px;}
   <div class="nav-l">
     <button class="nav-hamburger" id="menuToggle" aria-label="Menu">
       <span></span><span></span><span></span>
-    </button>
+    
   </div>
   <div class="nav-center">
     <a href="/">
@@ -186,14 +186,14 @@ footer{background:#141210;padding:80px 52px 48px;}
   <div class="nav-r">
     <button class="nav-icon-btn" id="calSearchBtn" aria-label="Search">
       <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
-    </button>
+    
     <button class="nav-icon-btn" id="accountToggle" aria-label="Account">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-    </button>
+    
     <div class="cart-wrap">
-      <button class="nav-icon-btn" aria-label="Cart">
+      <a href="/cart" class="nav-icon-btn" aria-label="Cart">
         <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-      </button>
+      </a>
       <span class="cart-badge" id="cartBadge">0</span>
     </div>
   </div>
@@ -231,7 +231,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       <input type="text" id="cal-search-input" placeholder="Search timepieces..." autocomplete="off">
       <button class="cal-search-close" id="cal-search-close">
         <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+      
     </div>
   </div>
   <div id="cal-search-results"></div>
@@ -277,18 +277,18 @@ footer{background:#141210;padding:80px 52px 48px;}
       <button class="swatch active" id="swatch-black" onclick="selectVariant('black')">
         <div class="swatch-dot swatch-dot-black"></div>
         <span class="swatch-name">BLACK</span>
-      </button>
+      
       <button class="swatch" id="swatch-navy" onclick="selectVariant('navy')">
         <div class="swatch-dot swatch-dot-navy"></div>
         <span class="swatch-name">NAVY</span>
-      </button>
+      
       <button class="swatch" id="swatch-silver" onclick="selectVariant('silver')">
         <div class="swatch-dot swatch-dot-silver"></div>
         <span class="swatch-name">SILVER</span>
-      </button>
+      
     </div>
     <div class="atc-confirm" id="atcConfirm">DECISION MADE.</div>
-    <button class="atc-btn" onclick="addToCart()">MAKE IT MINE</button>
+    <button class="atc-btn" onclick="addToCart()">MAKE IT MINE
     <span class="atc-meta">2 year warranty &nbsp;&middot;&nbsp; Complimentary worldwide shipping &nbsp;&middot;&nbsp; 30 day returns</span>
     <p class="product-description" id="productDescription">The Roma Black is the founding reference of Calcaterra. A sunburst-textured black dial set within a brushed and polished stainless steel case. Understated by design. Precise by conviction. Worn by those who have already decided.</p>
     <div class="product-specs">
@@ -436,7 +436,7 @@ footer{background:#141210;padding:80px 52px 48px;}
           <a href="/dashboard" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
         </nav>
         <div class="acct-in-footer">
-          <button id="signOutBtn" class="acct-in-signout">SIGN OUT</button>
+          <button id="signOutBtn" class="acct-in-signout">SIGN OUT
         </div>
       </div>`
     setTimeout(() => {
