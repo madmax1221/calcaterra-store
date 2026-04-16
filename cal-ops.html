@@ -244,16 +244,9 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
           <div class="stat-card"><span class="stat-card-label">ACTIVE WARRANTIES</span><div class="stat-card-value" id="stat-warranties">—</div><span class="stat-card-sub">REGISTERED WATCHES</span></div>
           <div class="stat-card"><span class="stat-card-label">AVAILABLE CODES</span><div class="stat-card-value" id="stat-codes">—</div><span class="stat-card-sub">UNASSIGNED IN STOCK</span></div>
           <div class="stat-card"><span class="stat-card-label">UNACTIVATED CODES</span><div class="stat-card-value" id="stat-unactivated">—</div><span class="stat-card-sub">AWAITING REGISTRATION</span></div>
-          <div class="stat-card urgent" id="stat-expiring-card" style="display:none;"><span class="stat-card-label">EXPIRING WITHIN 7 DAYS</span><div class="stat-card-value" id="stat-expiring">—</div><span class="stat-card-sub">SEND REMINDER EMAILS</span></div>
         </div>
         <div class="ops-section-header"><div><span class="ops-section-eyebrow">GEOGRAPHY</span><h2 class="ops-section-title">Orders by <em>Country.</em></h2></div></div>
         <div class="country-list" id="country-list"><div class="ops-loading">LOADING DATA...</div></div>
-        <div class="ops-divider"></div>
-        <div class="ops-section-header">
-          <div><span class="ops-section-eyebrow">ACTION REQUIRED</span><h2 class="ops-section-title">Expiring <em>Soon.</em></h2></div>
-          <span style="font-size:7px;letter-spacing:0.4em;color:rgba(242,239,233,0.25);">WITHIN 7 DAYS</span>
-        </div>
-        <div id="expiring-codes-list"><div class="ops-loading">LOADING...</div></div>
         <div class="ops-divider"></div>
         <div class="ops-section-header">
           <div><span class="ops-section-eyebrow">RECENT</span><h2 class="ops-section-title">Latest <em>Orders.</em></h2></div>
@@ -498,14 +491,6 @@ async function loadDashboard() {
   document.getElementById('stat-warranties').textContent = warranties.filter(w => w.status === 'active').length
   document.getElementById('stat-codes').textContent = codes.filter(c => c.status === 'inactive').length
   document.getElementById('stat-unactivated').textContent = codes.filter(c => c.status === 'unactivated').length
-  const now = Date.now()
-  const in7days = now + 7 * 24 * 60 * 60 * 1000
-  const expiringSoon = codes.filter(c => c.status === 'unactivated' && c.expires_at && new Date(c.expires_at).getTime() <= in7days && new Date(c.expires_at).getTime() > now)
-  if (expiringSoon.length > 0) {
-    document.getElementById('stat-expiring').textContent = expiringSoon.length
-    document.getElementById('stat-expiring-card').style.display = 'block'
-  }
-  loadExpiringCodes()
   if (pendingOrders.length > 0) {
     const badge = document.getElementById('pending-badge')
     badge.textContent = pendingOrders.length
@@ -533,51 +518,6 @@ async function loadDashboard() {
     </tr>`).join('') : '<tr><td colspan="6" class="ops-table-empty">NO ORDERS YET</td></tr>'
 }
 
-async function loadExpiringCodes() {
-  const now = new Date()
-  const in7days = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString()
-  const { data } = await _supabase.from('warranties')
-    .select('id, activation_code, variant, expires_at, order_id, customer_id, customers(first_name, last_name, email)')
-    .eq('status', 'unactivated').lte('expires_at', in7days).gte('expires_at', now.toISOString()).order('expires_at', { ascending: true })
-  const items = data || []
-  const container = document.getElementById('expiring-codes-list')
-  if (!items.length) { container.innerHTML = '<div class="expiring-empty">NO CODES EXPIRING WITHIN 7 DAYS</div>'; return }
-  container.innerHTML = items.map(item => {
-    const exp = new Date(item.expires_at)
-    const msLeft = exp.getTime() - Date.now()
-    const daysLeft = Math.floor(msLeft / (1000 * 60 * 60 * 24))
-    const hoursLeft = Math.floor((msLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    const timerClass = daysLeft < 2 ? 'critical' : daysLeft < 4 ? 'warning' : 'ok'
-    const customer = item.customers
-    const customerName = customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Guest'
-    const customerEmail = customer?.email || ''
-    return `
-      <div class="expiring-item" id="expiring-${item.id}">
-        <div class="expiring-item-left">
-          <span class="expiring-item-code">${item.activation_code}</span>
-          <span class="expiring-item-meta">${(item.variant || '—').toUpperCase()} · ${customerName}${customerEmail ? ' · ' + customerEmail : ''}</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:16px;">
-          <div class="expiring-item-timer ${timerClass}" id="timer-${item.id}">${daysLeft}D ${hoursLeft}H</div>
-          ${customerEmail ? `<div class="expiring-item-actions"><button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="sendReminderEmail('${item.id}', '${customerEmail}', '${customerName}', '${item.activation_code}', '${item.variant || ''}', '${item.expires_at}')">SEND REMINDER</button></div>` : '<span style="font-size:7px;letter-spacing:0.3em;color:rgba(242,239,233,0.2);">NO EMAIL</span>'}
-        </div>
-      </div>`
-  }).join('')
-  if (window._expiryInterval) clearInterval(window._expiryInterval)
-  window._expiryInterval = setInterval(() => {
-    items.forEach(item => {
-      const el = document.getElementById('timer-' + item.id)
-      if (!el) return
-      const msLeft = new Date(item.expires_at).getTime() - Date.now()
-      if (msLeft <= 0) { el.textContent = 'EXPIRED'; el.className = 'expiring-item-timer critical'; return }
-      const d = Math.floor(msLeft / (1000 * 60 * 60 * 24))
-      const h = Math.floor((msLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-      const m = Math.floor((msLeft % (1000 * 60 * 60)) / (1000 * 60))
-      el.textContent = d > 0 ? `${d}D ${h}H` : `${h}H ${m}M`
-      el.className = 'expiring-item-timer ' + (d < 2 ? 'critical' : d < 4 ? 'warning' : 'ok')
-    })
-  }, 60000)
-}
 
 async function sendReminderEmail(warrantyId, email, name, code, variant, expiresAt) {
   const btn = event.currentTarget
@@ -757,7 +697,7 @@ async function assignItemCode(btn, itemId, orderId) {
   if (!codeData) { toast('Code not found', 'error'); return }
   const { error: itemErr } = await _supabase.from('order_items').update({ serial_number: codeData.activation_code }).eq('id', itemId)
   if (itemErr) { toast('Error assigning code', 'error'); return }
-  await _supabase.from('warranties').update({ status: 'unactivated', order_id: orderId, expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() }).eq('id', codeId)
+  await _supabase.from('warranties').update({ status: 'unactivated', order_id: orderId }).eq('id', codeId)
   document.querySelectorAll('.item-code-select').forEach(sel => { Array.from(sel.options).forEach(opt => { if (opt.value === codeId) opt.remove() }) })
   row.innerHTML = `<div style="padding:16px 0;border-bottom:1px solid rgba(242,239,233,0.05);"><span style="font-size:9px;letter-spacing:0.3em;color:#4ade80;">✓ ASSIGNED: ${codeData.activation_code}</span></div>`
   toast('Code assigned — ' + codeData.activation_code)
@@ -1021,13 +961,10 @@ async function checkReminders() {
   const now = new Date()
   const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()
   const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString()
-  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString()
   const { data: p } = await _supabase.from('orders').select('id').eq('status', 'pending').lte('created_at', yesterday)
   if (p?.length) sendLocalNotification(`⚠ ${p.length} Order${p.length > 1 ? 's' : ''} Need Attention`, `${p.length} pending order${p.length > 1 ? 's' : ''} awaiting confirmation.`, 'pending-reminder')
   const { data: u } = await _supabase.from('orders').select('id').eq('status', 'confirmed').lte('created_at', threeDaysAgo)
   if (u?.length) sendLocalNotification(`📦 ${u.length} Order${u.length > 1 ? 's' : ''} Ready to Ship`, `Confirmed orders waiting over 3 days.`, 'ship-reminder')
-  const { data: e } = await _supabase.from('warranties').select('id').eq('status', 'unactivated').lte('expires_at', tomorrow).gte('expires_at', now.toISOString())
-  if (e?.length) sendLocalNotification(`⏰ ${e.length} Code${e.length > 1 ? 's' : ''} Expiring Tomorrow`, `Send reminder emails before warranty windows close.`, 'expiry-reminder')
 }
 
 let deferredInstallPrompt = null
