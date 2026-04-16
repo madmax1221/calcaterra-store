@@ -484,7 +484,18 @@ footer{background:#141210;padding:80px 52px 48px;}
       </div>`
     setTimeout(() => {
       const btn = document.getElementById('signOutBtn')
-      if (btn) btn.addEventListener('click', async () => { await _supabase.auth.signOut(); window.location.reload() })
+      if (btn) btn.addEventListener('click', async () => {
+      try {
+        const { data: { session: _so } } = await _supabase.auth.getSession()
+        if (_so) {
+          const { data: _sc } = await _supabase.from('customers').select('id').eq('auth_user_id', _so.user.id).single()
+          if (_sc?.id) localStorage.setItem('cal_cart_' + _sc.id, localStorage.getItem('cal_cart') || '[]')
+        }
+      } catch(e) {}
+      localStorage.removeItem('cal_cart')
+      await _supabase.auth.signOut()
+      window.location.reload()
+    })
     }, 100)
   }
 

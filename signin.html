@@ -238,9 +238,27 @@ footer{background:#141210;padding:80px 52px 48px;}
 
     successMsg.textContent = 'WELCOME BACK.'
     successMsg.classList.add('show')
-    setTimeout(() => {
-      window.location.href = '/dashboard.html'
-    }, 800)
+
+    // Restore cart saved before sign out, merge with any guest items
+    try {
+      const { data: cust } = await _supabase.from('customers').select('id').eq('auth_user_id', data.user.id).single()
+      if (cust?.id) {
+        const savedCart = JSON.parse(localStorage.getItem('cal_cart_' + cust.id) || '[]')
+        const guestCart = JSON.parse(localStorage.getItem('cal_cart') || '[]')
+        const merged = {}
+        ;[...savedCart, ...guestCart].forEach(item => {
+          const key = item.variantKey || item.variantId
+          if (merged[key]) merged[key].quantity += item.quantity
+          else merged[key] = { ...item }
+        })
+        localStorage.setItem('cal_cart', JSON.stringify(Object.values(merged)))
+        localStorage.removeItem('cal_cart_' + cust.id)
+      }
+    } catch(e) {}
+
+    const params = new URLSearchParams(window.location.search)
+    const redirect = params.get('redirect') || '/dashboard'
+    setTimeout(() => { window.location.href = redirect }, 800)
   }
 
   function toggleMenu() {
