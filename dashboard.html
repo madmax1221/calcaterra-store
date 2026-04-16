@@ -221,21 +221,21 @@ footer{background:#141210;padding:80px 52px 48px;}
       <span class="dash-section-eyebrow">OWNERSHIP RECORD</span>
       <h2 class="dash-section-title">Register your <em>timepiece.</em></h2>
       <div style="background:rgba(26,24,20,0.03);border:1px solid rgba(26,24,20,0.07);padding:28px 32px;margin-bottom:40px;max-width:520px;">
-        <span style="font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);display:block;margin-bottom:14px;">WHERE TO FIND YOUR SERIAL NUMBER</span>
-        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.07em;line-height:2;color:rgba(26,24,20,0.5);">Your serial number is printed on the card included with your Calcaterra timepiece. It begins with <span style="font-weight:400;color:#1a1814;letter-spacing:0.1em;">CAL-</span></p>
+        <span style="font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);display:block;margin-bottom:14px;">WHERE TO FIND YOUR ACTIVATION CODE</span>
+        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.07em;line-height:2;color:rgba(26,24,20,0.5);">Your unique activation code is printed on the card included with your Calcaterra timepiece.</p>
       </div>
       <div id="reg-msg" class="msg-box"></div>
       <form class="reg-form" id="reg-form" onsubmit="handleWatchReg(event)">
         <div class="form-group">
-          <label class="form-label">SERIAL NUMBER *</label>
-          <input type="text" id="reg-serial" class="form-input" placeholder="e.g. CAL-2026-001" required>
+          <label class="form-label">ACTIVATION CODE *</label>
+          <input type="text" id="reg-serial" class="form-input" placeholder="Enter your activation code" required autocomplete="off" style="text-transform:uppercase;">
         </div>
         <div class="form-group">
-          <label class="form-label">DATE OF PURCHASE</label>
+          <label class="form-label">DATE OF PURCHASE *</label>
           <input type="date" id="reg-date" class="form-input" required>
         </div>
         <button type="submit" class="reg-submit" id="reg-btn">REGISTER MY WATCH</button>
-        <p class="reg-note">Registration activates your 2 year international warranty.</p>
+        <p class="reg-note">Registration activates your 2 year international warranty from date of purchase.</p>
       </form>
       <div id="reg-thanks" style="display:none;padding:60px 0;text-align:center;">
         <span class="dash-section-eyebrow" style="display:block;margin-bottom:16px;">REGISTRATION COMPLETE</span>
@@ -569,26 +569,43 @@ footer{background:#141210;padding:80px 52px 48px;}
     document.getElementById('orders-content').innerHTML = html
   }
 
+  const variantCartImages = {
+    black:  'https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-9.png?v=1773611466',
+    navy:   'https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitleddesign-10.png?v=1773611585',
+    silver: 'https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-8.png?v=1773610869'
+  }
+
   async function loadWatches(customerId) {
     if (!customerId) return
-    const { data: regs } = await _supabase.from('watch_registrations').select('*').eq('customer_id', customerId).order('registered_at', { ascending: false })
+    const { data: regs } = await _supabase
+      .from('warranties')
+      .select('*')
+      .eq('customer_id', customerId)
+      .eq('status', 'active')
+      .order('activated_at', { ascending: false })
     if (!regs || regs.length === 0) return
     const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
     let html = ''
     regs.forEach(r => {
-      const d = new Date(r.registered_at)
+      const d = new Date(r.activated_at)
+      const variant = r.variant || 'black'
+      const variantLabel = variant.charAt(0).toUpperCase() + variant.slice(1)
+      const img = variantCartImages[variant] || variantCartImages.black
       let warrantyExpiry = 'ACTIVE'
-      if (r.purchase_date) {
+      if (r.warranty_end) {
+        const exp = new Date(r.warranty_end)
+        warrantyExpiry = 'UNTIL ' + months[exp.getMonth()] + ' ' + exp.getFullYear()
+      } else if (r.purchase_date) {
         const exp = new Date(r.purchase_date)
         exp.setFullYear(exp.getFullYear() + 2)
         warrantyExpiry = 'UNTIL ' + months[exp.getMonth()] + ' ' + exp.getFullYear()
       }
       html += `<div class="watch-card">
-        <div class="watch-card-img"><div style="width:100%;height:100%;background:#e9e5de;"></div></div>
+        <div class="watch-card-img"><img src="${img}" alt="Roma ${variantLabel}"></div>
         <div>
           <span class="watch-card-ref">CALCATERRA ROMA</span>
-          <div class="watch-card-name">Roma <em>Collection.</em></div>
-          <span class="watch-card-serial">SERIAL · ${r.serial_number||'—'}</span>
+          <div class="watch-card-name">Roma <em>${variantLabel}.</em></div>
+          <span class="watch-card-serial">CODE · ${r.activation_code||'—'}</span>
           <span class="watch-warranty-badge active"><span class="watch-warranty-dot active"></span>WARRANTY ACTIVE · ${warrantyExpiry}</span>
         </div>
         <span class="watch-reg-date">REGISTERED<br>${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}</span>
@@ -667,16 +684,20 @@ footer{background:#141210;padding:80px 52px 48px;}
 
   async function handleWatchReg(e) {
     e.preventDefault()
-    const serial = document.getElementById('reg-serial').value.trim()
+    const code = document.getElementById('reg-serial').value.trim().toUpperCase()
     const date = document.getElementById('reg-date').value
     const btn = document.getElementById('reg-btn')
     const msg = document.getElementById('reg-msg')
     btn.disabled = true; btn.textContent = 'REGISTERING...'
+    msg.style.display = 'none'
     try {
-      const { error } = await _supabase.from('watch_registrations').insert({
-        customer_id: currentCustomer?.id, serial_number: serial, purchase_date: date || null
+      const { data: result, error } = await _supabase.rpc('activate_warranty', {
+        p_code: code,
+        p_purchase_date: date,
+        p_customer_id: currentCustomer?.id
       })
       if (error) throw error
+      if (result?.error) throw new Error(result.error)
       document.getElementById('reg-form').style.display = 'none'
       document.getElementById('reg-thanks').style.display = 'block'
       loadWatches(currentCustomer?.id)
