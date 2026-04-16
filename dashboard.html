@@ -228,7 +228,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       <form class="reg-form" id="reg-form" onsubmit="handleWatchReg(event)">
         <div class="form-group">
           <label class="form-label">ACTIVATION CODE *</label>
-          <input type="text" id="reg-serial" class="form-input" placeholder="Enter your activation code" required autocomplete="off" style="text-transform:uppercase;">
+          <input type="text" id="reg-serial" class="form-input" placeholder="Enter your activation code" required autocomplete="off" style="text-transform:uppercase;" oninput="this.value=this.value.replace(/-/g,'').toUpperCase()">
         </div>
         <div class="form-group">
           <label class="form-label">DATE OF PURCHASE *</label>
