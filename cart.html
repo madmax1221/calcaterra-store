@@ -96,6 +96,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .cart-title em{font-style:italic;color:rgba(26,24,20,0.4);}
 .cart-count{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.45);margin-top:12px;display:block;}
 .cart-body{display:grid;grid-template-columns:1fr 380px;gap:80px;align-items:start;}
+.cart-body.is-empty{grid-template-columns:1fr;max-width:640px;margin:0 auto;}
 .cart-item{display:grid;grid-template-columns:120px 1fr auto;gap:32px;padding:40px 0;border-bottom:1px solid rgba(26,24,20,0.06);align-items:start;}
 .cart-item:first-child{border-top:1px solid rgba(26,24,20,0.06);}
 .cart-item-img{aspect-ratio:1/1;background:#f2efe9;overflow:hidden;}
@@ -301,7 +302,9 @@ footer{background:#141210;padding:80px 52px 48px;}
     const totalQty = cart.reduce((sum, i) => sum + i.quantity, 0)
     const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0)
     if (countEl) countEl.textContent = totalQty > 0 ? `${totalQty} ITEM${totalQty !== 1 ? 'S' : ''}` : ''
+    const bodyEl = document.querySelector('.cart-body')
     if (cart.length === 0) {
+      if (bodyEl) bodyEl.classList.add('is-empty')
       container.innerHTML = `
         <div class="cart-empty fade in">
           <span class="cart-empty-label">YOUR SELECTION</span>
@@ -312,6 +315,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       if (summaryEl) summaryEl.style.display = 'none'
       return
     }
+    if (bodyEl) bodyEl.classList.remove('is-empty')
     if (summaryEl) summaryEl.style.display = ''
     subtotalEl.textContent = `€${totalPrice}`
     totalEl.textContent = `€${totalPrice}`
