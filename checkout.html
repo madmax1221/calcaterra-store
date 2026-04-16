@@ -231,7 +231,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
                 <option value="Argentina">Argentina</option>
               </select>
             </div>
-            <div class="save-addr-row">
+            <div class="save-addr-row" style="display:none;">
               <input type="checkbox" id="save-new-addr" checked>
               <label for="save-new-addr">SAVE THIS ADDRESS TO MY ACCOUNT</label>
             </div>
@@ -551,10 +551,8 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
         postal_code: document.getElementById('new-postal').value.trim(),
         country, is_default: false
       }
-      if (document.getElementById('save-new-addr').checked) {
-        const { data: saved } = await _supabase.from('addresses').insert(newAddr).select().single()
-        if (saved) { savedAddresses.push(saved); selectedAddressId = saved.id; renderSavedAddresses(savedAddresses) }
-      }
+      const { data: saved } = await _supabase.from('addresses').insert(newAddr).select().single()
+      if (saved) { savedAddresses.push(saved); selectedAddressId = saved.id; renderSavedAddresses(savedAddresses) }
       const addrStr = `${line1}, ${city}, ${country}`
       document.getElementById('saved-addr-display').textContent = addrStr
       document.getElementById('saved-addr-display2').textContent = addrStr
@@ -604,6 +602,20 @@ btn.textContent = 'PROCESSING...'
       }).select().single()
       if (error) throw error
       orderId = order.id
+      // auto-save address for logged-in users who typed into the guest form
+      if (currentCustomer && !selectedAddressId && shippingAddress.line1) {
+        const { data: savedAddr } = await _supabase.from('addresses').insert({
+          customer_id: currentCustomer.id,
+          line1: shippingAddress.line1,
+          line2: shippingAddress.line2 || null,
+          city: shippingAddress.city,
+          province: shippingAddress.province || null,
+          postal_code: shippingAddress.postal_code || null,
+          country: shippingAddress.country,
+          is_default: savedAddresses.length === 0
+        }).select().single()
+        if (savedAddr) { savedAddresses.push(savedAddr); selectedAddressId = savedAddr.id }
+      }
       const variantKeys = [...new Set(cartItems.map(i => i.variantKey).filter(Boolean))]
 const { data: variantData } = await _supabase
   .from('product_variants')
