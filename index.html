@@ -158,8 +158,9 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .mani-h{font-size:clamp(34px,5.2vw,76px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#f2efe9;margin:0 auto 28px;max-width:820px;}
 .mani-h em{font-style:italic;color:rgba(242,239,233,0.42);font-size:0.93em;}
 .mani-body{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.16em;color:rgba(242,239,233,0.65);line-height:2.1;max-width:480px;margin:0 auto 52px;}
-.mani-link{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.54em;color:#f2efe9;text-decoration:none;border:1px solid rgba(242,239,233,0.3);padding:15px 36px;transition:background .3s,color .3s,border-color .3s;}
+.mani-link{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.54em;color:#f2efe9;text-decoration:none;border:1px solid rgba(242,239,233,0.3);padding:15px 36px;transition:background .3s ease,color .3s ease,border-color .3s ease;}
 .mani-link:hover{background:#f2efe9;color:#1a1814;border-color:#f2efe9;}
+.mani-link.fade{transition:opacity .95s ease,transform .95s ease,background .3s ease,color .3s ease,border-color .3s ease;}
 .split{display:grid;grid-template-columns:1fr 1fr;min-height:620px;}
 .split-img{background-image:url('/images/roma-v1.jpg');background-size:cover;background-position:center;filter:brightness(0.86) saturate(0.78);}
 .split-text{background:#e9e5de;padding:80px 64px;display:flex;flex-direction:column;justify-content:center;}
