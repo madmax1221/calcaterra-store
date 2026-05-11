@@ -107,10 +107,14 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 #hero-sticky{position:sticky;top:0;height:100vh;z-index:1;overflow:hidden;background:#0e0d0b;}
 .hero-bg{position:absolute;inset:0;overflow:hidden;}
 .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.13);filter:brightness(0.72) saturate(0.8);pointer-events:none;}
-.hero-video::-webkit-media-controls{display:none !important;-webkit-appearance:none;}
-.hero-video::-webkit-media-controls-start-playback-button{display:none !important;-webkit-appearance:none;}
-.hero-video::-webkit-media-controls-panel{display:none !important;-webkit-appearance:none;}
-.hero-video::-webkit-media-controls-overlay-play-button{display:none !important;-webkit-appearance:none;}
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-enclosure,
+.hero-video::-webkit-media-controls-overlay-enclosure,
+.hero-video::-webkit-media-controls-panel,
+.hero-video::-webkit-media-controls-overlay-play-button,
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-play-button,
+.hero-video::-internal-media-controls-overlay-cast-button{display:none !important;-webkit-appearance:none !important;appearance:none !important;opacity:0 !important;}
 .hero-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%, transparent 25%, rgba(10,9,7,0.5) 100%);}
 .hero-bottom{position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(to bottom,transparent,rgba(242,239,233,0.15));}
 .hero-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);width:clamp(220px,28vw,440px);opacity:.07;pointer-events:none;animation:breathe 9s ease-in-out infinite;}
@@ -785,6 +789,19 @@ footer{background:#141210;padding:80px 52px 48px;}
       heroVid.addEventListener('play', syncIcon)
       heroVid.addEventListener('pause', syncIcon)
       syncIcon()
+
+      // Try to autoplay; if blocked (low-power / autoplay policy), retry on first user interaction
+      const tryPlay = () => heroVid.play().catch(()=>{})
+      tryPlay()
+      const kickPlay = () => {
+        if (heroVid.paused) tryPlay()
+        ;['click','touchstart','scroll','keydown','mousemove'].forEach(ev =>
+          window.removeEventListener(ev, kickPlay, { passive: true })
+        )
+      }
+      ;['click','touchstart','scroll','keydown','mousemove'].forEach(ev =>
+        window.addEventListener(ev, kickPlay, { passive: true, once: true })
+      )
     }
   })
 </script>
