@@ -54,7 +54,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
   <div id="state-confirm" style="display:none;" class="fade-in">
     <span class="un-eyebrow">Manage Subscription</span>
     <h1 class="un-title">Sorry to see<br/><em>you go.</em></h1>
-    <p class="un-subtitle">Are you sure you want to unsubscribe <strong id="confirm-email" style="color:#1a1814;font-weight:400;"></strong> from the Calcaterra dispatch?</p>
+    <p class="un-subtitle">Are you sure you want to unsubscribe <strong id="confirm-email" style="color:#1a1814;font-weight:400;"></strong> from the Calcaterra mailing list?</p>
     <div class="un-actions">
       <button class="un-btn" onclick="doUnsubscribe()">YES, UNSUBSCRIBE</button>
       <a class="un-btn un-btn-ghost" href="/">NO, KEEP ME</a>
@@ -66,7 +66,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
   <div id="state-ask" style="display:none;" class="fade-in">
     <span class="un-eyebrow">Manage Subscription</span>
     <h1 class="un-title">Leaving<br/><em>the list.</em></h1>
-    <p class="un-subtitle">Enter the email address you used to subscribe to the Calcaterra dispatch.</p>
+    <p class="un-subtitle">Enter the email address you used to subscribe to the Calcaterra mailing list.</p>
     <form class="un-form" onsubmit="event.preventDefault(); manualUnsubscribe();">
       <input type="email" class="un-input" id="ask-email" placeholder="your@email.com" required autocomplete="email"/>
       <button type="submit" class="un-btn">UNSUBSCRIBE</button>
@@ -78,7 +78,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
   <div id="state-done" style="display:none;" class="fade-in">
     <span class="un-eyebrow">Unsubscribed</span>
     <h1 class="un-title">You have been<br/><em>removed.</em></h1>
-    <p class="un-subtitle">You will no longer receive newsletter dispatches from Calcaterra. Should you ever wish to return, you may resubscribe at any time.</p>
+    <p class="un-subtitle">You will no longer receive correspondence from Calcaterra. Should you ever wish to return, you may resubscribe at any time.</p>
     <a class="un-back" href="/">RETURN TO CALCATERRA</a>
   </div>
 
