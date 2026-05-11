@@ -1219,11 +1219,9 @@ async function sendBroadcastTest() {
   const status = document.getElementById('compose-status')
   status.textContent = 'SENDING TEST...'
   const html = buildBroadcastHtml(subject, body)
-  const { data, error } = await _supabase.functions.invoke('send-broadcast', {
-    body: { subject, html, test_to: testTo }
-  })
-  if (error || data?.error) {
-    status.textContent = 'TEST FAILED: ' + (data?.error || error?.message || 'unknown')
+  const result = await invokeFn('send-broadcast', { subject, html, test_to: testTo })
+  if (!result.ok) {
+    status.textContent = 'TEST FAILED — ' + result.message
     toast('Test send failed', 'error')
     return
   }
@@ -1244,19 +1242,49 @@ async function sendBroadcastAll() {
   btn.textContent = 'SENDING...'
   status.textContent = 'BROADCASTING TO ' + allSubscribers.length + ' SUBSCRIBERS...'
   const html = buildBroadcastHtml(subject, body)
-  const { data, error } = await _supabase.functions.invoke('send-broadcast', {
-    body: { subject, html }
-  })
+  const result = await invokeFn('send-broadcast', { subject, html })
   btn.disabled = false
   btn.innerHTML = original
-  if (error || data?.error) {
-    status.textContent = 'BROADCAST FAILED: ' + (data?.error || error?.message || 'unknown')
+  if (!result.ok) {
+    status.textContent = 'BROADCAST FAILED — ' + result.message
     toast('Broadcast failed', 'error')
     return
   }
-  status.textContent = `SENT TO ${data.sent} · FAILED ${data.failed || 0} · TOTAL ${data.total}`
-  toast(`Sent to ${data.sent} subscribers`)
+  const d = result.data
+  status.textContent = `SENT TO ${d.sent} · FAILED ${d.failed || 0} · TOTAL ${d.total}`
+  toast(`Sent to ${d.sent} subscribers`)
   await loadEmailLog()
+}
+
+// ── EDGE FUNCTION INVOKER with proper error surfacing ──
+// Supabase's default error message ("non-2xx status code") hides the real
+// reason. This wrapper reads the response body so we see the actual error.
+async function invokeFn(name, body) {
+  try {
+    const { data: { session } } = await _supabase.auth.getSession()
+    const url = `${_supabase.supabaseUrl}/functions/v1/${name}`
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${session?.access_token || _supabase.supabaseKey}`,
+        'apikey': _supabase.supabaseKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body || {}),
+    })
+    const text = await res.text()
+    let payload
+    try { payload = JSON.parse(text) } catch { payload = { raw: text } }
+    if (!res.ok) {
+      const detail = payload?.error || payload?.message || payload?.raw || text || `HTTP ${res.status}`
+      console.error(`Function ${name} failed:`, res.status, payload)
+      return { ok: false, status: res.status, message: `[${res.status}] ${detail}`, data: payload }
+    }
+    return { ok: true, status: res.status, data: payload }
+  } catch (e) {
+    console.error(`Function ${name} threw:`, e)
+    return { ok: false, status: 0, message: e?.message || 'Network error', data: null }
+  }
 }
 
 async function deleteSubscriber(id) {

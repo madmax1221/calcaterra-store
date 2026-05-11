@@ -60,6 +60,10 @@ serve(async (req) => {
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
     if (!resendApiKey) return json({ error: 'RESEND_API_KEY not configured' }, 500)
     const from = Deno.env.get('RESEND_FROM') ?? 'Calcaterra <noreply@calcaterra.co>'
+    // Extract just the bare email from "Name <email>" so we can use it as the
+    // primary "to" address in BCC broadcasts (Resend requires a plain address).
+    const fromEmailMatch = from.match(/<([^>]+)>/)
+    const fromEmail = fromEmailMatch ? fromEmailMatch[1] : from
 
     // Test-send: just deliver to one address and log it as a preview
     if (test_to) {
@@ -108,7 +112,7 @@ serve(async (req) => {
         headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           from,
-          to: [from],     // primary 'to' is ourselves so BCC recipients stay private
+          to: [fromEmail],   // primary 'to' is ourselves so BCC recipients stay private
           bcc: slice,
           subject,
           html,
