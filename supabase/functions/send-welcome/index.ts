@@ -91,27 +91,52 @@ function json(body: unknown, status = 200) {
 }
 
 function welcomeAccountHtml(name: string) {
-  return `<!DOCTYPE html><html><body style="background:#f2efe9;margin:0;padding:0;font-family:'Times New Roman',serif;">
-<div style="max-width:560px;margin:0 auto;padding:60px 40px;">
-  <p style="font-family:'Times New Roman',serif;font-size:24px;font-weight:300;letter-spacing:0.15em;color:#1a1814;margin-bottom:48px;">CALCATERRA</p>
-  <p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);margin-bottom:16px;">YOUR ACCOUNT IS READY</p>
-  <h1 style="font-size:36px;font-weight:300;color:#1a1814;margin-bottom:8px;line-height:1.1;">Welcome,<br><em style="font-style:italic;color:rgba(26,24,20,0.4);">${escapeHtml(name)}.</em></h1>
-  <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.6);line-height:2;margin:32px 0;">
-    Your Calcaterra account has been created. From here you can register your watches, activate warranties, and track every order from a single place.
-  </p>
-  <div style="margin:40px 0;">
-    <a href="https://calcaterra.co/dashboard" style="display:inline-block;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:#f2efe9;background:#1a1814;text-decoration:none;padding:18px 40px;">VIEW YOUR ACCOUNT</a>
-  </div>
-  <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.55);line-height:2;margin:32px 0;">
-    Designed once. Worn indefinitely.
-  </p>
-  <div style="border-top:1px solid rgba(26,24,20,0.08);padding-top:24px;margin-top:48px;">
-    <p style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);">
-      CALCATERRA · BUILT ON CONVICTION<br><br>
-      <a href="https://calcaterra.co" style="color:rgba(26,24,20,0.5);text-decoration:none;">calcaterra.co</a>
-    </p>
-  </div>
-</div></body></html>`
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="color-scheme" content="light only"/>
+<title>Welcome to Calcaterra</title>
+</head>
+<body style="margin:0;padding:0;background:#e9e5de;font-family:Georgia,'Times New Roman',serif;color:#1a1814;-webkit-font-smoothing:antialiased;">
+<div style="display:none;font-size:0;line-height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;">Your Calcaterra account is ready.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e9e5de;">
+  <tr><td align="center" style="padding:0;">
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#f2efe9;">
+      <tr><td style="padding:48px 56px 24px;text-align:center;border-bottom:1px solid rgba(26,24,20,0.06);">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:11px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.45);text-transform:uppercase;margin-bottom:6px;">The House of</div>
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:300;letter-spacing:0.18em;color:#1a1814;">CALCATERRA</div>
+      </td></tr>
+      <tr><td style="padding:48px 56px 0;">
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:500;letter-spacing:0.55em;color:rgba(26,24,20,0.4);text-transform:uppercase;">Your account is ready</div>
+      </td></tr>
+      <tr><td style="padding:14px 56px 24px;">
+        <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:34px;font-weight:300;line-height:1.18;letter-spacing:0.02em;color:#1a1814;">Welcome,<br/><em style="font-style:italic;color:rgba(26,24,20,0.4);">${escapeHtml(name)}.</em></h1>
+      </td></tr>
+      <tr><td style="padding:0 56px;"><div style="height:1px;background:rgba(26,24,20,0.1);"></div></td></tr>
+      <tr><td style="padding:36px 56px 12px;">
+        <p style="margin:0 0 20px;font-family:Georgia,'Times New Roman',serif;font-size:15px;color:rgba(26,24,20,0.78);line-height:1.95;">Your Calcaterra account has been created. From here you can register your watches, activate warranties, and track every order from a single place.</p>
+      </td></tr>
+      <tr><td style="padding:8px 56px 32px;">
+        <a href="https://calcaterra.co/dashboard" style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:#f2efe9;background:#1a1814;text-decoration:none;padding:18px 36px;text-transform:uppercase;">View Your Account</a>
+      </td></tr>
+      <tr><td style="padding:0 56px 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:14px;color:rgba(26,24,20,0.5);">Designed once. Worn indefinitely.</div>
+      </td></tr>
+      <tr><td style="padding:32px 56px 48px;background:#1a1814;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:13px;letter-spacing:0.22em;color:rgba(242,239,233,0.85);text-align:center;margin-bottom:8px;">CALCATERRA</div>
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.5em;color:rgba(242,239,233,0.35);text-align:center;text-transform:uppercase;margin-bottom:24px;">Built on Conviction</div>
+        <div style="height:1px;background:rgba(242,239,233,0.08);margin:0 auto 24px;width:60%;"></div>
+        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:300;letter-spacing:0.32em;color:rgba(242,239,233,0.35);text-align:center;text-transform:uppercase;">
+          <a href="https://calcaterra.co" style="color:rgba(242,239,233,0.5);text-decoration:none;">calcaterra.co</a>
+        </p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>`
 }
 
 function escapeHtml(s: string) {

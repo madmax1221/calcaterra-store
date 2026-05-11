@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Unsubscribe — Calcaterra</title>
+<meta name="description" content="Manage your Calcaterra newsletter subscription.">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;min-height:100vh;}
+.un-shell{width:100%;max-width:460px;text-align:center;}
+.un-mark{font-family:'Times New Roman',Times,serif;font-size:18px;font-weight:300;letter-spacing:0.42em;color:#1a1814;margin-bottom:80px;}
+.un-eyebrow{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.35);display:block;margin-bottom:24px;text-transform:uppercase;}
+.un-title{font-size:clamp(34px,4.5vw,52px);font-weight:300;line-height:1.1;letter-spacing:0.025em;color:#1a1814;margin-bottom:12px;}
+.un-title em{font-style:italic;color:rgba(26,24,20,0.42);}
+.un-subtitle{font-family:'Montserrat',sans-serif;font-size:11.5px;font-weight:300;letter-spacing:0.05em;line-height:1.95;color:rgba(26,24,20,0.6);margin-top:24px;max-width:380px;margin-left:auto;margin-right:auto;}
+.un-form{margin-top:40px;display:flex;flex-direction:column;gap:14px;align-items:center;}
+.un-input{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(26,24,20,0.18);font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.06em;color:#1a1814;padding:14px 0;text-align:center;outline:none;transition:border-color .3s;}
+.un-input:focus{border-bottom-color:#1a1814;}
+.un-input::placeholder{color:rgba(26,24,20,0.3);}
+.un-btn{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.54em;color:#f2efe9;background:#1a1814;border:1px solid #1a1814;cursor:pointer;padding:18px 44px;text-decoration:none;text-transform:uppercase;transition:background .3s,color .3s,border-color .3s;margin-top:12px;}
+.un-btn:hover{background:#f2efe9;color:#1a1814;border-color:#1a1814;}
+.un-btn-ghost{color:#1a1814;background:transparent;border:1px solid rgba(26,24,20,0.3);}
+.un-btn-ghost:hover{background:#1a1814;color:#f2efe9;border-color:#1a1814;}
+.un-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
+.un-err{font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:300;letter-spacing:0.18em;color:#c84a4a;margin-top:16px;display:none;text-transform:uppercase;}
+.un-err.show{display:block;}
+.un-back{margin-top:48px;display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.4);text-decoration:none;border-bottom:1px solid rgba(26,24,20,0.15);padding-bottom:4px;text-transform:uppercase;transition:color .25s,border-color .25s;}
+.un-back:hover{color:#1a1814;border-bottom-color:#1a1814;}
+.fade-in{animation:fadeIn .6s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:520px){
+  .un-mark{margin-bottom:48px;font-size:16px;}
+  .un-actions{flex-direction:column;width:100%;}
+  .un-actions .un-btn{width:100%;}
+}
+</style>
+</head>
+<body>
+<a href="/" class="un-mark">CALCATERRA</a>
+<div class="un-shell">
+
+  <!-- STATE 1: confirm with email pre-filled from URL -->
+  <div id="state-confirm" style="display:none;" class="fade-in">
+    <span class="un-eyebrow">Manage Subscription</span>
+    <h1 class="un-title">Sorry to see<br/><em>you go.</em></h1>
+    <p class="un-subtitle">Are you sure you want to unsubscribe <strong id="confirm-email" style="color:#1a1814;font-weight:400;"></strong> from the Calcaterra dispatch?</p>
+    <div class="un-actions">
+      <button class="un-btn" onclick="doUnsubscribe()">YES, UNSUBSCRIBE</button>
+      <a class="un-btn un-btn-ghost" href="/">NO, KEEP ME</a>
+    </div>
+    <div class="un-err" id="confirm-err"></div>
+  </div>
+
+  <!-- STATE 2: ask for email manually (no email in URL) -->
+  <div id="state-ask" style="display:none;" class="fade-in">
+    <span class="un-eyebrow">Manage Subscription</span>
+    <h1 class="un-title">Leaving<br/><em>the list.</em></h1>
+    <p class="un-subtitle">Enter the email address you used to subscribe to the Calcaterra dispatch.</p>
+    <form class="un-form" onsubmit="event.preventDefault(); manualUnsubscribe();">
+      <input type="email" class="un-input" id="ask-email" placeholder="your@email.com" required autocomplete="email"/>
+      <button type="submit" class="un-btn">UNSUBSCRIBE</button>
+    </form>
+    <div class="un-err" id="ask-err"></div>
+  </div>
+
+  <!-- STATE 3: success -->
+  <div id="state-done" style="display:none;" class="fade-in">
+    <span class="un-eyebrow">Unsubscribed</span>
+    <h1 class="un-title">You have been<br/><em>removed.</em></h1>
+    <p class="un-subtitle">You will no longer receive newsletter dispatches from Calcaterra. Should you ever wish to return, you may resubscribe at any time.</p>
+    <a class="un-back" href="/">RETURN TO CALCATERRA</a>
+  </div>
+
+  <!-- STATE 4: loading -->
+  <div id="state-loading" class="fade-in">
+    <span class="un-eyebrow">One moment</span>
+    <h1 class="un-title">Processing<br/><em>your request.</em></h1>
+  </div>
+
+</div>
+
+<script>
+const { createClient } = supabase
+const _supabase = createClient(
+  'https://tnjuxcdcwcxoipbsowih.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
+)
+
+let currentEmail = null
+
+function setState(name) {
+  ['confirm','ask','done','loading'].forEach(s => {
+    document.getElementById('state-' + s).style.display = (s === name) ? 'block' : 'none'
+  })
+}
+
+function showErr(panel, msg) {
+  const el = document.getElementById(panel + '-err')
+  el.textContent = msg.toUpperCase()
+  el.classList.add('show')
+}
+
+async function callUnsubscribe(email) {
+  try {
+    const { data, error } = await _supabase.functions.invoke('unsubscribe-newsletter', { body: { email } })
+    if (error || (data && data.error)) {
+      // Fallback: try direct table delete (works only if RLS allows it from anon)
+      const { error: tableErr } = await _supabase.from('newsletter_subscribers').delete().eq('email', email)
+      if (tableErr) throw new Error(data?.error || error?.message || tableErr.message)
+    }
+    return { ok: true }
+  } catch (e) {
+    console.error('Unsubscribe failed:', e)
+    return { ok: false, message: e?.message || 'Network error' }
+  }
+}
+
+async function doUnsubscribe() {
+  if (!currentEmail) return
+  setState('loading')
+  const result = await callUnsubscribe(currentEmail)
+  if (result.ok) setState('done')
+  else {
+    setState('confirm')
+    showErr('confirm', 'Could not unsubscribe — please try again or contact support')
+  }
+}
+
+async function manualUnsubscribe() {
+  const email = document.getElementById('ask-email').value.trim().toLowerCase()
+  if (!email) return
+  setState('loading')
+  const result = await callUnsubscribe(email)
+  if (result.ok) setState('done')
+  else {
+    setState('ask')
+    showErr('ask', 'Could not unsubscribe — please try again or contact support')
+  }
+}
+
+// On load: pick the right initial state based on URL params
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(location.search)
+  const email = (params.get('email') || '').trim().toLowerCase()
+  if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    currentEmail = email
+    document.getElementById('confirm-email').textContent = email
+    setState('confirm')
+  } else {
+    setState('ask')
+  }
+})
+</script>
+</body>
+</html>

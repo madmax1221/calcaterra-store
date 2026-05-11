@@ -59,7 +59,7 @@ serve(async (req) => {
     if (resendApiKey) {
       const from = Deno.env.get('RESEND_FROM_NOREPLY') ?? 'Calcaterra <noreply@calcaterra.co>'
       const name = first_name || 'there'
-      const html = welcomeNewsletterHtml(name)
+      const html = welcomeNewsletterHtml(name, email)
 
       const r = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -100,25 +100,54 @@ function json(body: unknown, status = 200) {
   })
 }
 
-function welcomeNewsletterHtml(name: string) {
-  return `<!DOCTYPE html><html><body style="background:#f2efe9;margin:0;padding:0;font-family:'Times New Roman',serif;">
-<div style="max-width:560px;margin:0 auto;padding:60px 40px;">
-  <p style="font-family:'Times New Roman',serif;font-size:24px;font-weight:300;letter-spacing:0.15em;color:#1a1814;margin-bottom:48px;">CALCATERRA</p>
-  <p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);margin-bottom:16px;">YOU'RE ON THE LIST</p>
-  <h1 style="font-size:36px;font-weight:300;color:#1a1814;margin-bottom:8px;line-height:1.1;">Welcome,<br><em style="font-style:italic;color:rgba(26,24,20,0.4);">${escapeHtml(name)}.</em></h1>
-  <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.6);line-height:2;margin:32px 0;">
-    Thank you for joining Calcaterra. You'll be the first to know about new releases, behind-the-scenes stories, and limited drops — never spam, never noise.
-  </p>
-  <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.6);line-height:2;margin:24px 0 48px;">
-    Designed once. Worn indefinitely.
-  </p>
-  <div style="border-top:1px solid rgba(26,24,20,0.08);padding-top:24px;margin-top:48px;">
-    <p style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);">
-      CALCATERRA · BUILT ON CONVICTION<br><br>
-      <a href="https://calcaterra.co" style="color:rgba(26,24,20,0.5);text-decoration:none;">calcaterra.co</a>
-    </p>
-  </div>
-</div></body></html>`
+function welcomeNewsletterHtml(name: string, email: string) {
+  const unsub = `https://calcaterra.co/unsubscribe?email=${encodeURIComponent(email)}`
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="color-scheme" content="light only"/>
+<title>Welcome to Calcaterra</title>
+</head>
+<body style="margin:0;padding:0;background:#e9e5de;font-family:Georgia,'Times New Roman',serif;color:#1a1814;-webkit-font-smoothing:antialiased;">
+<div style="display:none;font-size:0;line-height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;">You're on the list. Welcome to Calcaterra.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e9e5de;">
+  <tr><td align="center" style="padding:0;">
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#f2efe9;">
+      <tr><td style="padding:48px 56px 24px;text-align:center;border-bottom:1px solid rgba(26,24,20,0.06);">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:11px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.45);text-transform:uppercase;margin-bottom:6px;">The House of</div>
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:300;letter-spacing:0.18em;color:#1a1814;">CALCATERRA</div>
+      </td></tr>
+      <tr><td style="padding:48px 56px 0;">
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:500;letter-spacing:0.55em;color:rgba(26,24,20,0.4);text-transform:uppercase;">You're on the list</div>
+      </td></tr>
+      <tr><td style="padding:14px 56px 24px;">
+        <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:34px;font-weight:300;line-height:1.18;letter-spacing:0.02em;color:#1a1814;">Welcome,<br/><em style="font-style:italic;color:rgba(26,24,20,0.4);">${escapeHtml(name)}.</em></h1>
+      </td></tr>
+      <tr><td style="padding:0 56px;"><div style="height:1px;background:rgba(26,24,20,0.1);"></div></td></tr>
+      <tr><td style="padding:36px 56px 12px;">
+        <p style="margin:0 0 20px;font-family:Georgia,'Times New Roman',serif;font-size:15px;color:rgba(26,24,20,0.78);line-height:1.95;">Thank you for joining Calcaterra. You will be the first to learn of new releases, behind-the-scenes stories, and limited drops.</p>
+        <p style="margin:0 0 20px;font-family:Georgia,'Times New Roman',serif;font-size:15px;color:rgba(26,24,20,0.78);line-height:1.95;">Never spam. Never noise. Only what is worth your attention.</p>
+      </td></tr>
+      <tr><td style="padding:24px 56px 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:14px;color:rgba(26,24,20,0.5);">Designed once. Worn indefinitely.</div>
+      </td></tr>
+      <tr><td style="padding:32px 56px 48px;background:#1a1814;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:13px;letter-spacing:0.22em;color:rgba(242,239,233,0.85);text-align:center;margin-bottom:8px;">CALCATERRA</div>
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.5em;color:rgba(242,239,233,0.35);text-align:center;text-transform:uppercase;margin-bottom:24px;">Built on Conviction</div>
+        <div style="height:1px;background:rgba(242,239,233,0.08);margin:0 auto 24px;width:60%;"></div>
+        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:300;letter-spacing:0.32em;color:rgba(242,239,233,0.35);text-align:center;text-transform:uppercase;">
+          <a href="https://calcaterra.co" style="color:rgba(242,239,233,0.5);text-decoration:none;">calcaterra.co</a>
+          &nbsp;&middot;&nbsp;
+          <a href="${unsub}" style="color:rgba(242,239,233,0.5);text-decoration:none;">Unsubscribe</a>
+        </p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>`
 }
 
 function escapeHtml(s: string) {
