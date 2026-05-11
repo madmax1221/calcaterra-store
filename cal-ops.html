@@ -145,6 +145,13 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
 .country-bar{height:100%;background:rgba(242,239,233,0.25);transition:width .8s ease;}
 .country-count{font-size:9px;font-weight:400;letter-spacing:0.2em;color:rgba(242,239,233,0.35);width:40px;text-align:right;flex-shrink:0;}
 .ops-loading{display:flex;align-items:center;justify-content:center;padding:80px;color:rgba(242,239,233,0.2);font-size:8px;letter-spacing:0.4em;}
+.ops-pill{display:inline-block;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;letter-spacing:0.4em;padding:4px 10px;border:1px solid;}
+.ops-pill-success{color:#34d399;border-color:rgba(52,211,153,0.3);background:rgba(52,211,153,0.08);}
+.ops-pill-warn{color:#fbbf24;border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.08);}
+.ops-cmodal{position:fixed;inset:0;background:rgba(14,13,11,0.85);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:24px;}
+.ops-cmodal.open{display:flex;}
+.ops-cmodal-card{background:#141210;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;border:1px solid rgba(242,239,233,0.08);padding:32px 40px;}
+.ops-cmodal-card .ops-modal-header{padding:0 0 24px 0;border-bottom:1px solid rgba(242,239,233,0.06);display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
 .ops-toast{position:fixed;bottom:32px;right:32px;background:#141210;border:1px solid rgba(242,239,233,0.1);padding:16px 24px;font-size:9px;font-weight:300;letter-spacing:0.3em;color:rgba(242,239,233,0.7);z-index:999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;}
 .ops-toast.show{opacity:1;transform:translateY(0);}
 .ops-toast.success{border-color:rgba(74,222,128,0.3);color:#4ade80;}
@@ -218,6 +225,19 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
         <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         CUSTOMERS
       </a>
+      <a class="ops-nav-item" data-panel="contact" onclick="showPanel('contact')" href="#" id="nav-contact">
+        <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/></svg>
+        CONTACT
+        <span class="ops-nav-badge urgent" id="contact-badge" style="display:none;">0</span>
+      </a>
+      <a class="ops-nav-item" data-panel="newsletter" onclick="showPanel('newsletter')" href="#">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        NEWSLETTER
+      </a>
+      <a class="ops-nav-item" data-panel="emaillog" onclick="showPanel('emaillog')" href="#">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg>
+        EMAIL LOG
+      </a>
     </nav>
     <div class="ops-sidebar-footer">
       <a href="/index.html" class="ops-back-site">← BACK TO SITE</a>
@@ -277,9 +297,12 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
       <div class="ops-panel" id="panel-orders">
         <div class="ops-section-header" style="margin-bottom:32px;">
           <div><span class="ops-section-eyebrow">MANAGEMENT</span><h1 class="ops-section-title">All <em>Orders.</em></h1></div>
-          <select class="ops-select ops-btn-sm" id="order-filter" onchange="filterOrders()">
-            <option value="all">ALL STATUS</option><option value="pending">PENDING</option><option value="confirmed">CONFIRMED</option><option value="shipped">SHIPPED</option><option value="delivered">DELIVERED</option>
-          </select>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <select class="ops-select ops-btn-sm" id="order-filter" onchange="filterOrders()">
+              <option value="all">ALL STATUS</option><option value="pending">PENDING</option><option value="confirmed">CONFIRMED</option><option value="shipped">SHIPPED</option><option value="delivered">DELIVERED</option><option value="cancelled">CANCELLED</option>
+            </select>
+            <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="exportOrdersCsv()">EXPORT CSV</button>
+          </div>
         </div>
         <div class="ops-table-wrap">
           <table class="ops-table">
@@ -328,11 +351,58 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
       </div>
       <!-- CUSTOMERS -->
       <div class="ops-panel" id="panel-customers">
-        <div class="ops-section-header" style="margin-bottom:32px;"><div><span class="ops-section-eyebrow">ACCOUNTS</span><h1 class="ops-section-title">All <em>Customers.</em></h1></div></div>
+        <div class="ops-section-header" style="margin-bottom:32px;">
+          <div><span class="ops-section-eyebrow">ACCOUNTS</span><h1 class="ops-section-title">All <em>Customers.</em></h1></div>
+          <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="exportCustomersCsv()">EXPORT CSV</button>
+        </div>
         <div class="ops-table-wrap">
           <table class="ops-table">
             <thead><tr><th>NAME</th><th>EMAIL</th><th>WATCHES</th><th>REGISTERED</th><th></th></tr></thead>
             <tbody id="customers-body"><tr><td colspan="5" class="ops-table-empty">LOADING...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- CONTACT SUBMISSIONS -->
+      <div class="ops-panel" id="panel-contact">
+        <div class="ops-section-header" style="margin-bottom:32px;">
+          <div><span class="ops-section-eyebrow">ENQUIRIES</span><h1 class="ops-section-title">Contact <em>Submissions.</em></h1></div>
+          <select class="ops-select ops-btn-sm" id="contact-filter" onchange="filterContacts()">
+            <option value="all">ALL</option><option value="new">NEW</option><option value="replied">REPLIED</option>
+          </select>
+        </div>
+        <div class="ops-table-wrap">
+          <table class="ops-table">
+            <thead><tr><th>NAME</th><th>EMAIL</th><th>SUBJECT</th><th>STATUS</th><th>RECEIVED</th><th></th></tr></thead>
+            <tbody id="contact-body"><tr><td colspan="6" class="ops-table-empty">LOADING...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- NEWSLETTER -->
+      <div class="ops-panel" id="panel-newsletter">
+        <div class="ops-section-header" style="margin-bottom:32px;">
+          <div><span class="ops-section-eyebrow">AUDIENCE</span><h1 class="ops-section-title">Newsletter <em>Subscribers.</em></h1></div>
+          <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="exportNewsletterCsv()">EXPORT CSV</button>
+        </div>
+        <div class="stats-grid-2" style="margin-bottom:32px;">
+          <div class="stat-card"><span class="stat-card-label">TOTAL SUBSCRIBERS</span><div class="stat-card-value" id="stat-subscribers">—</div><span class="stat-card-sub">ACTIVE LIST</span></div>
+          <div class="stat-card"><span class="stat-card-label">NEW THIS WEEK</span><div class="stat-card-value" id="stat-subscribers-week">—</div><span class="stat-card-sub">LAST 7 DAYS</span></div>
+        </div>
+        <div class="ops-table-wrap">
+          <table class="ops-table">
+            <thead><tr><th>EMAIL</th><th>SOURCE</th><th>SUBSCRIBED</th><th></th></tr></thead>
+            <tbody id="newsletter-body"><tr><td colspan="4" class="ops-table-empty">LOADING...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- EMAIL LOG -->
+      <div class="ops-panel" id="panel-emaillog">
+        <div class="ops-section-header" style="margin-bottom:32px;">
+          <div><span class="ops-section-eyebrow">AUDIT</span><h1 class="ops-section-title">Email <em>Log.</em></h1></div>
+        </div>
+        <div class="ops-table-wrap">
+          <table class="ops-table">
+            <thead><tr><th>RECIPIENT</th><th>SUBJECT</th><th>PROVIDER ID</th><th>SENT AT</th></tr></thead>
+            <tbody id="emaillog-body"><tr><td colspan="4" class="ops-table-empty">LOADING...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -419,6 +489,8 @@ const SAFE_CHARS = 'ACDEFGHJKMNPQRTUVWXYZ234679'
 let currentOrder = null
 let allOrders = []
 let allCodes = []
+let allContacts = []
+let allSubscribers = []
 
 function updateClock() {
   const now = new Date()
@@ -439,6 +511,8 @@ async function initAdmin() {
   loadCodes()
   loadWarranties()
   loadCustomers()
+  loadContacts()
+  loadNewsletter()
   startReminderChecks()
   startRealtimeOrders()
   document.addEventListener('visibilitychange', () => {
@@ -466,9 +540,12 @@ function showPanel(id) {
   document.querySelectorAll('.ops-nav-item').forEach(n => n.classList.remove('active'))
   document.getElementById('panel-' + id).classList.add('active')
   document.querySelectorAll('.ops-nav-item').forEach(n => { if (n.getAttribute('data-panel') === id) n.classList.add('active') })
-  const titles = { dashboard:'DASHBOARD', orders:'ORDERS', codes:'CODES', warranties:'WARRANTIES', customers:'CUSTOMERS' }
+  const titles = { dashboard:'DASHBOARD', orders:'ORDERS', codes:'CODES', warranties:'WARRANTIES', customers:'CUSTOMERS', contact:'CONTACT SUBMISSIONS', newsletter:'NEWSLETTER', emaillog:'EMAIL LOG' }
   document.getElementById('topbar-title').textContent = titles[id] || id.toUpperCase()
   if (id === 'dashboard') loadDashboard()
+  if (id === 'contact') loadContacts()
+  if (id === 'newsletter') loadNewsletter()
+  if (id === 'emaillog') loadEmailLog()
   if (window.innerWidth <= 1024) {
     document.getElementById('ops-sidebar').classList.remove('open')
     document.getElementById('sidebarOverlay').classList.remove('open')
@@ -479,7 +556,7 @@ async function refreshAll() {
   const btn = document.getElementById('refresh-btn')
   btn.textContent = '...'
   btn.disabled = true
-  await Promise.all([loadDashboard(), loadOrders(), loadCodes(), loadWarranties(), loadCustomers()])
+  await Promise.all([loadDashboard(), loadOrders(), loadCodes(), loadWarranties(), loadCustomers(), loadContacts(), loadNewsletter(), loadEmailLog()])
   orderChannel = null
   startRealtimeOrders()
   btn.textContent = 'REFRESH'
@@ -694,7 +771,10 @@ async function openOrder(id) {
     btns += `<button class="ops-btn ops-btn-confirm" onclick="updateOrderStatus('${id}', 'confirmed')">✓ CONFIRM ORDER</button>`
     btns += `<button class="ops-btn ops-btn-danger ops-btn-sm" onclick="updateOrderStatus('${id}', 'cancelled')">CANCEL</button>`
   }
-  if (order.status === 'confirmed') btns += `<button class="ops-btn ops-btn-ship" onclick="markShipped('${id}')">MARK AS SHIPPED</button>`
+  if (order.status === 'confirmed') {
+    btns += `<button class="ops-btn ops-btn-ship" onclick="markShipped('${id}')">MARK AS SHIPPED</button>`
+    btns += `<button class="ops-btn ops-btn-danger ops-btn-sm" onclick="cancelOrder('${id}')">CANCEL ORDER</button>`
+  }
   if (order.status === 'shipped') btns += `<button class="ops-btn ops-btn-confirm" onclick="updateOrderStatus('${id}', 'delivered')">MARK DELIVERED</button>`
   btns += `<button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="closeModal()">CLOSE</button>`
   document.getElementById('modal-actions').innerHTML = btns
@@ -914,10 +994,271 @@ function toggleCustomerWatches(customerId, btn) {
   if (btn) btn.textContent = isOpen ? btn.textContent.replace('HIDE','VIEW') : btn.textContent.replace('VIEW','HIDE')
 }
 
+// ── CONTACT SUBMISSIONS ──
+async function loadContacts() {
+  const { data, error } = await _supabase
+    .from('contact_submissions')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) { console.error(error); return }
+  allContacts = data || []
+  const unread = allContacts.filter(c => c.status !== 'replied').length
+  const badge = document.getElementById('contact-badge')
+  if (badge) {
+    badge.textContent = unread
+    badge.style.display = unread > 0 ? 'inline-flex' : 'none'
+  }
+  renderContacts(allContacts)
+}
+
+function filterContacts() {
+  const val = document.getElementById('contact-filter').value
+  if (val === 'all') renderContacts(allContacts)
+  else if (val === 'new') renderContacts(allContacts.filter(c => c.status !== 'replied'))
+  else renderContacts(allContacts.filter(c => c.status === 'replied'))
+}
+
+function renderContacts(list) {
+  if (!list.length) {
+    document.getElementById('contact-body').innerHTML = '<tr><td colspan="6" class="ops-table-empty">NO SUBMISSIONS YET</td></tr>'
+    return
+  }
+  document.getElementById('contact-body').innerHTML = list.map(c => {
+    const isReplied = c.status === 'replied'
+    const statusPill = isReplied
+      ? '<span class="ops-pill ops-pill-success">REPLIED</span>'
+      : '<span class="ops-pill ops-pill-warn">NEW</span>'
+    const when = c.created_at ? new Date(c.created_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'
+    return `<tr>
+      <td>${esc(c.name || '—')}</td>
+      <td>${esc(c.email || '—')}</td>
+      <td>${esc(c.subject || '—')}</td>
+      <td>${statusPill}</td>
+      <td style="font-size:9px;color:rgba(242,239,233,0.5);">${when}</td>
+      <td style="text-align:right;"><button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="openContactDetail('${c.id}')">VIEW</button></td>
+    </tr>`
+  }).join('')
+}
+
+function openContactDetail(id) {
+  const c = allContacts.find(x => x.id === id)
+  if (!c) return
+  const modal = document.getElementById('contact-modal') || buildContactModal()
+  modal.querySelector('[data-cm-name]').textContent = c.name || '—'
+  modal.querySelector('[data-cm-email]').textContent = c.email || '—'
+  modal.querySelector('[data-cm-subject]').textContent = c.subject || '—'
+  modal.querySelector('[data-cm-message]').textContent = c.message || '—'
+  modal.querySelector('[data-cm-reply]').value = ''
+  modal.querySelector('[data-cm-send]').onclick = () => sendContactReply(c)
+  modal.querySelector('[data-cm-mark]').onclick = () => markContactReplied(c.id)
+  modal.classList.add('open')
+}
+
+function buildContactModal() {
+  const m = document.createElement('div')
+  m.id = 'contact-modal'
+  m.className = 'ops-cmodal'
+  m.innerHTML = `
+    <div class="ops-cmodal-card">
+      <div class="ops-modal-header">
+        <span class="ops-section-eyebrow">SUBMISSION</span>
+        <button class="ops-modal-close" onclick="document.getElementById('contact-modal').classList.remove('open')">×</button>
+      </div>
+      <div style="display:grid;grid-template-columns:max-content 1fr;gap:8px 24px;margin-bottom:24px;font-size:11px;">
+        <span style="color:rgba(242,239,233,0.4);letter-spacing:0.3em;">FROM</span><span data-cm-name></span>
+        <span style="color:rgba(242,239,233,0.4);letter-spacing:0.3em;">EMAIL</span><span data-cm-email></span>
+        <span style="color:rgba(242,239,233,0.4);letter-spacing:0.3em;">SUBJECT</span><span data-cm-subject></span>
+      </div>
+      <div style="border-top:1px solid rgba(242,239,233,0.08);padding-top:20px;margin-bottom:24px;">
+        <span class="ops-section-eyebrow" style="display:block;margin-bottom:12px;">MESSAGE</span>
+        <p data-cm-message style="white-space:pre-wrap;line-height:1.7;font-size:13px;color:rgba(242,239,233,0.8);"></p>
+      </div>
+      <div style="border-top:1px solid rgba(242,239,233,0.08);padding-top:20px;">
+        <span class="ops-section-eyebrow" style="display:block;margin-bottom:12px;">REPLY</span>
+        <textarea data-cm-reply class="ops-input" rows="6" placeholder="Type your reply..." style="width:100%;background:#0e0d0b;color:#f2efe9;border:1px solid rgba(242,239,233,0.1);padding:12px;font-family:'Montserrat',sans-serif;font-size:12px;resize:vertical;"></textarea>
+        <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:16px;">
+          <button class="ops-btn ops-btn-ghost ops-btn-sm" data-cm-mark>MARK AS REPLIED</button>
+          <button class="ops-btn ops-btn-primary ops-btn-sm" data-cm-send>SEND REPLY</button>
+        </div>
+      </div>
+    </div>`
+  document.body.appendChild(m)
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open') })
+  return m
+}
+
+async function sendContactReply(contact) {
+  const modal = document.getElementById('contact-modal')
+  const replyEl = modal.querySelector('[data-cm-reply]')
+  const text = replyEl.value.trim()
+  if (!text) { toast('Reply is empty', 'error'); return }
+  const sendBtn = modal.querySelector('[data-cm-send]')
+  sendBtn.disabled = true
+  sendBtn.textContent = 'SENDING...'
+  const safeText = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')
+  const html = `<!DOCTYPE html><html><body style="background:#f2efe9;margin:0;padding:0;font-family:'Times New Roman',serif;"><div style="max-width:560px;margin:0 auto;padding:60px 40px;"><p style="font-family:'Times New Roman',serif;font-size:24px;font-weight:300;letter-spacing:0.15em;color:#1a1814;margin-bottom:48px;">CALCATERRA</p><p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);margin-bottom:16px;">RE: ${esc(contact.subject || 'YOUR ENQUIRY')}</p><p style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;color:rgba(26,24,20,0.8);line-height:1.9;margin:24px 0;">${safeText}</p><p style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-top:48px;border-top:1px solid rgba(26,24,20,0.08);padding-top:24px;">CALCATERRA · BUILT ON CONVICTION<br><br>support@calcaterra.co · calcaterra.co</p></div></body></html>`
+  const ok = await sendEmail(contact.email, `Re: ${contact.subject || 'Your enquiry'} — Calcaterra`, html, contact.email)
+  if (ok) {
+    await markContactReplied(contact.id)
+    toast('Reply sent')
+    modal.classList.remove('open')
+  } else {
+    toast('Email failed — check send-email function', 'error')
+  }
+  sendBtn.disabled = false
+  sendBtn.textContent = 'SEND REPLY'
+}
+
+async function markContactReplied(id) {
+  const { error } = await _supabase
+    .from('contact_submissions')
+    .update({ status: 'replied', replied_at: new Date().toISOString() })
+    .eq('id', id)
+  if (error) { toast('Update failed', 'error'); return }
+  toast('Marked as replied')
+  document.getElementById('contact-modal')?.classList.remove('open')
+  await loadContacts()
+}
+
+// ── NEWSLETTER SUBSCRIBERS ──
+async function loadNewsletter() {
+  const { data, error } = await _supabase
+    .from('newsletter_subscribers')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (error) { console.error(error); return }
+  allSubscribers = data || []
+  document.getElementById('stat-subscribers').textContent = allSubscribers.length
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
+  const recent = allSubscribers.filter(s => new Date(s.created_at).getTime() > weekAgo).length
+  document.getElementById('stat-subscribers-week').textContent = recent
+  if (!allSubscribers.length) {
+    document.getElementById('newsletter-body').innerHTML = '<tr><td colspan="4" class="ops-table-empty">NO SUBSCRIBERS YET</td></tr>'
+    return
+  }
+  document.getElementById('newsletter-body').innerHTML = allSubscribers.map(s => {
+    const when = s.created_at ? new Date(s.created_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'
+    return `<tr>
+      <td>${esc(s.email || '—')}</td>
+      <td style="font-size:9px;color:rgba(242,239,233,0.5);">${esc(s.source || 'website')}</td>
+      <td style="font-size:9px;color:rgba(242,239,233,0.5);">${when}</td>
+      <td style="text-align:right;"><button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="deleteSubscriber('${s.id}')">REMOVE</button></td>
+    </tr>`
+  }).join('')
+}
+
+async function deleteSubscriber(id) {
+  if (!confirm('Remove this subscriber?')) return
+  const { error } = await _supabase.from('newsletter_subscribers').delete().eq('id', id)
+  if (error) { toast('Failed', 'error'); return }
+  toast('Subscriber removed')
+  loadNewsletter()
+}
+
+// ── EMAIL LOG ──
+async function loadEmailLog() {
+  const { data, error } = await _supabase
+    .from('email_log')
+    .select('*')
+    .order('sent_at', { ascending: false })
+    .limit(200)
+  if (error) {
+    document.getElementById('emaillog-body').innerHTML = '<tr><td colspan="4" class="ops-table-empty">EMAIL LOG NOT YET CREATED — RUN MIGRATION</td></tr>'
+    return
+  }
+  if (!data?.length) {
+    document.getElementById('emaillog-body').innerHTML = '<tr><td colspan="4" class="ops-table-empty">NO EMAILS SENT YET</td></tr>'
+    return
+  }
+  document.getElementById('emaillog-body').innerHTML = data.map(e => {
+    const when = e.sent_at ? new Date(e.sent_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'
+    return `<tr>
+      <td>${esc(e.recipient || '—')}</td>
+      <td>${esc(e.subject || '—')}</td>
+      <td style="font-size:9px;font-family:monospace;color:rgba(242,239,233,0.4);">${esc(e.provider_id || '—')}</td>
+      <td style="font-size:9px;color:rgba(242,239,233,0.5);">${when}</td>
+    </tr>`
+  }).join('')
+}
+
+// ── CSV EXPORTS ──
+function downloadCsv(filename, rows) {
+  const csv = rows.map(r => r.map(c => {
+    const s = (c == null ? '' : String(c))
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s
+  }).join(',')).join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
+
+function exportOrdersCsv() {
+  if (!allOrders.length) { toast('Nothing to export', 'error'); return }
+  const rows = [['order_id','customer_name','customer_email','variant','total','status','tracking','placed_at']]
+  allOrders.forEach(o => rows.push([
+    o.id,
+    `${o.customers?.first_name || ''} ${o.customers?.last_name || ''}`.trim(),
+    o.customers?.email || '',
+    (o.order_items?.[0]?.variant) || '',
+    o.total || '',
+    o.status || '',
+    o.tracking_number || '',
+    o.created_at || ''
+  ]))
+  downloadCsv(`calcaterra-orders-${new Date().toISOString().slice(0,10)}.csv`, rows)
+}
+
+async function cancelOrder(id) {
+  const reason = prompt('Cancellation reason (optional, shown internally only):')
+  if (reason === null) return
+  const updates = { status: 'cancelled' }
+  if (reason) updates.notes = reason
+  const { error } = await _supabase.from('orders').update(updates).eq('id', id)
+  if (error) { toast('Cancellation failed', 'error'); return }
+  toast('Order cancelled')
+  closeModal()
+  await Promise.all([loadOrders(), loadDashboard()])
+}
+
+function exportNewsletterCsv() {
+  if (!allSubscribers.length) { toast('Nothing to export', 'error'); return }
+  const rows = [['email','source','subscribed_at']]
+  allSubscribers.forEach(s => rows.push([s.email, s.source || 'website', s.created_at]))
+  downloadCsv(`calcaterra-newsletter-${new Date().toISOString().slice(0,10)}.csv`, rows)
+}
+
+function exportCustomersCsv() {
+  if (typeof allCustomers === 'undefined' || !allCustomers?.length) {
+    // allCustomers isn't a top-level var in the existing code; fall back to a fresh query
+    _supabase.from('customers').select('email, first_name, last_name, created_at').then(({ data }) => {
+      if (!data?.length) { toast('Nothing to export', 'error'); return }
+      const rows = [['email','first_name','last_name','registered_at']]
+      data.forEach(c => rows.push([c.email, c.first_name, c.last_name, c.created_at]))
+      downloadCsv(`calcaterra-customers-${new Date().toISOString().slice(0,10)}.csv`, rows)
+    })
+    return
+  }
+  const rows = [['email','first_name','last_name','registered_at']]
+  allCustomers.forEach(c => rows.push([c.email, c.first_name, c.last_name, c.created_at]))
+  downloadCsv(`calcaterra-customers-${new Date().toISOString().slice(0,10)}.csv`, rows)
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
 // ── EMAIL VIA SUPABASE EDGE FUNCTION ──
-async function sendEmail(to, subject, html) {
+async function sendEmail(to, subject, html, reply_to) {
   try {
-    const { data, error } = await _supabase.functions.invoke('send-email', { body: { to, subject, html } })
+    const body = { to, subject, html }
+    if (reply_to) body.reply_to = reply_to
+    const { data, error } = await _supabase.functions.invoke('send-email', { body })
     if (error) { console.error('Email error:', error); return false }
     return true
   } catch(e) { console.error('Email error:', e); return false }
