@@ -57,7 +57,7 @@ serve(async (req) => {
     // Send welcome email (best-effort — don't fail subscription if email errors)
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
     if (resendApiKey) {
-      const from = Deno.env.get('RESEND_FROM') ?? 'Calcaterra <noreply@calcaterra.co>'
+      const from = Deno.env.get('RESEND_FROM_INFO') ?? 'Calcaterra <info@calcaterra.co>'
       const name = first_name || 'there'
       const html = welcomeNewsletterHtml(name)
 

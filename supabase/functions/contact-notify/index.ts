@@ -63,7 +63,7 @@ Reply directly to this email to respond to the customer.
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: 'Calcaterra Contact <noreply@calcaterra.co>',
+          from: 'Calcaterra Contact <support@calcaterra.co>',
           to: ['support@calcaterra.co'],
           reply_to: email,
           subject: `Contact Form: ${subject || 'New enquiry'} — ${name}`,

@@ -65,7 +65,9 @@ serve(async (req) => {
     if (!resendApiKey) {
       return json({ error: 'RESEND_API_KEY not configured' }, 500)
     }
-    const defaultFrom = Deno.env.get('RESEND_FROM') ?? 'Calcaterra <noreply@calcaterra.co>'
+    // Caller can pass `from`; otherwise default to support@. Specific senders
+    // (orders@, info@) are passed explicitly by the cal-ops UI per email type.
+    const defaultFrom = Deno.env.get('RESEND_FROM_SUPPORT') ?? 'Calcaterra Support <support@calcaterra.co>'
 
     const recipients = Array.isArray(to) ? to : [to]
 
