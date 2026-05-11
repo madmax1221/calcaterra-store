@@ -44,7 +44,7 @@ serve(async (req) => {
 
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
     if (!resendApiKey) return json({ error: 'RESEND_API_KEY not configured' }, 500)
-    const from = Deno.env.get('RESEND_FROM_INFO') ?? 'Calcaterra <info@calcaterra.co>'
+    const from = Deno.env.get('RESEND_FROM_NOREPLY') ?? 'Calcaterra <noreply@calcaterra.co>'
 
     const html = welcomeAccountHtml(first_name)
 
