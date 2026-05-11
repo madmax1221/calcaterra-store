@@ -1,0 +1,16 @@
+# Supabase CLI working files
+supabase/.temp/
+supabase/.branches/
+
+# macOS
+.DS_Store
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/
+npm-debug.log*
+.env
+.env.local
