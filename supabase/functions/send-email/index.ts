@@ -47,7 +47,7 @@ serve(async (req) => {
     const { data: customer, error: custErr } = await adminClient
       .from('customers')
       .select('role')
-      .eq('id', user.id)
+      .eq('auth_user_id', user.id)
       .maybeSingle()
     if (custErr || !customer || customer.role !== 'admin') {
       return json({ error: 'Forbidden' }, 403)

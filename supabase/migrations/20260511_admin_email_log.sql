@@ -25,7 +25,7 @@ create policy "admins read email log"
   using (
     exists (
       select 1 from public.customers c
-      where c.id = auth.uid() and c.role = 'admin'
+      where c.auth_user_id = auth.uid() and c.role = 'admin'
     )
   );
 
@@ -37,7 +37,7 @@ create policy "admins read contact submissions"
   using (
     exists (
       select 1 from public.customers c
-      where c.id = auth.uid() and c.role = 'admin'
+      where c.auth_user_id = auth.uid() and c.role = 'admin'
     )
   );
 
@@ -47,7 +47,7 @@ create policy "admins update contact submissions"
   using (
     exists (
       select 1 from public.customers c
-      where c.id = auth.uid() and c.role = 'admin'
+      where c.auth_user_id = auth.uid() and c.role = 'admin'
     )
   );
 
@@ -57,7 +57,7 @@ create policy "admins read newsletter subscribers"
   using (
     exists (
       select 1 from public.customers c
-      where c.id = auth.uid() and c.role = 'admin'
+      where c.auth_user_id = auth.uid() and c.role = 'admin'
     )
   );
 
@@ -67,7 +67,7 @@ create policy "admins delete newsletter subscribers"
   using (
     exists (
       select 1 from public.customers c
-      where c.id = auth.uid() and c.role = 'admin'
+      where c.auth_user_id = auth.uid() and c.role = 'admin'
     )
   );
 
