@@ -145,6 +145,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
 .country-bar{height:100%;background:rgba(242,239,233,0.25);transition:width .8s ease;}
 .country-count{font-size:9px;font-weight:400;letter-spacing:0.2em;color:rgba(242,239,233,0.35);width:40px;text-align:right;flex-shrink:0;}
 .ops-loading{display:flex;align-items:center;justify-content:center;padding:80px;color:rgba(242,239,233,0.2);font-size:8px;letter-spacing:0.4em;}
+.cmp-label{display:block;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.46em;color:rgba(242,239,233,0.38);text-transform:uppercase;margin-bottom:6px;line-height:1.6;}
 .ops-pill{display:inline-block;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;letter-spacing:0.4em;padding:4px 10px;border:1px solid;}
 .ops-pill-success{color:#34d399;border-color:rgba(52,211,153,0.3);background:rgba(52,211,153,0.08);}
 .ops-pill-warn{color:#fbbf24;border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.08);}
@@ -396,22 +397,133 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
             <div><span class="ops-section-eyebrow">BROADCAST</span><h2 class="ops-section-title">Compose <em>Newsletter.</em></h2></div>
             <button class="ops-modal-close" onclick="toggleCompose()" style="font-size:20px;background:none;border:none;color:rgba(242,239,233,0.3);cursor:pointer;">×</button>
           </div>
-          <div style="display:flex;flex-direction:column;gap:20px;">
+          <div style="display:flex;flex-direction:column;gap:28px;">
+
+            <!-- ESSENTIALS -->
             <div>
-              <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">SUBJECT</span>
-              <input type="text" id="compose-subject" class="ops-input" placeholder="A new chapter at Calcaterra..." style="width:100%;">
+              <div style="display:flex;align-items:baseline;gap:12px;border-bottom:1px solid rgba(242,239,233,0.06);padding-bottom:10px;margin-bottom:18px;">
+                <span class="ops-section-eyebrow">ESSENTIALS</span>
+                <span style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.18em;color:rgba(242,239,233,0.25);">REQUIRED</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:14px;">
+                <div>
+                  <label class="cmp-label">SUBJECT</label>
+                  <input type="text" id="compose-subject" class="ops-input" placeholder="A new chapter at Calcaterra" style="width:100%;">
+                </div>
+                <div>
+                  <label class="cmp-label">MESSAGE BODY <span style="opacity:.5;">— HTML SUPPORTED (&lt;p&gt;, &lt;strong&gt;, &lt;a href=&quot;&quot;&gt;, &lt;em&gt;, &lt;br&gt;)</span></label>
+                  <textarea id="compose-body" class="ops-input" rows="9" placeholder="Write your story. Each paragraph should be wrapped in <p>...</p> or separated by blank lines." style="width:100%;background:#0e0d0b;color:#f2efe9;border:1px solid rgba(242,239,233,0.1);padding:16px;font-family:'Montserrat',sans-serif;font-size:12px;resize:vertical;line-height:1.7;"></textarea>
+                </div>
+              </div>
             </div>
+
+            <!-- TONE -->
             <div>
-              <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">MESSAGE BODY (HTML SUPPORTED)</span>
-              <textarea id="compose-body" class="ops-input" rows="12" placeholder="Write your newsletter. You can use HTML tags like <strong>, <a href=...>, <p>, <br> for formatting." style="width:100%;background:#0e0d0b;color:#f2efe9;border:1px solid rgba(242,239,233,0.1);padding:16px;font-family:'Montserrat',sans-serif;font-size:12px;resize:vertical;line-height:1.7;"></textarea>
+              <div style="display:flex;align-items:baseline;gap:12px;border-bottom:1px solid rgba(242,239,233,0.06);padding-bottom:10px;margin-bottom:18px;">
+                <span class="ops-section-eyebrow">TONE &amp; PREVIEW</span>
+                <span style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.18em;color:rgba(242,239,233,0.25);">OPTIONAL</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:14px;">
+                <div>
+                  <label class="cmp-label">PREVIEW TEXT <span style="opacity:.5;">— shown in inbox preview pane, max ~90 chars</span></label>
+                  <input type="text" id="compose-preview" class="ops-input" placeholder="A short teaser to lure them in." style="width:100%;">
+                </div>
+                <div style="display:flex;gap:14px;flex-wrap:wrap;">
+                  <div style="flex:1;min-width:200px;">
+                    <label class="cmp-label">EYEBROW <span style="opacity:.5;">— small label above headline</span></label>
+                    <input type="text" id="compose-eyebrow" class="ops-input" placeholder="A NEW CHAPTER" style="width:100%;">
+                  </div>
+                  <div style="flex:1;min-width:200px;">
+                    <label class="cmp-label">SIGN-OFF <span style="opacity:.5;">— italic line at end</span></label>
+                    <input type="text" id="compose-signoff" class="ops-input" placeholder="— Calcaterra" style="width:100%;">
+                  </div>
+                </div>
+                <div>
+                  <label class="cmp-label">HEADLINE OVERRIDE <span style="opacity:.5;">— uses Subject if left blank. Use &lt;em&gt; for italic phrasing.</span></label>
+                  <input type="text" id="compose-headline" class="ops-input" placeholder="The first chapter. <em>Complete.</em>" style="width:100%;">
+                </div>
+              </div>
             </div>
-            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-              <input type="email" id="compose-test-to" class="ops-input" placeholder="Test send to (your email)" style="flex:1;min-width:200px;">
-              <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="sendBroadcastTest()">SEND TEST</button>
-              <span style="flex:1;"></span>
-              <button class="ops-btn ops-btn-primary" onclick="sendBroadcastAll()" id="broadcast-send-btn">SEND TO ALL <span id="broadcast-count">—</span></button>
+
+            <!-- HERO IMAGE -->
+            <div>
+              <div style="display:flex;align-items:baseline;gap:12px;border-bottom:1px solid rgba(242,239,233,0.06);padding-bottom:10px;margin-bottom:18px;">
+                <span class="ops-section-eyebrow">HERO IMAGE</span>
+                <span style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.18em;color:rgba(242,239,233,0.25);">OPTIONAL — APPEARS BELOW HEADER</span>
+              </div>
+              <div>
+                <label class="cmp-label">IMAGE URL <span style="opacity:.5;">— full URL to a hosted image (calcaterra.co/images/... or Resend-friendly host)</span></label>
+                <input type="url" id="compose-hero" class="ops-input" placeholder="https://calcaterra.co/images/roma-v1.jpg" style="width:100%;">
+              </div>
             </div>
-            <div id="compose-status" style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.3em;color:rgba(242,239,233,0.5);"></div>
+
+            <!-- CTA BUTTON -->
+            <div>
+              <div style="display:flex;align-items:baseline;gap:12px;border-bottom:1px solid rgba(242,239,233,0.06);padding-bottom:10px;margin-bottom:18px;">
+                <span class="ops-section-eyebrow">CALL TO ACTION</span>
+                <span style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.18em;color:rgba(242,239,233,0.25);">OPTIONAL</span>
+              </div>
+              <div style="display:flex;gap:14px;flex-wrap:wrap;">
+                <div style="flex:1;min-width:160px;">
+                  <label class="cmp-label">BUTTON LABEL</label>
+                  <input type="text" id="compose-cta-label" class="ops-input" placeholder="DISCOVER THE ROMA" style="width:100%;">
+                </div>
+                <div style="flex:2;min-width:240px;">
+                  <label class="cmp-label">BUTTON URL</label>
+                  <input type="url" id="compose-cta-url" class="ops-input" placeholder="https://calcaterra.co/collections/roma" style="width:100%;">
+                </div>
+              </div>
+            </div>
+
+            <!-- PRODUCT FEATURE -->
+            <div>
+              <div style="display:flex;align-items:baseline;gap:12px;border-bottom:1px solid rgba(242,239,233,0.06);padding-bottom:10px;margin-bottom:18px;">
+                <span class="ops-section-eyebrow">PRODUCT FEATURE</span>
+                <span style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.18em;color:rgba(242,239,233,0.25);">OPTIONAL — APPEARS AFTER BODY</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:14px;">
+                <div>
+                  <label class="cmp-label">PRODUCT IMAGE URL</label>
+                  <input type="url" id="compose-prod-image" class="ops-input" placeholder="https://calcaterra.co/images/roma-v1.jpg" style="width:100%;">
+                </div>
+                <div style="display:flex;gap:14px;flex-wrap:wrap;">
+                  <div style="flex:2;min-width:200px;">
+                    <label class="cmp-label">NAME</label>
+                    <input type="text" id="compose-prod-name" class="ops-input" placeholder="The Roma" style="width:100%;">
+                  </div>
+                  <div style="flex:1;min-width:120px;">
+                    <label class="cmp-label">PRICE</label>
+                    <input type="text" id="compose-prod-price" class="ops-input" placeholder="€329" style="width:100%;">
+                  </div>
+                </div>
+                <div>
+                  <label class="cmp-label">TAGLINE</label>
+                  <input type="text" id="compose-prod-tagline" class="ops-input" placeholder="Three references. One conviction." style="width:100%;">
+                </div>
+                <div style="display:flex;gap:14px;flex-wrap:wrap;">
+                  <div style="flex:2;min-width:200px;">
+                    <label class="cmp-label">LINK URL</label>
+                    <input type="url" id="compose-prod-url" class="ops-input" placeholder="https://calcaterra.co/collections/roma" style="width:100%;">
+                  </div>
+                  <div style="flex:1;min-width:120px;">
+                    <label class="cmp-label">LINK LABEL</label>
+                    <input type="text" id="compose-prod-link-label" class="ops-input" placeholder="VIEW THE COLLECTION" style="width:100%;">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SEND -->
+            <div style="border-top:1px solid rgba(242,239,233,0.06);padding-top:20px;">
+              <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                <input type="email" id="compose-test-to" class="ops-input" placeholder="Test send to (your email)" style="flex:1;min-width:200px;">
+                <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="sendBroadcastTest()">SEND TEST</button>
+                <span style="flex:1;"></span>
+                <button class="ops-btn ops-btn-primary" onclick="sendBroadcastAll()" id="broadcast-send-btn">SEND TO ALL <span id="broadcast-count">—</span></button>
+              </div>
+              <div id="compose-status" style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.3em;color:rgba(242,239,233,0.5);margin-top:14px;"></div>
+            </div>
+
           </div>
         </div>
         <div class="ops-table-wrap">
@@ -1189,14 +1301,80 @@ function toggleCompose() {
   }
 }
 
-function buildBroadcastHtml(subject, bodyText) {
-  // Wrap admin's body content in the Calcaterra branded shell.
-  // Hosted images don't load reliably in most email clients, so the
-  // wordmark is set in serif type. Layout uses table-based structure
-  // for maximum compatibility (Outlook still doesn't handle flexbox).
-  const safeBody = bodyText.trim()
-  // Preview text — first line visible in inbox preview pane
-  const preview = bodyText.replace(/<[^>]+>/g, '').trim().slice(0, 90)
+// Collect composer fields into a single payload object
+function collectComposeFields() {
+  const get = (id) => (document.getElementById(id)?.value || '').trim()
+  return {
+    subject:        get('compose-subject'),
+    body:           get('compose-body'),
+    preview:        get('compose-preview'),
+    eyebrow:        get('compose-eyebrow'),
+    headline:       get('compose-headline'),
+    signoff:        get('compose-signoff') || '— Calcaterra',
+    heroUrl:        get('compose-hero'),
+    ctaLabel:       get('compose-cta-label'),
+    ctaUrl:         get('compose-cta-url'),
+    prodImage:      get('compose-prod-image'),
+    prodName:       get('compose-prod-name'),
+    prodPrice:      get('compose-prod-price'),
+    prodTagline:    get('compose-prod-tagline'),
+    prodUrl:        get('compose-prod-url'),
+    prodLinkLabel:  get('compose-prod-link-label') || 'VIEW',
+  }
+}
+
+// Build the Calcaterra newsletter HTML from a modular payload.
+// All blocks except subject + body are optional and render only when populated.
+// Layout is fully table-based + inline styles for Outlook / Gmail compatibility.
+function buildBroadcastHtml(opts) {
+  const o = (typeof opts === 'string') ? { subject: arguments[0], body: arguments[1] || '' } : (opts || {})
+  const subject  = o.subject || ''
+  const body     = (o.body || '').trim()
+  const preview  = (o.preview || body.replace(/<[^>]+>/g, '').trim()).slice(0, 130)
+  const eyebrow  = o.eyebrow || ''
+  const headline = o.headline || subject
+  const signoff  = o.signoff || '— Calcaterra'
+
+  // Normalise body: if user typed plain paragraphs without <p> tags, wrap them
+  let bodyHtml = body
+  if (bodyHtml && !/<p[\s>]/i.test(bodyHtml)) {
+    bodyHtml = bodyHtml.split(/\n\s*\n/).map(p => `<p style="margin:0 0 22px;">${p.replace(/\n/g, '<br/>')}</p>`).join('')
+  }
+
+  // ── Optional blocks ────────────────────────────────────
+  const heroBlock = o.heroUrl ? `
+      <tr><td style="padding:0;">
+        <img src="${escAttr(o.heroUrl)}" alt="" width="600" style="display:block;width:100%;max-width:600px;height:auto;border:0;outline:none;text-decoration:none;"/>
+      </td></tr>` : ''
+
+  const eyebrowBlock = eyebrow ? `
+      <tr><td style="padding:0 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:11px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);text-transform:uppercase;margin-bottom:18px;">${esc(eyebrow)}</div>
+      </td></tr>` : ''
+
+  const ctaBlock = (o.ctaLabel && o.ctaUrl) ? `
+      <tr><td style="padding:8px 56px 0;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:#1a1814;">
+          <a href="${escAttr(o.ctaUrl)}" style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:400;letter-spacing:0.58em;color:#f2efe9;background:#1a1814;text-decoration:none;padding:20px 42px;text-transform:uppercase;border:1px solid #1a1814;">${esc(o.ctaLabel)}</a>
+        </td></tr></table>
+      </td></tr>` : ''
+
+  const productBlock = (o.prodImage || o.prodName) ? `
+      <tr><td style="padding:48px 56px 0;">
+        <div style="height:1px;background:rgba(26,24,20,0.1);margin-bottom:36px;"></div>
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);text-transform:uppercase;margin-bottom:20px;">Featured</div>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          ${o.prodImage ? `<tr><td style="padding:0 0 24px;"><img src="${escAttr(o.prodImage)}" alt="${escAttr(o.prodName || '')}" width="488" style="display:block;width:100%;max-width:488px;height:auto;border:0;"/></td></tr>` : ''}
+          <tr><td>
+            ${o.prodName    ? `<h3 style="margin:0 0 8px;font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:300;letter-spacing:0.02em;color:#1a1814;line-height:1.2;">${esc(o.prodName)}</h3>` : ''}
+            ${o.prodTagline ? `<p style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:14px;color:rgba(26,24,20,0.55);line-height:1.6;">${esc(o.prodTagline)}</p>` : ''}
+            ${o.prodPrice   ? `<p style="margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-size:15px;color:#1a1814;letter-spacing:0.02em;">${esc(o.prodPrice)}</p>` : ''}
+            ${o.prodUrl     ? `<a href="${escAttr(o.prodUrl)}" style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:9.5px;font-weight:400;letter-spacing:0.52em;color:#1a1814;text-decoration:none;border-bottom:1px solid #1a1814;padding-bottom:4px;text-transform:uppercase;">${esc(o.prodLinkLabel || 'VIEW')}</a>` : ''}
+          </td></tr>
+        </table>
+      </td></tr>` : ''
+
+  // ── Compose full template ─────────────────────────────
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -1209,43 +1387,47 @@ function buildBroadcastHtml(subject, bodyText) {
 <body style="margin:0;padding:0;background:#e9e5de;font-family:Georgia,'Times New Roman',serif;color:#1a1814;-webkit-font-smoothing:antialiased;">
 <div style="display:none;font-size:0;line-height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">${esc(preview)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e9e5de;">
-  <tr><td align="center" style="padding:0;">
+  <tr><td align="center" style="padding:32px 16px;">
     <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#f2efe9;">
       <!-- HEADER -->
-      <tr><td style="padding:48px 56px 24px;text-align:center;border-bottom:1px solid rgba(26,24,20,0.06);">
-        <div style="font-family:Georgia,'Times New Roman',serif;font-size:11px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.45);text-transform:uppercase;margin-bottom:6px;">The House of</div>
-        <div style="font-family:Georgia,'Times New Roman',serif;font-size:30px;font-weight:300;letter-spacing:0.18em;color:#1a1814;">CALCATERRA</div>
+      <tr><td style="padding:64px 56px 28px;text-align:center;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:300;letter-spacing:0.2em;color:#1a1814;">CALCATERRA</div>
+        <div style="height:1px;background:rgba(26,24,20,0.12);margin:28px auto 0;width:42%;"></div>
       </td></tr>
-      <!-- HEADLINE -->
-      <tr><td style="padding:56px 56px 24px;">
-        <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:34px;font-weight:300;line-height:1.18;letter-spacing:0.02em;color:#1a1814;">${esc(subject)}</h1>
-      </td></tr>
-      <!-- RULE -->
-      <tr><td style="padding:0 56px;">
-        <div style="height:1px;background:rgba(26,24,20,0.1);"></div>
+      ${heroBlock}
+      <!-- SPACER above eyebrow/headline -->
+      <tr><td style="line-height:0;font-size:0;padding:0;height:${o.heroUrl ? '64' : '40'}px;">&nbsp;</td></tr>
+      ${eyebrowBlock}
+      <tr><td style="padding:0 56px 36px;">
+        <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:42px;font-weight:300;line-height:1.12;letter-spacing:0.015em;color:#1a1814;">${headline}</h1>
       </td></tr>
       <!-- BODY -->
-      <tr><td style="padding:36px 56px 48px;">
-        <div style="font-family:Georgia,'Times New Roman',serif;font-size:15px;font-weight:400;color:rgba(26,24,20,0.78);line-height:1.95;letter-spacing:0.01em;">
-          ${safeBody}
+      <tr><td style="padding:0 56px 24px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:16px;font-weight:400;color:rgba(26,24,20,0.78);line-height:1.95;letter-spacing:0.01em;">
+          ${bodyHtml}
         </div>
       </td></tr>
+      ${ctaBlock}
+      ${productBlock}
       <!-- SIGN-OFF -->
-      <tr><td style="padding:0 56px 56px;">
-        <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:14px;color:rgba(26,24,20,0.5);">— Calcaterra</div>
+      <tr><td style="padding:48px 56px 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.55);">${esc(signoff)}</div>
       </td></tr>
-      <!-- FOOTER -->
-      <tr><td style="padding:32px 56px 48px;background:#1a1814;">
-        <div style="font-family:Georgia,'Times New Roman',serif;font-size:13px;letter-spacing:0.22em;color:rgba(242,239,233,0.85);text-align:center;margin-bottom:8px;">CALCATERRA</div>
-        <div style="font-family:Arial,Helvetica,sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.5em;color:rgba(242,239,233,0.35);text-align:center;text-transform:uppercase;margin-bottom:24px;">Built on Conviction</div>
-        <div style="height:1px;background:rgba(242,239,233,0.08);margin:0 auto 24px;width:60%;"></div>
-        <p style="margin:0 0 12px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:300;letter-spacing:0.04em;color:rgba(242,239,233,0.5);text-align:center;line-height:1.7;">
+      <!-- HAIRLINE -->
+      <tr><td style="padding:0 56px;">
+        <div style="height:1px;background:rgba(26,24,20,0.08);"></div>
+      </td></tr>
+      <!-- FOOTER — tonal cream, whispered -->
+      <tr><td style="padding:36px 56px 56px;text-align:center;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:11px;letter-spacing:0.42em;color:rgba(26,24,20,0.55);margin-bottom:6px;">CALCATERRA</div>
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:7px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.28);text-transform:uppercase;margin-bottom:28px;">Built on Conviction</div>
+        <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:9.5px;font-weight:300;letter-spacing:0.04em;color:rgba(26,24,20,0.4);line-height:1.7;">
           You are receiving this because you are on the Calcaterra mailing list.
         </p>
-        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:300;letter-spacing:0.32em;color:rgba(242,239,233,0.35);text-align:center;text-transform:uppercase;">
-          <a href="https://calcaterra.co" style="color:rgba(242,239,233,0.5);text-decoration:none;">calcaterra.co</a>
+        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:300;letter-spacing:0.34em;color:rgba(26,24,20,0.4);text-transform:uppercase;">
+          <a href="https://calcaterra.co" style="color:rgba(26,24,20,0.55);text-decoration:none;">calcaterra.co</a>
           &nbsp;&middot;&nbsp;
-          <a href="https://calcaterra.co/unsubscribe" style="color:rgba(242,239,233,0.5);text-decoration:none;">Unsubscribe</a>
+          <a href="https://calcaterra.co/unsubscribe" style="color:rgba(26,24,20,0.55);text-decoration:none;">Unsubscribe</a>
         </p>
       </td></tr>
     </table>
@@ -1256,15 +1438,14 @@ function buildBroadcastHtml(subject, bodyText) {
 }
 
 async function sendBroadcastTest() {
-  const subject = document.getElementById('compose-subject').value.trim()
-  const body = document.getElementById('compose-body').value.trim()
+  const fields = collectComposeFields()
   const testTo = document.getElementById('compose-test-to').value.trim()
-  if (!subject || !body) { toast('Subject and body required', 'error'); return }
+  if (!fields.subject || !fields.body) { toast('Subject and body required', 'error'); return }
   if (!testTo) { toast('Enter a test email', 'error'); return }
   const status = document.getElementById('compose-status')
   status.textContent = 'SENDING TEST...'
-  const html = buildBroadcastHtml(subject, body)
-  const result = await invokeFn('send-broadcast', { subject, html, test_to: testTo })
+  const html = buildBroadcastHtml(fields)
+  const result = await invokeFn('send-broadcast', { subject: fields.subject, html, test_to: testTo })
   if (!result.ok) {
     status.textContent = 'TEST FAILED — ' + result.message
     toast('Test send failed', 'error')
@@ -1275,9 +1456,8 @@ async function sendBroadcastTest() {
 }
 
 async function sendBroadcastAll() {
-  const subject = document.getElementById('compose-subject').value.trim()
-  const body = document.getElementById('compose-body').value.trim()
-  if (!subject || !body) { toast('Subject and body required', 'error'); return }
+  const fields = collectComposeFields()
+  if (!fields.subject || !fields.body) { toast('Subject and body required', 'error'); return }
   if (!allSubscribers.length) { toast('No subscribers to send to', 'error'); return }
   if (!confirm(`Send this newsletter to ALL ${allSubscribers.length} subscriber${allSubscribers.length === 1 ? '' : 's'}? This cannot be undone.`)) return
   const btn = document.getElementById('broadcast-send-btn')
@@ -1286,8 +1466,8 @@ async function sendBroadcastAll() {
   const original = btn.innerHTML
   btn.textContent = 'SENDING...'
   status.textContent = 'BROADCASTING TO ' + allSubscribers.length + ' SUBSCRIBERS...'
-  const html = buildBroadcastHtml(subject, body)
-  const result = await invokeFn('send-broadcast', { subject, html })
+  const html = buildBroadcastHtml(fields)
+  const result = await invokeFn('send-broadcast', { subject: fields.subject, html })
   btn.disabled = false
   btn.innerHTML = original
   if (!result.ok) {
@@ -1436,6 +1616,10 @@ function exportCustomersCsv() {
 
 function esc(s) {
   return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+// For values that go inside attributes — strip line breaks too
+function escAttr(s) {
+  return esc(s).replace(/\s+/g, ' ')
 }
 
 // ── EMAIL VIA SUPABASE EDGE FUNCTION ──
