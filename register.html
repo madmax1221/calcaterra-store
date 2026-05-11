@@ -150,10 +150,19 @@ footer{background:#141210;padding:80px 52px 48px;}
     </div>
   </div>
   <div class="register-form-side">
-    <span class="register-eyebrow">CREATE ACCOUNT</span>
-    <h1 class="register-title">Join <em>Calcaterra.</em></h1>
-    <p class="register-subtitle">Create your account to track orders, register your watch, and access your warranty.</p>
-    <form class="register-form" onsubmit="handleRegister(event)">
+    <div id="register-intro">
+      <span class="register-eyebrow">CREATE ACCOUNT</span>
+      <h1 class="register-title">Join <em>Calcaterra.</em></h1>
+      <p class="register-subtitle">Create your account to track orders, register your watch, and access your warranty.</p>
+    </div>
+    <div id="register-success-panel" style="display:none;">
+      <span class="register-eyebrow">CHECK YOUR INBOX</span>
+      <h1 class="register-title">Welcome to <em>Calcaterra.</em></h1>
+      <p class="register-subtitle">A confirmation email has been sent to <strong id="register-success-email" style="color:#1a1814;font-weight:400;"></strong>. It contains everything you need to get started — and your account is ready to use right now.</p>
+      <a href="/dashboard" class="register-submit" style="text-decoration:none;display:block;text-align:center;margin-top:16px;">GO TO YOUR ACCOUNT</a>
+      <p class="register-discretion" style="margin-top:24px;">Didn't get the email? Check your spam folder, or <a href="/contact" style="color:#1a1814;">contact us</a>.</p>
+    </div>
+    <form class="register-form" id="register-form" onsubmit="handleRegister(event)">
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">FIRST NAME</label>
@@ -240,6 +249,11 @@ footer{background:#141210;padding:80px 52px 48px;}
   )
 
   window.addEventListener('DOMContentLoaded', async () => {
+    // If user already has a session AND didn't arrive here from registering just now,
+    // bounce to dashboard. The "?registered=1" flag is set by handleRegister to avoid
+    // an immediate redirect after signup (so the success panel is visible).
+    const justRegistered = new URLSearchParams(location.search).get('registered') === '1'
+    if (justRegistered) return
     const { data: { session } } = await _supabase.auth.getSession()
     if (session) window.location.href = '/dashboard.html'
   })
@@ -285,19 +299,25 @@ footer{background:#141210;padding:80px 52px 48px;}
       })
       if (insertError) console.error('Customer insert error:', insertError)
 
+      // Newsletter opt-in (fire-and-forget welcome email handled inside the function)
       if (newsletter) {
-        await _supabase.from('newsletter_subscribers').upsert(
-          { email, first_name: firstName },
-          { onConflict: 'email' }
-        )
+        _supabase.functions.invoke('subscribe-newsletter', {
+          body: { email, first_name: firstName }
+        }).catch(err => console.error('Newsletter signup failed:', err))
       }
+
+      // Send branded welcome email (best-effort)
+      _supabase.functions.invoke('send-welcome', {
+        body: { first_name: firstName }
+      }).catch(err => console.error('Welcome email failed:', err))
     }
 
-    successMsg.textContent = 'ACCOUNT CREATED. WELCOME TO CALCATERRA.'
-    successMsg.classList.add('show')
-    setTimeout(() => {
-      window.location.href = '/dashboard.html'
-    }, 1200)
+    // Switch to "check your inbox" success state — stay on the page
+    document.getElementById('register-form').style.display = 'none'
+    document.getElementById('register-intro').style.display = 'none'
+    document.getElementById('register-success-email').textContent = email
+    document.getElementById('register-success-panel').style.display = 'block'
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function toggleMenu() {

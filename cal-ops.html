@@ -381,11 +381,38 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
       <div class="ops-panel" id="panel-newsletter">
         <div class="ops-section-header" style="margin-bottom:32px;">
           <div><span class="ops-section-eyebrow">AUDIENCE</span><h1 class="ops-section-title">Newsletter <em>Subscribers.</em></h1></div>
-          <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="exportNewsletterCsv()">EXPORT CSV</button>
+          <div style="display:flex;gap:12px;">
+            <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="toggleCompose()">COMPOSE</button>
+            <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="exportNewsletterCsv()">EXPORT CSV</button>
+          </div>
         </div>
         <div class="stats-grid-2" style="margin-bottom:32px;">
           <div class="stat-card"><span class="stat-card-label">TOTAL SUBSCRIBERS</span><div class="stat-card-value" id="stat-subscribers">—</div><span class="stat-card-sub">ACTIVE LIST</span></div>
           <div class="stat-card"><span class="stat-card-label">NEW THIS WEEK</span><div class="stat-card-value" id="stat-subscribers-week">—</div><span class="stat-card-sub">LAST 7 DAYS</span></div>
+        </div>
+        <!-- COMPOSE BROADCAST -->
+        <div id="compose-box" style="display:none;background:#141210;border:1px solid rgba(242,239,233,0.08);padding:32px 40px;margin-bottom:32px;">
+          <div class="ops-section-header" style="margin-bottom:24px;border:none;padding:0;">
+            <div><span class="ops-section-eyebrow">BROADCAST</span><h2 class="ops-section-title">Compose <em>Newsletter.</em></h2></div>
+            <button class="ops-modal-close" onclick="toggleCompose()" style="font-size:20px;background:none;border:none;color:rgba(242,239,233,0.3);cursor:pointer;">×</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div>
+              <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">SUBJECT</span>
+              <input type="text" id="compose-subject" class="ops-input" placeholder="A new chapter at Calcaterra..." style="width:100%;">
+            </div>
+            <div>
+              <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">MESSAGE BODY (HTML SUPPORTED)</span>
+              <textarea id="compose-body" class="ops-input" rows="12" placeholder="Write your newsletter. You can use HTML tags like <strong>, <a href=...>, <p>, <br> for formatting." style="width:100%;background:#0e0d0b;color:#f2efe9;border:1px solid rgba(242,239,233,0.1);padding:16px;font-family:'Montserrat',sans-serif;font-size:12px;resize:vertical;line-height:1.7;"></textarea>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+              <input type="email" id="compose-test-to" class="ops-input" placeholder="Test send to (your email)" style="flex:1;min-width:200px;">
+              <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="sendBroadcastTest()">SEND TEST</button>
+              <span style="flex:1;"></span>
+              <button class="ops-btn ops-btn-primary" onclick="sendBroadcastAll()" id="broadcast-send-btn">SEND TO ALL <span id="broadcast-count">—</span></button>
+            </div>
+            <div id="compose-status" style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.3em;color:rgba(242,239,233,0.5);"></div>
+          </div>
         </div>
         <div class="ops-table-wrap">
           <table class="ops-table">
@@ -1150,6 +1177,86 @@ async function loadNewsletter() {
       <td style="text-align:right;"><button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="deleteSubscriber('${s.id}')">REMOVE</button></td>
     </tr>`
   }).join('')
+}
+
+function toggleCompose() {
+  const box = document.getElementById('compose-box')
+  const isOpen = box.style.display !== 'none'
+  box.style.display = isOpen ? 'none' : 'block'
+  if (!isOpen) {
+    document.getElementById('broadcast-count').textContent = '(' + allSubscribers.length + ')'
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
+function buildBroadcastHtml(subject, bodyText) {
+  // Wrap admin's body content in the Calcaterra branded shell
+  const safeBody = bodyText.trim()
+  return `<!DOCTYPE html><html><body style="background:#f2efe9;margin:0;padding:0;font-family:'Times New Roman',serif;">
+<div style="max-width:560px;margin:0 auto;padding:60px 40px;">
+  <p style="font-family:'Times New Roman',serif;font-size:24px;font-weight:300;letter-spacing:0.15em;color:#1a1814;margin-bottom:48px;">CALCATERRA</p>
+  <h1 style="font-size:32px;font-weight:300;color:#1a1814;margin-bottom:32px;line-height:1.2;letter-spacing:0.02em;">${esc(subject)}</h1>
+  <div style="font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.05em;color:rgba(26,24,20,0.75);line-height:1.95;">
+    ${safeBody}
+  </div>
+  <div style="border-top:1px solid rgba(26,24,20,0.08);padding-top:24px;margin-top:56px;">
+    <p style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);">
+      CALCATERRA · BUILT ON CONVICTION<br><br>
+      <a href="https://calcaterra.co" style="color:rgba(26,24,20,0.5);text-decoration:none;">calcaterra.co</a>
+      &nbsp;·&nbsp;
+      <a href="https://calcaterra.co/unsubscribe" style="color:rgba(26,24,20,0.5);text-decoration:none;">Unsubscribe</a>
+    </p>
+  </div>
+</div></body></html>`
+}
+
+async function sendBroadcastTest() {
+  const subject = document.getElementById('compose-subject').value.trim()
+  const body = document.getElementById('compose-body').value.trim()
+  const testTo = document.getElementById('compose-test-to').value.trim()
+  if (!subject || !body) { toast('Subject and body required', 'error'); return }
+  if (!testTo) { toast('Enter a test email', 'error'); return }
+  const status = document.getElementById('compose-status')
+  status.textContent = 'SENDING TEST...'
+  const html = buildBroadcastHtml(subject, body)
+  const { data, error } = await _supabase.functions.invoke('send-broadcast', {
+    body: { subject, html, test_to: testTo }
+  })
+  if (error || data?.error) {
+    status.textContent = 'TEST FAILED: ' + (data?.error || error?.message || 'unknown')
+    toast('Test send failed', 'error')
+    return
+  }
+  status.textContent = 'TEST SENT TO ' + testTo.toUpperCase()
+  toast('Test email sent')
+}
+
+async function sendBroadcastAll() {
+  const subject = document.getElementById('compose-subject').value.trim()
+  const body = document.getElementById('compose-body').value.trim()
+  if (!subject || !body) { toast('Subject and body required', 'error'); return }
+  if (!allSubscribers.length) { toast('No subscribers to send to', 'error'); return }
+  if (!confirm(`Send this newsletter to ALL ${allSubscribers.length} subscriber${allSubscribers.length === 1 ? '' : 's'}? This cannot be undone.`)) return
+  const btn = document.getElementById('broadcast-send-btn')
+  const status = document.getElementById('compose-status')
+  btn.disabled = true
+  const original = btn.innerHTML
+  btn.textContent = 'SENDING...'
+  status.textContent = 'BROADCASTING TO ' + allSubscribers.length + ' SUBSCRIBERS...'
+  const html = buildBroadcastHtml(subject, body)
+  const { data, error } = await _supabase.functions.invoke('send-broadcast', {
+    body: { subject, html }
+  })
+  btn.disabled = false
+  btn.innerHTML = original
+  if (error || data?.error) {
+    status.textContent = 'BROADCAST FAILED: ' + (data?.error || error?.message || 'unknown')
+    toast('Broadcast failed', 'error')
+    return
+  }
+  status.textContent = `SENT TO ${data.sent} · FAILED ${data.failed || 0} · TOTAL ${data.total}`
+  toast(`Sent to ${data.sent} subscribers`)
+  await loadEmailLog()
 }
 
 async function deleteSubscriber(id) {

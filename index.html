@@ -548,7 +548,12 @@ footer{background:#141210;padding:80px 52px 48px;}
   async function doNotify() {
     const email = document.getElementById('nEmail').value.trim()
     if (!email) return
-    await _supabase.from('newsletter_subscribers').upsert({ email }, { onConflict: 'email' })
+    try {
+      await _supabase.functions.invoke('subscribe-newsletter', { body: { email } })
+    } catch (e) {
+      console.error('Newsletter subscribe failed, falling back to direct insert:', e)
+      await _supabase.from('newsletter_subscribers').upsert({ email }, { onConflict: 'email' })
+    }
     document.getElementById('nForm').style.display = 'none'
     document.getElementById('nThanks').style.display = 'block'
   }
