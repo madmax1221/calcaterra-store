@@ -389,7 +389,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
         </div>
         <div class="ops-table-wrap">
           <table class="ops-table">
-            <thead><tr><th>EMAIL</th><th>SOURCE</th><th>SUBSCRIBED</th><th></th></tr></thead>
+            <thead><tr><th>EMAIL</th><th>NAME</th><th>SUBSCRIBED</th><th></th></tr></thead>
             <tbody id="newsletter-body"><tr><td colspan="4" class="ops-table-empty">LOADING...</td></tr></tbody>
           </table>
         </div>
@@ -1125,22 +1125,27 @@ async function loadNewsletter() {
   const { data, error } = await _supabase
     .from('newsletter_subscribers')
     .select('*')
-    .order('created_at', { ascending: false })
-  if (error) { console.error(error); return }
+    .order('subscribed_at', { ascending: false })
+  if (error) {
+    console.error('Newsletter load error:', error)
+    document.getElementById('newsletter-body').innerHTML = `<tr><td colspan="4" class="ops-table-empty">ERROR — ${esc(error.message)}</td></tr>`
+    return
+  }
   allSubscribers = data || []
   document.getElementById('stat-subscribers').textContent = allSubscribers.length
   const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
-  const recent = allSubscribers.filter(s => new Date(s.created_at).getTime() > weekAgo).length
+  const recent = allSubscribers.filter(s => new Date(s.subscribed_at).getTime() > weekAgo).length
   document.getElementById('stat-subscribers-week').textContent = recent
   if (!allSubscribers.length) {
     document.getElementById('newsletter-body').innerHTML = '<tr><td colspan="4" class="ops-table-empty">NO SUBSCRIBERS YET</td></tr>'
     return
   }
   document.getElementById('newsletter-body').innerHTML = allSubscribers.map(s => {
-    const when = s.created_at ? new Date(s.created_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'
+    const when = s.subscribed_at ? new Date(s.subscribed_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'
+    const name = s.first_name || '—'
     return `<tr>
       <td>${esc(s.email || '—')}</td>
-      <td style="font-size:9px;color:rgba(242,239,233,0.5);">${esc(s.source || 'website')}</td>
+      <td style="font-size:9px;color:rgba(242,239,233,0.5);">${esc(name)}</td>
       <td style="font-size:9px;color:rgba(242,239,233,0.5);">${when}</td>
       <td style="text-align:right;"><button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="deleteSubscriber('${s.id}')">REMOVE</button></td>
     </tr>`
@@ -1228,8 +1233,8 @@ async function cancelOrder(id) {
 
 function exportNewsletterCsv() {
   if (!allSubscribers.length) { toast('Nothing to export', 'error'); return }
-  const rows = [['email','source','subscribed_at']]
-  allSubscribers.forEach(s => rows.push([s.email, s.source || 'website', s.created_at]))
+  const rows = [['email','first_name','subscribed_at']]
+  allSubscribers.forEach(s => rows.push([s.email, s.first_name || '', s.subscribed_at]))
   downloadCsv(`calcaterra-newsletter-${new Date().toISOString().slice(0,10)}.csv`, rows)
 }
 
