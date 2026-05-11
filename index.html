@@ -107,6 +107,8 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 #hero-sticky{position:sticky;top:0;height:100vh;z-index:1;overflow:hidden;background:#0e0d0b;}
 .hero-bg{position:absolute;inset:0;overflow:hidden;}
 .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.13);filter:brightness(0.72) saturate(0.8);pointer-events:none;}
+.hero-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.13);filter:brightness(0.72) saturate(0.8);pointer-events:none;z-index:2;transition:opacity .6s ease;}
+.hero-poster.hidden{opacity:0;}
 .hero-video::-webkit-media-controls,
 .hero-video::-webkit-media-controls-enclosure,
 .hero-video::-webkit-media-controls-overlay-enclosure,
@@ -318,9 +320,10 @@ footer{background:#141210;padding:80px 52px 48px;}
 
 <div id="hero-sticky">
   <div class="hero-bg">
-    <video class="hero-video" autoplay muted loop playsinline poster="/images/img-hero.jpg">
+    <video class="hero-video" autoplay muted loop playsinline>
       <source src="/images/hero.mp4" type="video/mp4">
     </video>
+    <img class="hero-poster" id="heroPoster" src="/images/img-hero.jpg" alt=""/>
   </div>
   <div class="hero-vignette"></div>
   <div class="hero-bottom"></div>
@@ -777,16 +780,23 @@ footer{background:#141210;padding:80px 52px 48px;}
     // Hero video play/pause toggle (handles iOS low-power mode autoplay block)
     const heroVid = document.querySelector('.hero-video')
     const heroVidBtn = document.getElementById('heroVidCtrl')
+    const heroPoster = document.getElementById('heroPoster')
     if (heroVid && heroVidBtn) {
       const syncIcon = () => {
-        if (heroVid.paused) heroVidBtn.classList.remove('playing')
-        else heroVidBtn.classList.add('playing')
+        if (heroVid.paused) {
+          heroVidBtn.classList.remove('playing')
+          if (heroPoster) heroPoster.classList.remove('hidden')
+        } else {
+          heroVidBtn.classList.add('playing')
+          if (heroPoster) heroPoster.classList.add('hidden')
+        }
       }
       heroVidBtn.addEventListener('click', () => {
         if (heroVid.paused) heroVid.play().catch(()=>{})
         else heroVid.pause()
       })
       heroVid.addEventListener('play', syncIcon)
+      heroVid.addEventListener('playing', syncIcon)
       heroVid.addEventListener('pause', syncIcon)
       syncIcon()
 
@@ -795,9 +805,6 @@ footer{background:#141210;padding:80px 52px 48px;}
       tryPlay()
       const kickPlay = () => {
         if (heroVid.paused) tryPlay()
-        ;['click','touchstart','scroll','keydown','mousemove'].forEach(ev =>
-          window.removeEventListener(ev, kickPlay, { passive: true })
-        )
       }
       ;['click','touchstart','scroll','keydown','mousemove'].forEach(ev =>
         window.addEventListener(ev, kickPlay, { passive: true, once: true })
