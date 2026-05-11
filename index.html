@@ -106,7 +106,11 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 @media(max-width:480px){#cart-drawer{width:100%;}.cd-header{padding:28px 24px 20px;}.cd-items{padding:24px;}.cd-footer{padding:20px 24px 28px;}}
 #hero-sticky{position:sticky;top:0;height:100vh;z-index:1;overflow:hidden;background:#0e0d0b;}
 .hero-bg{position:absolute;inset:0;overflow:hidden;}
-.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.13);filter:brightness(0.72) saturate(0.8);}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.13);filter:brightness(0.72) saturate(0.8);pointer-events:none;}
+.hero-video::-webkit-media-controls{display:none !important;-webkit-appearance:none;}
+.hero-video::-webkit-media-controls-start-playback-button{display:none !important;-webkit-appearance:none;}
+.hero-video::-webkit-media-controls-panel{display:none !important;-webkit-appearance:none;}
+.hero-video::-webkit-media-controls-overlay-play-button{display:none !important;-webkit-appearance:none;}
 .hero-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%, transparent 25%, rgba(10,9,7,0.5) 100%);}
 .hero-bottom{position:absolute;bottom:0;left:0;right:0;height:30%;background:linear-gradient(to bottom,transparent,rgba(242,239,233,0.15));}
 .hero-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);width:clamp(220px,28vw,440px);opacity:.07;pointer-events:none;animation:breathe 9s ease-in-out infinite;}
