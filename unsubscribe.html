@@ -13,7 +13,10 @@
 html,body{height:100%;}
 body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;min-height:100vh;}
 .un-shell{width:100%;max-width:460px;text-align:center;}
-.un-mark{font-family:'Times New Roman',Times,serif;font-size:18px;font-weight:300;letter-spacing:0.42em;color:#1a1814;margin-bottom:80px;}
+.un-brand{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:72px;text-decoration:none;}
+.un-brand-logo{height:54px;width:auto;display:block;filter:invert(1);opacity:.92;transition:opacity .25s;}
+.un-brand:hover .un-brand-logo{opacity:1;}
+.un-mark{font-family:'Times New Roman',Times,serif;font-size:18px;font-weight:300;letter-spacing:0.42em;color:#1a1814;}
 .un-eyebrow{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.35);display:block;margin-bottom:24px;text-transform:uppercase;}
 .un-title{font-size:clamp(34px,4.5vw,52px);font-weight:300;line-height:1.1;letter-spacing:0.025em;color:#1a1814;margin-bottom:12px;}
 .un-title em{font-style:italic;color:rgba(26,24,20,0.42);}
@@ -41,7 +44,10 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 </style>
 </head>
 <body>
-<a href="/" class="un-mark">CALCATERRA</a>
+<a href="/" class="un-brand" aria-label="Calcaterra — Home">
+  <img class="un-brand-logo" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/>
+  <span class="un-mark">CALCATERRA</span>
+</a>
 <div class="un-shell">
 
   <!-- STATE 1: confirm with email pre-filled from URL -->
