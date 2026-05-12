@@ -986,6 +986,7 @@ async function updateOrderStatus(id, status) {
   if (error) { toast('Error updating order', 'error'); return }
   toast(`Order ${status.toUpperCase()}`)
   if (status === 'confirmed') await sendOrderConfirmationEmail(id)
+  if (status === 'delivered') await sendDeliveredEmail(id)
   closeModal()
   loadOrders()
   loadDashboard()
@@ -1744,8 +1745,17 @@ async function sendEmail(to, subject, html, reply_to, from) {
 }
 
 async function sendOrderConfirmationEmail(orderId) {
-  const order = allOrders.find(o => o.id === orderId)
-  if (!order || !order.customers?.email) return
+  // Fetch fresh — allOrders is loaded via an RPC that returns flat fields,
+  // not the nested customers object we need here.
+  const { data: order, error } = await _supabase.from('orders').select(`
+    id, shipping_address, customers(first_name, last_name, email)
+  `).eq('id', orderId).maybeSingle()
+  if (error) { console.error('Order fetch error:', error); toast('Could not load order for email', 'error'); return }
+  if (!order || !order.customers?.email) {
+    console.warn('No customer email for order', orderId, order)
+    toast('No customer email on file. Email not sent.', 'error')
+    return
+  }
   const name = order.customers.first_name || 'Valued Customer'
   const orderNum = 'CAL-' + orderId.slice(0,8).toUpperCase()
   const addr = order.shipping_address || {}
@@ -1783,8 +1793,16 @@ async function sendOrderConfirmationEmail(orderId) {
 }
 
 async function sendShippingEmail(orderId, tracking) {
-  const order = allOrders.find(o => o.id === orderId)
-  if (!order || !order.customers?.email) return
+  // Fetch fresh — same flat-vs-nested mismatch as the confirmation email.
+  const { data: order, error } = await _supabase.from('orders').select(`
+    id, customers(first_name, last_name, email)
+  `).eq('id', orderId).maybeSingle()
+  if (error) { console.error('Order fetch error:', error); toast('Could not load order for email', 'error'); return }
+  if (!order || !order.customers?.email) {
+    console.warn('No customer email for order', orderId, order)
+    toast('No customer email on file. Shipping email not sent.', 'error')
+    return
+  }
   const name = order.customers.first_name || 'Valued Customer'
   const orderNum = 'CAL-' + orderId.slice(0,8).toUpperCase()
 
@@ -1816,6 +1834,45 @@ async function sendShippingEmail(orderId, tracking) {
     contentHtml: content,
   })
   await sendEmail(order.customers.email, `Your Calcaterra is on its way (${orderNum})`, html, null, 'Calcaterra Orders <orders@calcaterra.co>')
+}
+
+async function sendDeliveredEmail(orderId) {
+  const { data: order, error } = await _supabase.from('orders').select(`
+    id, customers(first_name, last_name, email)
+  `).eq('id', orderId).maybeSingle()
+  if (error) { console.error('Order fetch error:', error); return }
+  if (!order || !order.customers?.email) {
+    console.warn('No customer email for order', orderId)
+    return
+  }
+  const name = order.customers.first_name || 'Valued Customer'
+  const orderNum = 'CAL-' + orderId.slice(0,8).toUpperCase()
+
+  const content = `
+      <tr><td style="padding:0 56px 24px;">
+        <p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">Dear ${esc(name)}, your Calcaterra has been delivered. We hope it finds you well.</p>
+        <p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">If you have a moment, register your timepiece to activate the two year warranty and unlock your ownership archive.</p>
+      </td></tr>
+      <tr><td style="padding:8px 56px 0;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:#1a1814;">
+          <a href="https://calcaterra.co/register" style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:400;letter-spacing:0.58em;color:#f2efe9;background:#1a1814;text-decoration:none;padding:20px 42px;text-transform:uppercase;border:1px solid #1a1814;">Register Your Watch</a>
+        </td></tr></table>
+      </td></tr>
+      <tr><td style="padding:18px 56px 8px;">
+        <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:14px;color:rgba(26,24,20,0.6);line-height:1.85;">Already have an account? <a href="https://calcaterra.co/dashboard" style="color:#1a1814;text-decoration:none;border-bottom:1px solid rgba(26,24,20,0.3);">Sign in</a> to activate.</p>
+      </td></tr>
+      <tr><td style="padding:40px 56px 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.55);">Designed once. Worn indefinitely.</div>
+      </td></tr>`
+
+  const html = buildBrandedEmailShell({
+    title: 'Your Calcaterra has arrived',
+    preview: `Your Calcaterra has been delivered. Register to activate your warranty.`,
+    eyebrow: 'It has arrived',
+    headlineHtml: `Welcome to the<br/><em style="font-style:italic;color:rgba(26,24,20,0.4);">collection.</em>`,
+    contentHtml: content,
+  })
+  await sendEmail(order.customers.email, `Your Calcaterra has been delivered (${orderNum})`, html, null, 'Calcaterra Orders <orders@calcaterra.co>')
 }
 
 async function signOut() {
