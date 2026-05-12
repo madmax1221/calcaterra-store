@@ -435,7 +435,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
                   </div>
                   <div style="flex:1;min-width:200px;">
                     <label class="cmp-label">SIGN-OFF <span style="opacity:.5;">— italic line at end</span></label>
-                    <input type="text" id="compose-signoff" class="ops-input" placeholder="— Calcaterra" style="width:100%;">
+                    <input type="text" id="compose-signoff" class="ops-input" placeholder="Designed once. Worn indefinitely." style="width:100%;">
                   </div>
                 </div>
                 <div>
@@ -769,8 +769,41 @@ async function sendReminderEmail(warrantyId, email, name, code, variant, expires
   const exp = new Date(expiresAt)
   const daysLeft = Math.max(0, Math.floor((exp.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
   const watchName = `Roma ${variant.charAt(0).toUpperCase() + variant.slice(1)}`
-  const html = `<!DOCTYPE html><html><body style="background:#f2efe9;margin:0;padding:0;font-family:'Times New Roman',serif;"><div style="max-width:560px;margin:0 auto;padding:60px 40px;"><p style="font-family:'Times New Roman',serif;font-size:24px;font-weight:300;letter-spacing:0.15em;color:#1a1814;margin-bottom:48px;">CALCATERRA</p><p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(248,113,113,0.7);margin-bottom:16px;">WARRANTY ACTIVATION REMINDER</p><h1 style="font-size:36px;font-weight:300;color:#1a1814;margin-bottom:8px;line-height:1.1;">Your window is<br><em style="font-style:italic;color:rgba(26,24,20,0.4);">closing.</em></h1><p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.55);line-height:2;margin:28px 0;">Dear ${name}, you have <strong>${daysLeft} day${daysLeft !== 1 ? 's' : ''}</strong> remaining to activate the warranty for your ${watchName}.</p><div style="border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);padding:24px 0;margin:32px 0;"><p style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.4em;color:rgba(26,24,20,0.4);margin-bottom:8px;">YOUR ACTIVATION CODE</p><p style="font-size:24px;font-weight:300;color:#1a1814;letter-spacing:0.08em;font-family:monospace;">${code}</p><p style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.3em;color:rgba(26,24,20,0.35);margin-top:8px;">EXPIRES ${exp.toLocaleDateString('en-ZA', { day:'numeric', month:'long', year:'numeric' }).toUpperCase()}</p></div><a href="https://www.calcaterra.co/register.html" style="display:block;background:#1a1814;color:#f2efe9;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;padding:20px 32px;text-decoration:none;text-align:center;margin:32px 0;">CREATE ACCOUNT &amp; REGISTER WATCH</a><p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.4);line-height:1.8;">Already have an account? <a href="https://www.calcaterra.co/dashboard.html" style="color:#1a1814;">Sign in here.</a></p><p style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-top:48px;border-top:1px solid rgba(26,24,20,0.08);padding-top:24px;">CALCATERRA · BUILT ON CONVICTION<br><br>Calcaterra · calcaterra.co<br><span style="font-size:7px;">You are receiving this because you placed an order with us.</span></p></div></body></html>`
-  const ok = await sendEmail(email, `Your warranty activation expires in ${daysLeft} day${daysLeft !== 1 ? 's' : ''} — ${watchName}`, html, null, 'Calcaterra <noreply@calcaterra.co>')
+  const expFormatted = exp.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })
+
+  const content = `
+      <tr><td style="padding:0 56px 24px;">
+        <p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">Dear ${esc(name)}, you have <strong style="font-weight:400;color:#1a1814;">${daysLeft} day${daysLeft !== 1 ? 's' : ''}</strong> remaining to activate the warranty for your ${esc(watchName)}.</p>
+      </td></tr>
+      <tr><td style="padding:8px 56px 8px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);">
+          <tr><td style="padding:22px 0;">
+            <div style="font-family:Georgia,'Times New Roman',serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);text-transform:uppercase;margin-bottom:8px;">Your Activation Code</div>
+            <div style="font-family:'Courier New',monospace;font-size:24px;font-weight:300;color:#1a1814;letter-spacing:0.1em;">${esc(code)}</div>
+            <p style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:300;letter-spacing:0.32em;color:rgba(26,24,20,0.4);text-transform:uppercase;">Expires ${esc(expFormatted)}</p>
+          </td></tr>
+        </table>
+      </td></tr>
+      <tr><td style="padding:32px 56px 0;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="background:#1a1814;">
+          <a href="https://calcaterra.co/register" style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:400;letter-spacing:0.58em;color:#f2efe9;background:#1a1814;text-decoration:none;padding:20px 42px;text-transform:uppercase;border:1px solid #1a1814;">Register Your Watch</a>
+        </td></tr></table>
+      </td></tr>
+      <tr><td style="padding:18px 56px 8px;">
+        <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:14px;color:rgba(26,24,20,0.6);line-height:1.85;">Already have an account? <a href="https://calcaterra.co/dashboard" style="color:#1a1814;text-decoration:none;border-bottom:1px solid rgba(26,24,20,0.3);">Sign in</a> to activate.</p>
+      </td></tr>
+      <tr><td style="padding:40px 56px 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.55);">Designed once. Worn indefinitely.</div>
+      </td></tr>`
+
+  const html = buildBrandedEmailShell({
+    title: 'Activate your Calcaterra warranty',
+    preview: `${daysLeft} day${daysLeft !== 1 ? 's' : ''} remaining to activate your ${watchName} warranty.`,
+    eyebrow: 'Activation reminder',
+    headlineHtml: `Your window is<br/><em style="font-style:italic;color:rgba(26,24,20,0.4);">closing.</em>`,
+    contentHtml: content,
+  })
+  const ok = await sendEmail(email, `${daysLeft} day${daysLeft !== 1 ? 's' : ''} to activate your ${watchName} warranty`, html, null, 'Calcaterra <noreply@calcaterra.co>')
   if (ok) { btn.textContent = '✓ SENT'; btn.style.color = '#4ade80'; btn.style.borderColor = 'rgba(74,222,128,0.3)'; toast(`Reminder sent to ${email}`) }
   else { btn.textContent = 'SEND REMINDER'; btn.disabled = false; toast('Failed to send', 'error') }
 }
@@ -1234,9 +1267,25 @@ async function sendContactReply(contact) {
   const sendBtn = modal.querySelector('[data-cm-send]')
   sendBtn.disabled = true
   sendBtn.textContent = 'SENDING...'
-  const safeText = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')
-  const html = `<!DOCTYPE html><html><body style="background:#f2efe9;margin:0;padding:0;font-family:'Times New Roman',serif;"><div style="max-width:560px;margin:0 auto;padding:60px 40px;"><p style="font-family:'Times New Roman',serif;font-size:24px;font-weight:300;letter-spacing:0.15em;color:#1a1814;margin-bottom:48px;">CALCATERRA</p><p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);margin-bottom:16px;">RE: ${esc(contact.subject || 'YOUR ENQUIRY')}</p><p style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;color:rgba(26,24,20,0.8);line-height:1.9;margin:24px 0;">${safeText}</p><p style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-top:48px;border-top:1px solid rgba(26,24,20,0.08);padding-top:24px;">CALCATERRA · BUILT ON CONVICTION<br><br>support@calcaterra.co · calcaterra.co</p></div></body></html>`
-  const ok = await sendEmail(contact.email, `Re: ${contact.subject || 'Your enquiry'} — Calcaterra`, html, contact.email, 'Calcaterra Support <support@calcaterra.co>')
+  const safeText = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>')
+  const originalSubject = contact.subject || 'your enquiry'
+
+  const content = `
+      <tr><td style="padding:0 56px 36px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:16px;font-weight:400;color:rgba(26,24,20,0.78);line-height:1.95;">${safeText}</div>
+      </td></tr>
+      <tr><td style="padding:24px 56px 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.55);">Calcaterra Support</div>
+      </td></tr>`
+
+  const html = buildBrandedEmailShell({
+    title: `Re: ${originalSubject}`,
+    preview: `A reply to your enquiry from Calcaterra Support.`,
+    eyebrow: `In reply to: ${originalSubject}`,
+    headlineHtml: `A reply<br/><em style="font-style:italic;color:rgba(26,24,20,0.4);">for you.</em>`,
+    contentHtml: content,
+  })
+  const ok = await sendEmail(contact.email, `Re: ${originalSubject}`, html, contact.email, 'Calcaterra Support <support@calcaterra.co>')
   if (ok) {
     await markContactReplied(contact.id)
     toast('Reply sent')
@@ -1301,6 +1350,63 @@ function toggleCompose() {
   }
 }
 
+// ── BRANDED EMAIL SHELL ─────────────────────────────────
+// Shared wrapper used by every transactional email sent from cal-ops.
+// Caller provides: title, preview, eyebrow, headlineHtml, contentHtml
+// where contentHtml is one or more <tr><td style="padding:0 56px ...">...
+// blocks composed by the caller (so each email can render its own info
+// boxes, CTAs, code blocks, etc).
+function buildBrandedEmailShell({ title = 'Calcaterra', preview = '', eyebrow = '', headlineHtml = '', contentHtml = '' } = {}) {
+  const previewSnippet = preview ? `<div style="display:none;font-size:0;line-height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">${esc(preview)}</div>` : ''
+  const eyebrowBlock = eyebrow ? `
+      <tr><td style="padding:0 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:11px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);text-transform:uppercase;margin-bottom:18px;">${esc(eyebrow)}</div>
+      </td></tr>` : ''
+  const headlineBlock = headlineHtml ? `
+      <tr><td style="padding:0 56px 36px;">
+        <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:42px;font-weight:300;line-height:1.12;letter-spacing:0.015em;color:#1a1814;">${headlineHtml}</h1>
+      </td></tr>` : ''
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="color-scheme" content="light only"/>
+<title>${esc(title)}</title>
+</head>
+<body style="margin:0;padding:0;background:#e9e5de;font-family:Georgia,'Times New Roman',serif;color:#1a1814;-webkit-font-smoothing:antialiased;">
+${previewSnippet}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e9e5de;">
+  <tr><td align="center" style="padding:32px 16px;">
+    <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#f2efe9;">
+      <tr><td style="padding:64px 56px 28px;text-align:center;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:300;letter-spacing:0.2em;color:#1a1814;">CALCATERRA</div>
+        <div style="height:1px;background:rgba(26,24,20,0.12);margin:28px auto 0;width:42%;"></div>
+      </td></tr>
+      <tr><td style="line-height:0;font-size:0;padding:0;height:40px;">&nbsp;</td></tr>
+      ${eyebrowBlock}
+      ${headlineBlock}
+      ${contentHtml}
+      <tr><td style="padding:0 56px;">
+        <div style="height:1px;background:rgba(26,24,20,0.08);"></div>
+      </td></tr>
+      <tr><td style="padding:36px 56px 56px;text-align:center;">
+        <div style="display:inline-block;background:#1a1814;padding:14px 18px;margin-bottom:18px;">
+          <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra" width="40" style="display:block;height:32px;width:auto;border:0;outline:none;text-decoration:none;"/>
+        </div>
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:13px;letter-spacing:0.55em;color:rgba(26,24,20,0.6);margin-bottom:6px;">CALCATERRA</div>
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:7px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.3);text-transform:uppercase;margin-bottom:28px;">Built on Conviction</div>
+        <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:300;letter-spacing:0.34em;color:rgba(26,24,20,0.4);text-transform:uppercase;">
+          <a href="https://calcaterra.co" style="color:rgba(26,24,20,0.55);text-decoration:none;">calcaterra.co</a>
+        </p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>`
+}
+
 // Collect composer fields into a single payload object
 function collectComposeFields() {
   const get = (id) => (document.getElementById(id)?.value || '').trim()
@@ -1310,7 +1416,7 @@ function collectComposeFields() {
     preview:        get('compose-preview'),
     eyebrow:        get('compose-eyebrow'),
     headline:       get('compose-headline'),
-    signoff:        get('compose-signoff') || '— Calcaterra',
+    signoff:        get('compose-signoff') || 'Designed once. Worn indefinitely.',
     heroUrl:        get('compose-hero'),
     ctaLabel:       get('compose-cta-label'),
     ctaUrl:         get('compose-cta-url'),
@@ -1643,10 +1749,37 @@ async function sendOrderConfirmationEmail(orderId) {
   const name = order.customers.first_name || 'Valued Customer'
   const orderNum = 'CAL-' + orderId.slice(0,8).toUpperCase()
   const addr = order.shipping_address || {}
-  const html = `<!DOCTYPE html><html><body style="background:#f2efe9;margin:0;padding:0;font-family:'Times New Roman',serif;"><div style="max-width:560px;margin:0 auto;padding:60px 40px;"><p style="font-family:'Times New Roman',serif;font-size:24px;font-weight:300;letter-spacing:0.15em;color:#1a1814;margin-bottom:48px;">CALCATERRA</p><p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);margin-bottom:16px;">ORDER CONFIRMED</p><h1 style="font-size:36px;font-weight:300;color:#1a1814;margin-bottom:8px;line-height:1.1;">Your order is<br><em style="font-style:italic;color:rgba(26,24,20,0.4);">confirmed.</em></h1><p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.55);line-height:2;margin:28px 0;">Dear ${name}, your Calcaterra timepiece has been confirmed and is being prepared with care.</p><div style="border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);padding:24px 0;margin:32px 0;"><p style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.4em;color:rgba(26,24,20,0.4);margin-bottom:8px;">ORDER REFERENCE</p><p style="font-size:20px;font-weight:300;color:#1a1814;">${orderNum}</p></div><div style="margin:32px 0;"><p style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.4em;color:rgba(26,24,20,0.4);margin-bottom:12px;">DELIVERING TO</p><p style="font-size:15px;font-weight:300;color:rgba(26,24,20,0.7);line-height:1.8;">${addr.line1 || ''}<br>${addr.city || ''}, ${addr.country || ''}</p></div><p style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-top:48px;border-top:1px solid rgba(26,24,20,0.08);padding-top:24px;">CALCATERRA · BUILT ON CONVICTION<br><br>Calcaterra · calcaterra.co<br><span style="font-size:7px;">You are receiving this because you placed an order with us.</span></p></div></body></html>`
-  const ok = await sendEmail(order.customers.email, `Order Confirmed — ${orderNum}`, html, null, 'Calcaterra Orders <orders@calcaterra.co>')
+
+  const content = `
+      <tr><td style="padding:0 56px 24px;">
+        <p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">Dear ${esc(name)}, your Calcaterra timepiece has been confirmed and is being prepared with care.</p>
+      </td></tr>
+      <tr><td style="padding:8px 56px 8px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);">
+          <tr><td style="padding:22px 0;">
+            <div style="font-family:Georgia,'Times New Roman',serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);text-transform:uppercase;margin-bottom:8px;">Order Reference</div>
+            <div style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:300;color:#1a1814;letter-spacing:0.04em;">${esc(orderNum)}</div>
+          </td></tr>
+        </table>
+      </td></tr>
+      <tr><td style="padding:24px 56px 8px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);text-transform:uppercase;margin-bottom:10px;">Delivering to</div>
+        <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:15px;color:rgba(26,24,20,0.72);line-height:1.85;">${esc(addr.line1 || '')}${addr.line2 ? '<br/>' + esc(addr.line2) : ''}<br/>${esc(addr.city || '')}${addr.postal_code ? ', ' + esc(addr.postal_code) : ''}<br/>${esc(addr.country || '')}</p>
+      </td></tr>
+      <tr><td style="padding:40px 56px 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.55);">Designed once. Worn indefinitely.</div>
+      </td></tr>`
+
+  const html = buildBrandedEmailShell({
+    title: 'Your order is confirmed',
+    preview: `Order ${orderNum} confirmed. We are preparing your Calcaterra.`,
+    eyebrow: 'Order confirmed',
+    headlineHtml: `Your order is<br/><em style="font-style:italic;color:rgba(26,24,20,0.4);">confirmed.</em>`,
+    contentHtml: content,
+  })
+  const ok = await sendEmail(order.customers.email, `Your order is confirmed (${orderNum})`, html, null, 'Calcaterra Orders <orders@calcaterra.co>')
   if (ok) toast('Confirmation email sent')
-  else toast('Email failed — check edge function', 'error')
+  else toast('Email failed. Check edge function.', 'error')
 }
 
 async function sendShippingEmail(orderId, tracking) {
@@ -1654,8 +1787,35 @@ async function sendShippingEmail(orderId, tracking) {
   if (!order || !order.customers?.email) return
   const name = order.customers.first_name || 'Valued Customer'
   const orderNum = 'CAL-' + orderId.slice(0,8).toUpperCase()
-  const html = `<!DOCTYPE html><html><body style="background:#f2efe9;margin:0;padding:0;font-family:'Times New Roman',serif;"><div style="max-width:560px;margin:0 auto;padding:60px 40px;"><p style="font-family:'Times New Roman',serif;font-size:24px;font-weight:300;letter-spacing:0.15em;color:#1a1814;margin-bottom:48px;">CALCATERRA</p><p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);margin-bottom:16px;">YOUR ORDER IS ON ITS WAY</p><h1 style="font-size:36px;font-weight:300;color:#1a1814;margin-bottom:8px;line-height:1.1;">Your timepiece<br><em style="font-style:italic;color:rgba(26,24,20,0.4);">is en route.</em></h1><p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;color:rgba(26,24,20,0.55);line-height:2;margin:28px 0;">Dear ${name}, your Calcaterra has been dispatched and is on its way.</p><div style="border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);padding:24px 0;margin:32px 0;"><p style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.4em;color:rgba(26,24,20,0.4);margin-bottom:8px;">TRACKING NUMBER</p><p style="font-size:20px;font-weight:300;color:#1a1814;letter-spacing:0.05em;">${tracking}</p><p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.4);margin-top:12px;">Track at <a href="https://www.17track.net/en/track?nums=${tracking}" style="color:#1a1814;">17track.net</a></p></div><p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.5);margin-top:12px;">Register your watch at <a href="https://www.calcaterra.co/dashboard.html" style="color:#1a1814;">calcaterra.co</a> to activate your 2-year warranty.</p><p style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-top:48px;border-top:1px solid rgba(26,24,20,0.08);padding-top:24px;">CALCATERRA · BUILT ON CONVICTION<br><br>Calcaterra · calcaterra.co<br><span style="font-size:7px;">You are receiving this because you placed an order with us.</span></p></div></body></html>`
-  await sendEmail(order.customers.email, `Your Calcaterra is on its way — ${orderNum}`, html, null, 'Calcaterra Orders <orders@calcaterra.co>')
+
+  const content = `
+      <tr><td style="padding:0 56px 24px;">
+        <p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">Dear ${esc(name)}, your Calcaterra has been dispatched and is on its way.</p>
+      </td></tr>
+      <tr><td style="padding:8px 56px 8px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);">
+          <tr><td style="padding:22px 0;">
+            <div style="font-family:Georgia,'Times New Roman',serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);text-transform:uppercase;margin-bottom:8px;">Tracking Number</div>
+            <div style="font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:300;color:#1a1814;letter-spacing:0.05em;">${esc(tracking)}</div>
+            <p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:300;letter-spacing:0.18em;color:rgba(26,24,20,0.5);text-transform:uppercase;">Track at <a href="https://www.17track.net/en/track?nums=${escAttr(tracking)}" style="color:#1a1814;text-decoration:none;border-bottom:1px solid rgba(26,24,20,0.3);">17track.net</a></p>
+          </td></tr>
+        </table>
+      </td></tr>
+      <tr><td style="padding:24px 56px 8px;">
+        <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:15px;color:rgba(26,24,20,0.72);line-height:1.85;">Once your timepiece arrives, register it at <a href="https://www.calcaterra.co/dashboard" style="color:#1a1814;text-decoration:none;border-bottom:1px solid rgba(26,24,20,0.3);">calcaterra.co</a> to activate your two year warranty.</p>
+      </td></tr>
+      <tr><td style="padding:40px 56px 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.55);">Designed once. Worn indefinitely.</div>
+      </td></tr>`
+
+  const html = buildBrandedEmailShell({
+    title: 'Your Calcaterra is on its way',
+    preview: `Order ${orderNum} dispatched. Tracking enclosed.`,
+    eyebrow: 'On its way',
+    headlineHtml: `Your timepiece<br/><em style="font-style:italic;color:rgba(26,24,20,0.4);">is en route.</em>`,
+    contentHtml: content,
+  })
+  await sendEmail(order.customers.email, `Your Calcaterra is on its way (${orderNum})`, html, null, 'Calcaterra Orders <orders@calcaterra.co>')
 }
 
 async function signOut() {

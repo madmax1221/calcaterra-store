@@ -66,7 +66,7 @@ Reply directly to this email to respond to the customer.
           from: 'Calcaterra Contact <support@calcaterra.co>',
           to: ['support@calcaterra.co'],
           reply_to: email,
-          subject: `Contact Form: ${subject || 'New enquiry'} — ${name}`,
+          subject: `Contact Form: ${subject || 'New enquiry'} (${name})`,
           text: emailBody,
         }),
       })
