@@ -869,6 +869,7 @@ async function openOrder(id) {
   // always fetch fresh so tracking_number is up to date
   const { data: freshOrder } = await _supabase.from('orders').select(`
     id, status, total, created_at, shipping_address, notes, customer_id, tracking_number,
+    payment_reference, payment_method, payment_verified_at,
     customers(first_name, last_name, email),
     order_items(id, quantity, unit_price, variant_id, serial_number, product_variants(name))
   `).eq('id', id).single()
@@ -886,7 +887,9 @@ async function openOrder(id) {
   document.getElementById('modal-addr-country').textContent = addr.country || '—'
   document.getElementById('modal-addr-postal').textContent = addr.postal_code || '—'
   document.getElementById('modal-total').textContent = '€' + parseFloat(order.total).toFixed(2)
-  document.getElementById('modal-payment').textContent = order.stripe_payment_intent ? 'PAID' : 'PENDING PAYMENT'
+  document.getElementById('modal-payment').innerHTML = order.payment_verified_at
+    ? `<span style="color:#4ade80;">✓ VERIFIED</span> <span style="font-size:9px;letter-spacing:0.18em;color:rgba(242,239,233,0.5);display:block;margin-top:4px;">${esc(order.payment_method || 'unknown')} · ${esc(order.payment_reference || '—')}</span>`
+    : `<span style="color:#fbbf24;">⚠ AWAITING VERIFICATION</span>`
   document.getElementById('modal-status').innerHTML = `<span class="status-pill status-${order.status}">${order.status.toUpperCase()}</span>`
   document.getElementById('modal-date').textContent = new Date(order.created_at).toLocaleString('en-ZA')
   document.getElementById('modal-notes').textContent = order.notes || 'None'
@@ -966,7 +969,7 @@ async function openOrder(id) {
   }
   let btns = ''
   if (order.status === 'pending') {
-    btns += `<button class="ops-btn ops-btn-confirm" onclick="updateOrderStatus('${id}', 'confirmed')">✓ CONFIRM ORDER</button>`
+    btns += `<button class="ops-btn ops-btn-confirm" onclick="openConfirmDialog('${id}')">✓ CONFIRM ORDER</button>`
     btns += `<button class="ops-btn ops-btn-danger ops-btn-sm" onclick="updateOrderStatus('${id}', 'cancelled')">CANCEL</button>`
   }
   if (order.status === 'confirmed') {
@@ -1005,6 +1008,88 @@ async function assignItemCode(btn, itemId, orderId) {
 function closeModal() {
   document.getElementById('orderModal').classList.remove('open')
   currentOrder = null
+}
+
+// Confirm-order dialog — manual payment verification before flipping the order
+// to 'confirmed' and firing the customer email. When a real gateway (Stripe)
+// is wired later, the webhook will fill these fields automatically and skip
+// this dialog.
+function openConfirmDialog(orderId) {
+  let dialog = document.getElementById('confirm-dialog')
+  if (!dialog) {
+    dialog = document.createElement('div')
+    dialog.id = 'confirm-dialog'
+    dialog.className = 'ops-cmodal'
+    dialog.innerHTML = `
+      <div class="ops-cmodal-card" style="max-width:520px;">
+        <div class="ops-modal-header">
+          <span class="ops-section-eyebrow">PAYMENT VERIFICATION</span>
+          <button class="ops-modal-close" onclick="document.getElementById('confirm-dialog').classList.remove('open')">×</button>
+        </div>
+        <div style="margin-bottom:24px;">
+          <p style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:300;line-height:1.2;color:#f2efe9;margin-bottom:12px;">Confirm payment <em style="font-style:italic;color:rgba(242,239,233,0.4);">received.</em></p>
+          <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.04em;line-height:1.7;color:rgba(242,239,233,0.55);">Only confirm an order after you have manually verified the payment in your payment processor or bank statement. This sends the customer a confirmation email and marks the order as ready to ship.</p>
+        </div>
+        <div style="margin-bottom:18px;">
+          <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">PAYMENT METHOD</span>
+          <select id="cd-method" class="ops-input ops-select" style="width:100%;">
+            <option value="stripe">Stripe</option>
+            <option value="payfast">PayFast</option>
+            <option value="bank_transfer">Bank transfer</option>
+            <option value="cash">Cash</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div style="margin-bottom:24px;">
+          <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">PAYMENT REFERENCE</span>
+          <input type="text" id="cd-reference" class="ops-input" placeholder="Transaction ID, bank reference, etc." style="width:100%;">
+          <p style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.15em;color:rgba(242,239,233,0.35);margin-top:8px;line-height:1.6;">Required. Recorded for chargeback dispute evidence.</p>
+        </div>
+        <div id="cd-error" style="display:none;font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.3em;color:#f87171;margin-bottom:16px;text-transform:uppercase;"></div>
+        <div style="display:flex;gap:12px;justify-content:flex-end;border-top:1px solid rgba(242,239,233,0.08);padding-top:20px;">
+          <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="document.getElementById('confirm-dialog').classList.remove('open')">CANCEL</button>
+          <button class="ops-btn ops-btn-confirm" id="cd-submit">CONFIRM &amp; SEND EMAIL</button>
+        </div>
+      </div>`
+    document.body.appendChild(dialog)
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.classList.remove('open') })
+  }
+  const refInput = dialog.querySelector('#cd-reference')
+  const errEl = dialog.querySelector('#cd-error')
+  refInput.value = ''
+  errEl.style.display = 'none'
+  dialog.querySelector('#cd-submit').onclick = async () => {
+    const method = dialog.querySelector('#cd-method').value
+    const reference = refInput.value.trim()
+    if (!reference) {
+      errEl.textContent = 'Payment reference is required'
+      errEl.style.display = 'block'
+      return
+    }
+    const submitBtn = dialog.querySelector('#cd-submit')
+    submitBtn.disabled = true
+    submitBtn.textContent = 'CONFIRMING...'
+    const { error } = await _supabase.from('orders').update({
+      status: 'confirmed',
+      payment_method: method,
+      payment_reference: reference,
+      payment_verified_at: new Date().toISOString(),
+    }).eq('id', orderId)
+    if (error) {
+      errEl.textContent = error.message.toUpperCase()
+      errEl.style.display = 'block'
+      submitBtn.disabled = false
+      submitBtn.innerHTML = 'CONFIRM &amp; SEND EMAIL'
+      return
+    }
+    dialog.classList.remove('open')
+    toast('Payment verified · order confirmed')
+    await sendOrderConfirmationEmail(orderId)
+    closeModal()
+    loadOrders()
+    loadDashboard()
+  }
+  dialog.classList.add('open')
 }
 
 async function updateOrderStatus(id, status) {
