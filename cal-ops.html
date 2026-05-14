@@ -976,7 +976,7 @@ async function openOrder(id) {
     btns += `<button class="ops-btn ops-btn-ship" onclick="markShipped('${id}')">MARK AS SHIPPED</button>`
     btns += `<button class="ops-btn ops-btn-danger ops-btn-sm" onclick="cancelOrder('${id}')">CANCEL ORDER</button>`
   }
-  if (order.status === 'shipped') btns += `<button class="ops-btn ops-btn-confirm" onclick="updateOrderStatus('${id}', 'delivered')">MARK DELIVERED</button>`
+  if (order.status === 'shipped') btns += `<button class="ops-btn ops-btn-confirm" onclick="openDeliveredDialog('${id}')">MARK DELIVERED</button>`
   btns += `<button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="closeModal()">CLOSE</button>`
   document.getElementById('modal-actions').innerHTML = btns
   document.getElementById('orderModal').classList.add('open')
@@ -1014,7 +1014,19 @@ function closeModal() {
 // to 'confirmed' and firing the customer email. When a real gateway (Stripe)
 // is wired later, the webhook will fill these fields automatically and skip
 // this dialog.
-function openConfirmDialog(orderId) {
+async function openConfirmDialog(orderId) {
+  // If the gateway webhook (or a prior manual verification) already marked
+  // payment as verified, skip the dialog and just flip to 'confirmed'.
+  const { data: pre } = await _supabase.from('orders').select('payment_verified_at').eq('id', orderId).maybeSingle()
+  if (pre?.payment_verified_at) {
+    if (!confirm('Payment is already verified. Confirm this order and send the customer the confirmation email?')) return
+    const { error } = await _supabase.from('orders').update({ status: 'confirmed' }).eq('id', orderId)
+    if (error) { toast('Could not confirm: ' + error.message, 'error'); return }
+    toast('Order confirmed')
+    await sendOrderConfirmationEmail(orderId)
+    closeModal(); loadOrders(); loadDashboard()
+    return
+  }
   let dialog = document.getElementById('confirm-dialog')
   if (!dialog) {
     dialog = document.createElement('div')
@@ -1856,16 +1868,91 @@ function exportOrdersCsv() {
   downloadCsv(`calcaterra-orders-${new Date().toISOString().slice(0,10)}.csv`, rows)
 }
 
+// Replaces the old prompt() — opens a richer modal so the admin can record
+// a cancellation reason AND, if the customer was already charged, the refund
+// reference. Triggers a cancellation email to the customer.
 async function cancelOrder(id) {
-  const reason = prompt('Cancellation reason (optional, shown internally only):')
-  if (reason === null) return
-  const updates = { status: 'cancelled' }
-  if (reason) updates.notes = reason
-  const { error } = await _supabase.from('orders').update(updates).eq('id', id)
-  if (error) { toast('Cancellation failed', 'error'); return }
-  toast('Order cancelled')
-  closeModal()
-  await Promise.all([loadOrders(), loadDashboard()])
+  openCancelDialog(id)
+}
+
+async function openCancelDialog(orderId) {
+  // Decide if a refund is needed — based on whether payment was ever verified.
+  const { data: ord } = await _supabase.from('orders').select('payment_verified_at, payment_method, payment_reference, total').eq('id', orderId).maybeSingle()
+  const paymentReceived = !!ord?.payment_verified_at
+
+  let dialog = document.getElementById('cancel-dialog')
+  if (dialog) dialog.remove()
+  dialog = document.createElement('div')
+  dialog.id = 'cancel-dialog'
+  dialog.className = 'ops-cmodal'
+  dialog.innerHTML = `
+    <div class="ops-cmodal-card" style="max-width:520px;">
+      <div class="ops-modal-header">
+        <span class="ops-section-eyebrow">CANCEL ORDER</span>
+        <button class="ops-modal-close" onclick="document.getElementById('cancel-dialog').classList.remove('open')">×</button>
+      </div>
+      <div style="margin-bottom:24px;">
+        <p style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:300;line-height:1.2;color:#f2efe9;margin-bottom:12px;">Cancel this <em style="font-style:italic;color:rgba(242,239,233,0.4);">order.</em></p>
+        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.04em;line-height:1.7;color:rgba(242,239,233,0.55);">The customer will receive a cancellation email. ${paymentReceived ? '<strong style="color:#fbbf24;">Payment was received — process a refund in your payment gateway, then enter the refund reference below.</strong>' : 'No payment was received, so no refund is required.'}</p>
+      </div>
+      <div style="margin-bottom:18px;">
+        <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">REASON</span>
+        <textarea id="canc-reason" class="ops-input" rows="3" placeholder="Why is this order being cancelled?" style="width:100%;resize:vertical;background:#0e0d0b;color:#f2efe9;border:1px solid rgba(242,239,233,0.1);padding:12px;font-family:'Montserrat',sans-serif;font-size:12px;"></textarea>
+      </div>
+      ${paymentReceived ? `
+      <div style="margin-bottom:18px;border-top:1px solid rgba(242,239,233,0.08);padding-top:18px;">
+        <label style="display:flex;align-items:center;gap:10px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.3em;color:rgba(242,239,233,0.7);text-transform:uppercase;cursor:pointer;margin-bottom:14px;">
+          <input type="checkbox" id="canc-refund-done" style="width:14px;height:14px;cursor:pointer;">
+          I have processed the refund in ${esc(ord?.payment_method || 'the payment gateway')}
+        </label>
+        <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">REFUND REFERENCE</span>
+        <input type="text" id="canc-refund-ref" class="ops-input" placeholder="Refund transaction ID" style="width:100%;">
+      </div>
+      ` : ''}
+      <div id="canc-error" style="display:none;font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.3em;color:#f87171;margin-bottom:16px;text-transform:uppercase;"></div>
+      <div style="display:flex;gap:12px;justify-content:flex-end;border-top:1px solid rgba(242,239,233,0.08);padding-top:20px;">
+        <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="document.getElementById('cancel-dialog').classList.remove('open')">KEEP ORDER</button>
+        <button class="ops-btn ops-btn-danger" id="canc-submit">CANCEL ORDER</button>
+      </div>
+    </div>`
+  document.body.appendChild(dialog)
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.classList.remove('open') })
+
+  dialog.querySelector('#canc-submit').onclick = async () => {
+    const errEl = dialog.querySelector('#canc-error')
+    errEl.style.display = 'none'
+    const reason = dialog.querySelector('#canc-reason').value.trim()
+    if (!reason) { errEl.textContent = 'Reason is required'; errEl.style.display = 'block'; return }
+    const updates = { status: 'cancelled', cancelled_at: new Date().toISOString(), cancellation_reason: reason }
+    if (paymentReceived) {
+      const done = dialog.querySelector('#canc-refund-done').checked
+      const ref = dialog.querySelector('#canc-refund-ref').value.trim()
+      updates.refund_required = true
+      if (done) {
+        if (!ref) { errEl.textContent = 'Refund reference is required when marking refund as processed'; errEl.style.display = 'block'; return }
+        updates.refund_reference = ref
+        updates.refund_amount = ord?.total
+        updates.refund_processed_at = new Date().toISOString()
+      }
+    }
+    const submitBtn = dialog.querySelector('#canc-submit')
+    submitBtn.disabled = true
+    submitBtn.textContent = 'CANCELLING...'
+    const { error } = await _supabase.from('orders').update(updates).eq('id', orderId)
+    if (error) {
+      errEl.textContent = error.message.toUpperCase()
+      errEl.style.display = 'block'
+      submitBtn.disabled = false
+      submitBtn.textContent = 'CANCEL ORDER'
+      return
+    }
+    dialog.classList.remove('open')
+    toast('Order cancelled')
+    await sendCancellationEmail(orderId)
+    closeModal()
+    await Promise.all([loadOrders(), loadDashboard()])
+  }
+  dialog.classList.add('open')
 }
 
 function exportNewsletterCsv() {
@@ -2001,6 +2088,111 @@ async function sendShippingEmail(orderId, tracking) {
     contentHtml: content,
   })
   await sendEmail(order.customers.email, `Your Calcaterra is on its way (${orderNum})`, html, null, 'Calcaterra Orders <orders@calcaterra.co>')
+}
+
+// Mark-as-delivered dialog — captures proof of delivery for chargeback evidence.
+// All fields optional except the confirmation itself.
+async function openDeliveredDialog(orderId) {
+  let dialog = document.getElementById('delivered-dialog')
+  if (dialog) dialog.remove()
+  dialog = document.createElement('div')
+  dialog.id = 'delivered-dialog'
+  dialog.className = 'ops-cmodal'
+  dialog.innerHTML = `
+    <div class="ops-cmodal-card" style="max-width:520px;">
+      <div class="ops-modal-header">
+        <span class="ops-section-eyebrow">DELIVERY CONFIRMATION</span>
+        <button class="ops-modal-close" onclick="document.getElementById('delivered-dialog').classList.remove('open')">×</button>
+      </div>
+      <div style="margin-bottom:24px;">
+        <p style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:300;line-height:1.2;color:#f2efe9;margin-bottom:12px;">Confirm <em style="font-style:italic;color:rgba(242,239,233,0.4);">delivery.</em></p>
+        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.04em;line-height:1.7;color:rgba(242,239,233,0.55);">Optional fields below. Recording them protects against later "I never received it" disputes.</p>
+      </div>
+      <div style="margin-bottom:18px;">
+        <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">DELIVERED ON</span>
+        <input type="date" id="dlv-date" class="ops-input" style="width:100%;" value="${new Date().toISOString().slice(0,10)}">
+      </div>
+      <div style="margin-bottom:18px;">
+        <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">RECIPIENT NAME · OPTIONAL</span>
+        <input type="text" id="dlv-recipient" class="ops-input" placeholder="Who signed for the package" style="width:100%;">
+      </div>
+      <div style="margin-bottom:24px;">
+        <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">PROOF OF DELIVERY · OPTIONAL</span>
+        <input type="text" id="dlv-pod" class="ops-input" placeholder="Courier POD reference / event ID" style="width:100%;">
+      </div>
+      <div id="dlv-error" style="display:none;font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.3em;color:#f87171;margin-bottom:16px;text-transform:uppercase;"></div>
+      <div style="display:flex;gap:12px;justify-content:flex-end;border-top:1px solid rgba(242,239,233,0.08);padding-top:20px;">
+        <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="document.getElementById('delivered-dialog').classList.remove('open')">CANCEL</button>
+        <button class="ops-btn ops-btn-confirm" id="dlv-submit">MARK DELIVERED &amp; NOTIFY</button>
+      </div>
+    </div>`
+  document.body.appendChild(dialog)
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.classList.remove('open') })
+
+  dialog.querySelector('#dlv-submit').onclick = async () => {
+    const date = dialog.querySelector('#dlv-date').value
+    const recipient = dialog.querySelector('#dlv-recipient').value.trim()
+    const pod = dialog.querySelector('#dlv-pod').value.trim()
+    const updates = {
+      status: 'delivered',
+      delivered_at: date ? new Date(date).toISOString() : new Date().toISOString(),
+    }
+    if (recipient) updates.delivery_recipient = recipient
+    if (pod) updates.delivery_proof_reference = pod
+    const btn = dialog.querySelector('#dlv-submit')
+    btn.disabled = true; btn.textContent = 'SAVING...'
+    const { error } = await _supabase.from('orders').update(updates).eq('id', orderId)
+    if (error) {
+      dialog.querySelector('#dlv-error').textContent = error.message.toUpperCase()
+      dialog.querySelector('#dlv-error').style.display = 'block'
+      btn.disabled = false; btn.innerHTML = 'MARK DELIVERED &amp; NOTIFY'
+      return
+    }
+    dialog.classList.remove('open')
+    toast('Marked as delivered')
+    await sendDeliveredEmail(orderId)
+    closeModal(); loadOrders(); loadDashboard()
+  }
+  dialog.classList.add('open')
+}
+
+async function sendCancellationEmail(orderId) {
+  const { data: order } = await _supabase.from('orders').select(`
+    id, total, cancellation_reason, refund_reference, refund_processed_at,
+    customers(first_name, email)
+  `).eq('id', orderId).maybeSingle()
+  if (!order || !order.customers?.email) {
+    console.warn('No customer email for cancellation', orderId)
+    return
+  }
+  const name = order.customers.first_name || 'Valued Customer'
+  const orderNum = 'CAL-' + orderId.slice(0,8).toUpperCase()
+  const refundLine = order.refund_processed_at
+    ? `<p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">A refund has been processed in full. Depending on your bank, you may see it return in 3 to 10 business days.</p>
+       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);margin:18px 0;">
+         <tr><td style="padding:22px 0;">
+           <div style="font-family:Georgia,'Times New Roman',serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.4);text-transform:uppercase;margin-bottom:8px;">Refund Reference</div>
+           <div style="font-family:'Courier New',monospace;font-size:16px;font-weight:300;color:#1a1814;letter-spacing:0.06em;">${esc(order.refund_reference || '')}</div>
+         </td></tr>
+       </table>`
+    : ''
+  const content = `
+      <tr><td style="padding:0 56px 24px;">
+        <p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">Dear ${esc(name)}, your order ${esc(orderNum)} has been cancelled.</p>
+        ${refundLine}
+        <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:15px;color:rgba(26,24,20,0.65);line-height:1.85;">If you have any questions, simply reply to this message and we will be in touch.</p>
+      </td></tr>
+      <tr><td style="padding:40px 56px 56px;">
+        <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.55);">With apologies, Calcaterra.</div>
+      </td></tr>`
+  const html = buildBrandedEmailShell({
+    title: 'Your Calcaterra order has been cancelled',
+    preview: `Order ${orderNum} has been cancelled.`,
+    eyebrow: 'Order cancelled',
+    headlineHtml: `Your order<br/><em style="font-style:italic;color:rgba(26,24,20,0.4);">has been cancelled.</em>`,
+    contentHtml: content,
+  })
+  await sendEmail(order.customers.email, `Your Calcaterra order has been cancelled (${orderNum})`, html, null, 'Calcaterra Orders <orders@calcaterra.co>')
 }
 
 async function sendDeliveredEmail(orderId) {
