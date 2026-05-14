@@ -281,8 +281,11 @@ footer{background:#141210;padding:80px 52px 48px;}
       <div id="reg-thanks" style="display:none;padding:60px 0;text-align:center;">
         <span class="dash-section-eyebrow" style="display:block;margin-bottom:16px;">REGISTRATION COMPLETE</span>
         <h3 style="font-size:clamp(24px,2.5vw,34px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:12px;">Your watch is <em style="font-style:italic;color:rgba(26,24,20,0.4);">registered.</em></h3>
-        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.1em;color:rgba(26,24,20,0.4);margin-bottom:40px;">Permanently linked to your account.</p>
-        <a class="dash-cta" onclick="showSection('watches'); return false;" href="#">VIEW MY WATCHES</a>
+        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.1em;color:rgba(26,24,20,0.4);margin-bottom:40px;">Permanently linked to your account. A confirmation has been sent to your inbox.</p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+          <a class="dash-cta" onclick="showSection('watches'); return false;" href="#">VIEW MY WATCHES</a>
+          <a class="dash-cta" style="background:transparent;color:#1a1814;border:1px solid rgba(26,24,20,0.3);" onclick="resetRegisterTab(); return false;" href="#">REGISTER ANOTHER</a>
+        </div>
       </div>
     </div>
 
@@ -784,6 +787,22 @@ footer{background:#141210;padding:80px 52px 48px;}
       document.getElementById('reg-form').style.display = 'none'
       document.getElementById('reg-thanks').style.display = 'block'
       loadWatches(currentCustomer?.id)
+      // Fire registration confirmation email (best-effort — the registration
+      // itself has already succeeded, so we don't surface email failures here).
+      ;(async () => {
+        try {
+          const warrantyId = result?.warranty_id || result?.id
+          let id = warrantyId
+          if (!id) {
+            // Fall back to looking up the warranty by its activation code
+            const { data: w } = await _supabase.from('warranties').select('id').eq('activation_code', code).maybeSingle()
+            id = w?.id
+          }
+          if (id) {
+            await _supabase.functions.invoke('send-watch-registration', { body: { warranty_id: id } })
+          }
+        } catch (err) { console.error('Registration email failed:', err) }
+      })()
     } catch(err) {
       msg.textContent = (err.message || 'SOMETHING WENT WRONG.').toUpperCase()
       msg.className = 'msg-box error show'; msg.style.display = 'block'
@@ -826,6 +845,44 @@ footer{background:#141210;padding:80px 52px 48px;}
     const items = document.querySelectorAll('.dash-nav-item')
     if (map[id] !== undefined && items[map[id]]) items[map[id]].classList.add('active')
     window.history.replaceState({}, '', '/dashboard?tab=' + id)
+    // Reset each tab's internal state when navigated to — so users can always
+    // hit a tab and land at its default view.
+    if (id === 'register') resetRegisterTab()
+    if (id === 'details')  resetDetailsTab()
+    if (id === 'addresses') resetAddressTab()
+  }
+
+  function resetRegisterTab() {
+    const form = document.getElementById('reg-form')
+    const thanks = document.getElementById('reg-thanks')
+    const msg = document.getElementById('reg-msg')
+    if (form) { form.reset(); form.style.display = '' }
+    if (thanks) thanks.style.display = 'none'
+    if (msg) { msg.style.display = 'none'; msg.textContent = ''; msg.className = 'msg-box' }
+    const btn = document.getElementById('reg-btn')
+    if (btn) { btn.disabled = false; btn.textContent = 'REGISTER MY WATCH' }
+  }
+
+  function resetDetailsTab() {
+    const wrap = document.getElementById('edit-form-wrap')
+    const btn = document.getElementById('edit-toggle-btn')
+    const editMsg = document.getElementById('edit-msg')
+    if (wrap && wrap.style.display !== 'none') {
+      wrap.style.display = 'none'
+      if (btn) btn.textContent = 'EDIT DETAILS'
+    }
+    if (editMsg) editMsg.style.display = 'none'
+  }
+
+  function resetAddressTab() {
+    const wrap = document.getElementById('address-form-wrap')
+    const btn = document.getElementById('add-address-btn')
+    const addrMsg = document.getElementById('addr-msg')
+    if (wrap && wrap.style.display !== 'none') {
+      wrap.style.display = 'none'
+      if (btn) btn.textContent = 'ADD NEW ADDRESS'
+    }
+    if (addrMsg) addrMsg.style.display = 'none'
   }
 
   function toggleEditForm() {
