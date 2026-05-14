@@ -790,11 +790,14 @@ footer{background:#141210;padding:80px 52px 48px;}
       if (t) t.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }))
   }
+  const editorialStripEl = document.querySelector('.editorial-strip')
   function updateRefNav() {
     if (!refNavEl || !refSections.every(Boolean)) return
     const firstTop = refSections[0].getBoundingClientRect().top
-    const lastBottom = refSections[2].getBoundingClientRect().bottom
-    const inRange = firstTop < window.innerHeight * 0.7 && lastBottom > window.innerHeight * 0.2
+    // Hide the moment the editorial strip starts entering the lower viewport,
+    // so the indicator never overlaps the wrist-shot image below.
+    const editorialTop = editorialStripEl ? editorialStripEl.getBoundingClientRect().top : Infinity
+    const inRange = firstTop < window.innerHeight * 0.7 && editorialTop > window.innerHeight * 0.7
     refNavEl.classList.toggle('show', inRange)
     if (!inRange) return
     const centerY = window.innerHeight / 2
