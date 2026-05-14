@@ -255,7 +255,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     const justRegistered = new URLSearchParams(location.search).get('registered') === '1'
     if (justRegistered) return
     const { data: { session } } = await _supabase.auth.getSession()
-    if (session) window.location.href = '/dashboard.html'
+    if (session) window.location.href = '/'
   })
 
   async function handleRegister(e) {
