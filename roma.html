@@ -210,8 +210,20 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .ref-stage-name em{font-style:italic;color:rgba(26,24,20,0.4);}
 .ref-stage-spec{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.5);text-transform:uppercase;display:block;margin-bottom:34px;}
 .ref-stage-desc{font-family:'Times New Roman',Times,serif;font-size:clamp(15px,1.45vw,17px);font-style:italic;color:rgba(26,24,20,0.6);line-height:1.85;margin-bottom:44px;letter-spacing:0.005em;}
-.ref-stage-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:#1a1814;text-decoration:none;padding:18px 38px;border:1px solid rgba(26,24,20,0.35);text-transform:uppercase;transition:background .35s,color .35s,border-color .35s;}
-.ref-stage-cta:hover{background:#1a1814;color:#f2efe9;border-color:#1a1814;}
+.ref-stage-cta{display:inline-flex;align-items:center;gap:14px;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:#1a1814;text-decoration:none;padding:18px 36px;border:1px solid rgba(26,24,20,0.35);text-transform:uppercase;transition:background .35s,color .35s,border-color .35s,gap .35s;}
+.ref-stage-cta:hover{background:#1a1814;color:#f2efe9;border-color:#1a1814;gap:20px;}
+.ref-stage-cta .arrow{display:inline-block;font-size:13px;line-height:1;transform:translateY(-1px);}
+
+/* Finale — Silver as the closing visual punctuation */
+.ref-finale{max-width:1280px;margin:60px auto 80px;padding:0 52px;text-align:center;}
+.ref-finale-img{display:block;width:100%;max-width:760px;margin:0 auto 48px;aspect-ratio:1/1;overflow:hidden;background:#e9e5de;}
+.ref-finale-img img{width:100%;height:100%;object-fit:cover;filter:brightness(0.95) saturate(0.9);transition:transform 1.4s cubic-bezier(.25,.46,.45,.94),filter 1s ease;}
+.ref-finale:hover .ref-finale-img img{transform:scale(1.03);filter:brightness(1) saturate(1);}
+.ref-finale-eyebrow{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.62em;color:rgba(26,24,20,0.42);text-transform:uppercase;display:block;margin-bottom:16px;}
+.ref-finale-name{font-size:clamp(34px,4vw,56px);font-weight:300;line-height:1.08;letter-spacing:0.025em;color:#1a1814;margin-bottom:22px;}
+.ref-finale-name em{font-style:italic;color:rgba(26,24,20,0.4);}
+.ref-finale-link{display:inline-flex;align-items:center;gap:12px;font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:300;letter-spacing:0.6em;color:#1a1814;text-decoration:none;padding-bottom:4px;border-bottom:1px solid rgba(26,24,20,0.3);text-transform:uppercase;transition:gap .3s,border-color .3s;}
+.ref-finale-link:hover{gap:18px;border-bottom-color:#1a1814;}
 
 /* EDITORIAL STRIP */
 .editorial-strip{width:100%;height:55vh;min-height:380px;overflow:hidden;position:relative;background:#0e0d0b;display:flex;align-items:center;justify-content:center;}
@@ -278,6 +290,8 @@ footer{background:#141210;padding:80px 52px 48px;}
   .ref-stage.reverse .ref-stage-info{order:0;}
   .ref-stage.reverse .ref-stage-info{margin-left:0;}
   .ref-stage-info{max-width:none;}
+  .ref-finale{padding:0 24px;margin:40px auto 60px;}
+  .ref-finale-img{margin-bottom:32px;}
   .feature-image{height:55vh;min-height:280px;}
   .feature-image-caption{bottom:20px;right:24px;}
   .editorial-strip{height:38vh;}
@@ -432,7 +446,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     <p class="section-sub fade fade-d2">One conviction, expressed in three voices.</p>
   </div>
 
-  <!-- I — ROMA BLACK -->
+  <!-- I — ROMA BLACK — declarative -->
   <article class="ref-stage fade">
     <a href="/collections/roma/black" class="ref-stage-img" aria-label="Discover Roma Black">
       <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_bv2rodbv2rodbv2r.png?v=1773599485" alt="Roma Black">
@@ -441,12 +455,12 @@ footer{background:#141210;padding:80px 52px 48px;}
       <span class="ref-stage-eyebrow">Reference I</span>
       <h3 class="ref-stage-name">Roma <em>Black.</em></h3>
       <span class="ref-stage-spec">Quartz &middot; 40mm &middot; Brushed Steel</span>
-      <p class="ref-stage-desc">The reference that defines the line. A matte black dial of architectural restraint, anchored by a brushed steel bracelet built for permanence.</p>
-      <a href="/collections/roma/black" class="ref-stage-cta">Discover the Reference</a>
+      <p class="ref-stage-desc">The first reference. The line itself.</p>
+      <a href="/collections/roma/black" class="ref-stage-cta">Discover <span class="arrow">&rarr;</span></a>
     </div>
   </article>
 
-  <!-- II — ROMA NAVY (reversed) -->
+  <!-- II — ROMA NAVY — reversed, poetic, slightly fuller -->
   <article class="ref-stage reverse fade">
     <a href="/collections/roma/navy" class="ref-stage-img" aria-label="Discover Roma Navy">
       <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_aqzqnnaqzqnnaqzq.png?v=1773599485" alt="Roma Navy">
@@ -455,23 +469,19 @@ footer{background:#141210;padding:80px 52px 48px;}
       <span class="ref-stage-eyebrow">Reference II</span>
       <h3 class="ref-stage-name">Roma <em>Navy.</em></h3>
       <span class="ref-stage-spec">Quartz &middot; 40mm &middot; Brushed Steel</span>
-      <p class="ref-stage-desc">A second voice within the collection. Deep navy with a quieter presence, made for those who prefer their conviction whispered.</p>
-      <a href="/collections/roma/navy" class="ref-stage-cta">Discover the Reference</a>
+      <p class="ref-stage-desc">A quieter register. Depth where black declares, restraint where silver yields.</p>
+      <a href="/collections/roma/navy" class="ref-stage-cta">Discover <span class="arrow">&rarr;</span></a>
     </div>
   </article>
 
-  <!-- III — ROMA SILVER -->
-  <article class="ref-stage fade">
-    <a href="/collections/roma/silver" class="ref-stage-img" aria-label="Discover Roma Silver">
+  <!-- III — ROMA SILVER — centered finale, broken pattern -->
+  <article class="ref-finale fade">
+    <a href="/collections/roma/silver" class="ref-finale-img" aria-label="Discover Roma Silver">
       <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_9b58wm9b58wm9b58.png?v=1773599485" alt="Roma Silver">
     </a>
-    <div class="ref-stage-info">
-      <span class="ref-stage-eyebrow">Reference III</span>
-      <h3 class="ref-stage-name">Roma <em>Silver.</em></h3>
-      <span class="ref-stage-spec">Quartz &middot; 40mm &middot; Brushed Steel</span>
-      <p class="ref-stage-desc">Light, presence, and proportion. The understated finalist, designed to disappear into a life well lived.</p>
-      <a href="/collections/roma/silver" class="ref-stage-cta">Discover the Reference</a>
-    </div>
+    <span class="ref-finale-eyebrow">Reference III</span>
+    <h3 class="ref-finale-name">Roma <em>Silver.</em></h3>
+    <a href="/collections/roma/silver" class="ref-finale-link">III. <span class="arrow">&rarr;</span></a>
   </article>
 </section>
 
@@ -479,7 +489,7 @@ footer{background:#141210;padding:80px 52px 48px;}
   <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_hglsrxhglsrxhgls.png?v=1773595864" alt="Roma — Wrist Shot">
   <div class="editorial-strip-inner">
     <span class="editorial-strip-label">THE ROMA</span>
-    <h3 class="editorial-strip-quote">Designed once.<br><em>Worn indefinitely.</em></h3>
+    <h3 class="editorial-strip-quote">The decision,<br><em>made three ways.</em></h3>
   </div>
 </div>
 
