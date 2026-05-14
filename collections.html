@@ -163,9 +163,21 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .collection-card-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(242,239,233,0.7);border:1px solid rgba(242,239,233,0.25);padding:13px 28px;opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease,background .3s,color .3s,border-color .3s;}
 .collection-card:hover .collection-card-cta{opacity:1;transform:translateY(0);}
 .collection-card:hover .collection-card-cta:hover{background:#f2efe9;color:#141210;border-color:#f2efe9;}
-.collection-card.coming-soon .collection-card-img img{filter:brightness(0.42) saturate(0);}
-.collection-card.coming-soon .collection-card-overlay{background:linear-gradient(to top,rgba(14,13,11,0.95) 0%,rgba(14,13,11,0.5) 60%,rgba(14,13,11,0.2) 100%);}
+.collection-card.coming-soon .collection-card-img{background:linear-gradient(135deg,#1a1814 0%,#2a2620 50%,#1a1814 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.collection-card.coming-soon .placeholder-mark{width:120px;height:auto;opacity:0.07;filter:invert(1) brightness(0.95);}
+.collection-card.coming-soon .collection-card-overlay{background:linear-gradient(to top,rgba(14,13,11,0.85) 0%,rgba(14,13,11,0.2) 65%,transparent 100%);}
 .coming-soon-badge{position:absolute;top:28px;right:28px;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.45em;color:rgba(242,239,233,0.55);border:1px solid rgba(242,239,233,0.12);padding:8px 16px;z-index:3;}
+/* Notify-me form sitting inside the coming-soon card */
+.coming-soon-notify{margin-top:28px;display:flex;flex-direction:column;gap:14px;max-width:380px;}
+.coming-soon-notify-label{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.45em;color:rgba(242,239,233,0.5);text-transform:uppercase;}
+.coming-soon-notify-row{display:flex;gap:0;border-bottom:1px solid rgba(242,239,233,0.18);transition:border-color .3s ease;}
+.coming-soon-notify-row:focus-within{border-bottom-color:rgba(242,239,233,0.5);}
+.coming-soon-notify-row input{flex:1;background:transparent;border:none;outline:none;padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:15px;font-weight:300;color:#f2efe9;}
+.coming-soon-notify-row input::placeholder{color:rgba(242,239,233,0.3);}
+.coming-soon-notify-row button{background:none;border:none;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:rgba(242,239,233,0.7);padding:14px 0 14px 18px;text-transform:uppercase;transition:color .25s;}
+.coming-soon-notify-row button:hover{color:#f2efe9;}
+.coming-soon-thanks{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:14px;color:rgba(242,239,233,0.65);padding:14px 0;display:none;}
+.coming-soon-thanks.show{display:block;}
 .collections-statement{padding:0 52px 160px;text-align:center;max-width:680px;margin:0 auto;}
 .collections-statement p{font-size:clamp(18px,2vw,24px);font-weight:300;line-height:1.7;letter-spacing:0.02em;color:rgba(26,24,20,0.55);}
 .collections-statement em{font-style:italic;color:rgba(26,24,20,0.35);}
@@ -311,13 +323,21 @@ footer{background:#141210;padding:80px 52px 48px;}
 
   <div class="collection-card coming-soon fade fade-d1">
     <div class="collection-card-img">
-      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_ec8sfnec8sfnec8s.png?v=1773510119" alt="Coming Soon">
+      <img class="placeholder-mark" src="/images/calcaterra-logo.png" alt="">
       <div class="collection-card-overlay"></div>
     </div>
-    <span class="coming-soon-badge">COMING SOON</span>
+    <span class="coming-soon-badge">IN DEVELOPMENT</span>
     <div class="collection-card-inner">
-      <span class="collection-card-name" style="color:rgba(242,239,233,0.2);">The Next<br><em>Chapter.</em></span>
-      <span class="collection-card-refs" style="color:rgba(242,239,233,0.15);">IN DEVELOPMENT</span>
+      <span class="collection-card-name" style="color:rgba(242,239,233,0.85);">The next<br><em style="color:rgba(242,239,233,0.4);">reference.</em></span>
+      <span class="collection-card-refs" style="color:rgba(242,239,233,0.45);">A second chapter, in time.</span>
+      <div class="coming-soon-notify" id="cs-form">
+        <span class="coming-soon-notify-label">Be the first to know</span>
+        <form class="coming-soon-notify-row" onsubmit="event.preventDefault(); notifyComingSoon(this);">
+          <input type="email" placeholder="your@email.com" required autocomplete="email"/>
+          <button type="submit">Notify Me</button>
+        </form>
+      </div>
+      <p class="coming-soon-thanks" id="cs-thanks">Noted. You will be the first to hear.</p>
     </div>
   </div>
 </div>
@@ -549,6 +569,29 @@ footer{background:#141210;padding:80px 52px 48px;}
     document.querySelectorAll('.fade:not(.in)').forEach(el => {
       if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('in')
     })
+  }
+
+  // Coming-soon "notify me" — captures email into newsletter_subscribers
+  // with source='coming_soon' so it can later be segmented in cal-ops.
+  async function notifyComingSoon(form) {
+    const input = form.querySelector('input')
+    const email = (input?.value || '').trim().toLowerCase()
+    if (!email) return
+    try {
+      await _supabase.functions.invoke('subscribe-newsletter', {
+        body: { email, source: 'coming_soon' }
+      })
+    } catch (e) {
+      // Fallback if function unavailable — direct table upsert
+      try {
+        await _supabase.from('newsletter_subscribers').upsert(
+          { email, source: 'coming_soon' },
+          { onConflict: 'email' }
+        )
+      } catch (err) { console.error('Notify failed:', err) }
+    }
+    document.getElementById('cs-form').style.display = 'none'
+    document.getElementById('cs-thanks').classList.add('show')
   }
 
   document.addEventListener('DOMContentLoaded', () => {

@@ -26,6 +26,10 @@ serve(async (req) => {
 
     const email = String(body.email).trim().toLowerCase()
     const first_name = body.first_name ? String(body.first_name).trim() : null
+    // Source allows segmentation (website footer / coming_soon card / etc).
+    // Defaults to 'website' to match the table's default.
+    const allowedSources = ['website', 'coming_soon', 'customer', 'register']
+    const source = allowedSources.includes(body.source) ? body.source : 'website'
 
     // Basic email shape check
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -47,7 +51,7 @@ serve(async (req) => {
     if (!existing) {
       const { error: insertErr } = await admin
         .from('newsletter_subscribers')
-        .insert([{ email, first_name }])
+        .insert([{ email, first_name, source }])
       if (insertErr) {
         console.error('Insert error:', insertErr)
         return json({ error: 'Failed to subscribe' }, 500)
