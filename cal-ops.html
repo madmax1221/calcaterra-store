@@ -514,13 +514,22 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
               </div>
             </div>
 
-            <!-- SEND -->
+            <!-- AUDIENCE -->
             <div style="border-top:1px solid rgba(242,239,233,0.06);padding-top:20px;">
+              <label class="cmp-label">AUDIENCE</label>
+              <select id="compose-audience" class="ops-input ops-select" style="width:100%;" onchange="updateAudienceCount()">
+                <option value="all">All subscribers</option>
+                <option value="customers">Customers only (have purchased)</option>
+                <option value="non-customers">Non-customers (subscribers who haven't purchased)</option>
+              </select>
+            </div>
+            <!-- SEND -->
+            <div>
               <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
                 <input type="email" id="compose-test-to" class="ops-input" placeholder="Test send to (your email)" style="flex:1;min-width:200px;">
                 <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="sendBroadcastTest()">SEND TEST</button>
                 <span style="flex:1;"></span>
-                <button class="ops-btn ops-btn-primary" onclick="sendBroadcastAll()" id="broadcast-send-btn">SEND TO ALL <span id="broadcast-count">—</span></button>
+                <button class="ops-btn ops-btn-primary" onclick="sendBroadcastAll()" id="broadcast-send-btn">SEND <span id="broadcast-count">—</span></button>
               </div>
               <div id="compose-status" style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.3em;color:rgba(242,239,233,0.5);margin-top:14px;"></div>
             </div>
@@ -1330,6 +1339,10 @@ async function markContactReplied(id) {
 }
 
 // ── NEWSLETTER SUBSCRIBERS ──
+// Audience counts are pre-computed so the compose form can show
+// "All (N) / Customers (M) / Non-customers (K)" without round-trips.
+const audienceCounts = { all: 0, customers: 0, 'non-customers': 0 }
+
 async function loadNewsletter() {
   const { data, error } = await _supabase
     .from('newsletter_subscribers')
@@ -1345,6 +1358,31 @@ async function loadNewsletter() {
   const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000
   const recent = allSubscribers.filter(s => new Date(s.subscribed_at).getTime() > weekAgo).length
   document.getElementById('stat-subscribers-week').textContent = recent
+
+  // Compute buyer/non-buyer split — fetch customers who have a paid order,
+  // intersect with subscriber emails. Best-effort; falls through if it errors.
+  try {
+    const { data: paidOrders } = await _supabase
+      .from('orders')
+      .select('customers(email)')
+      .in('status', ['confirmed', 'shipped', 'delivered'])
+    const buyerEmails = new Set(
+      (paidOrders || [])
+        .map(o => o.customers?.email)
+        .filter(Boolean)
+        .map(e => String(e).toLowerCase())
+    )
+    const subEmails = allSubscribers.map(s => String(s.email || '').toLowerCase()).filter(Boolean)
+    audienceCounts.all = subEmails.length
+    audienceCounts.customers = subEmails.filter(e => buyerEmails.has(e)).length
+    audienceCounts['non-customers'] = audienceCounts.all - audienceCounts.customers
+  } catch (err) {
+    console.warn('Audience count compute failed:', err)
+    audienceCounts.all = allSubscribers.length
+    audienceCounts.customers = 0
+    audienceCounts['non-customers'] = allSubscribers.length
+  }
+  refreshAudienceOptions()
   if (!allSubscribers.length) {
     document.getElementById('newsletter-body').innerHTML = '<tr><td colspan="4" class="ops-table-empty">NO SUBSCRIBERS YET</td></tr>'
     return
@@ -1361,12 +1399,32 @@ async function loadNewsletter() {
   }).join('')
 }
 
+function refreshAudienceOptions() {
+  const sel = document.getElementById('compose-audience')
+  if (!sel) return
+  const all = sel.querySelector('option[value="all"]')
+  const cus = sel.querySelector('option[value="customers"]')
+  const non = sel.querySelector('option[value="non-customers"]')
+  if (all) all.textContent = `All subscribers (${audienceCounts.all})`
+  if (cus) cus.textContent = `Customers only · have purchased (${audienceCounts.customers})`
+  if (non) non.textContent = `Non-customers · subscribers who haven't purchased (${audienceCounts['non-customers']})`
+  updateAudienceCount()
+}
+
+function updateAudienceCount() {
+  const sel = document.getElementById('compose-audience')
+  if (!sel) return
+  const count = audienceCounts[sel.value] ?? 0
+  const span = document.getElementById('broadcast-count')
+  if (span) span.textContent = `(${count})`
+}
+
 function toggleCompose() {
   const box = document.getElementById('compose-box')
   const isOpen = box.style.display !== 'none'
   box.style.display = isOpen ? 'none' : 'block'
   if (!isOpen) {
-    document.getElementById('broadcast-count').textContent = '(' + allSubscribers.length + ')'
+    refreshAudienceOptions()
     box.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }
@@ -1584,16 +1642,23 @@ async function sendBroadcastTest() {
 async function sendBroadcastAll() {
   const fields = collectComposeFields()
   if (!fields.subject || !fields.body) { toast('Subject and body required', 'error'); return }
-  if (!allSubscribers.length) { toast('No subscribers to send to', 'error'); return }
-  if (!confirm(`Send this newsletter to ALL ${allSubscribers.length} subscriber${allSubscribers.length === 1 ? '' : 's'}? This cannot be undone.`)) return
+  const audience = document.getElementById('compose-audience')?.value || 'all'
+  const targetCount = audienceCounts[audience] ?? 0
+  if (!targetCount) { toast(`No recipients in '${audience}' audience`, 'error'); return }
+  const audienceLabel = ({
+    'all': 'all subscribers',
+    'customers': 'customers (have purchased)',
+    'non-customers': 'non-customers (subscribers who have not purchased)',
+  })[audience] || audience
+  if (!confirm(`Send this newsletter to ${targetCount} ${audienceLabel}? This cannot be undone.`)) return
   const btn = document.getElementById('broadcast-send-btn')
   const status = document.getElementById('compose-status')
   btn.disabled = true
   const original = btn.innerHTML
   btn.textContent = 'SENDING...'
-  status.textContent = 'BROADCASTING TO ' + allSubscribers.length + ' SUBSCRIBERS...'
+  status.textContent = `BROADCASTING TO ${targetCount} · ${audience.toUpperCase()}...`
   const html = buildBroadcastHtml(fields)
-  const result = await invokeFn('send-broadcast', { subject: fields.subject, html })
+  const result = await invokeFn('send-broadcast', { subject: fields.subject, html, audience })
   btn.disabled = false
   btn.innerHTML = original
   if (!result.ok) {

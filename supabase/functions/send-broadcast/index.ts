@@ -90,14 +90,45 @@ serve(async (req) => {
       return json({ success: true, mode: 'test', sent: 1, id: rJson.id ?? null })
     }
 
-    // Fetch every subscriber
+    // ── Resolve audience ──────────────────────────────────────
+    // 'all'           — every newsletter subscriber (default)
+    // 'customers'     — subscribers who have at least one paid order
+    // 'non-customers' — subscribers without a paid order
+    const audience = (body.audience || 'all').toLowerCase()
+
     const { data: subs, error: subsErr } = await admin
       .from('newsletter_subscribers')
       .select('email, first_name')
     if (subsErr) return json({ error: 'Failed to load subscribers', details: subsErr }, 500)
     if (!subs?.length) return json({ error: 'No subscribers to send to' }, 400)
 
-    const recipients = subs.map(s => s.email).filter(Boolean)
+    let recipients: string[]
+    if (audience === 'all') {
+      recipients = subs.map(s => s.email).filter(Boolean)
+    } else {
+      // Build a set of buyer emails (customers who have a paid order)
+      const { data: paidOrders, error: ordErr } = await admin
+        .from('orders')
+        .select('customers(email)')
+        .in('status', ['confirmed', 'shipped', 'delivered'])
+      if (ordErr) return json({ error: 'Failed to load orders', details: ordErr }, 500)
+      const buyerEmails = new Set(
+        (paidOrders || [])
+          .map((o: any) => o.customers?.email)
+          .filter(Boolean)
+          .map((e: string) => e.toLowerCase())
+      )
+      const subEmails = subs.map(s => s.email).filter(Boolean)
+      if (audience === 'customers') {
+        recipients = subEmails.filter(e => buyerEmails.has(e.toLowerCase()))
+      } else if (audience === 'non-customers' || audience === 'non_customers') {
+        recipients = subEmails.filter(e => !buyerEmails.has(e.toLowerCase()))
+      } else {
+        return json({ error: `Unknown audience '${audience}'` }, 400)
+      }
+    }
+
+    if (!recipients.length) return json({ error: `No subscribers match audience '${audience}'` }, 400)
 
     // Send in batches via Resend. Each batch becomes one API call where
     // every recipient is BCC'd (so they can't see each other's emails).
@@ -132,12 +163,12 @@ serve(async (req) => {
           recipient: `(bcc x${slice.length})`,
           subject,
           provider_id: rJson.id ?? null,
-          meta: { kind: 'newsletter_broadcast', batch_size: slice.length, sample: slice.slice(0, 3) },
+          meta: { kind: 'newsletter_broadcast', audience, batch_size: slice.length, sample: slice.slice(0, 3) },
         }])
       } catch (_) { /* noop */ }
     }
 
-    return json({ success: true, mode: 'broadcast', sent, failed, total: recipients.length, errors: errors.slice(0, 3) })
+    return json({ success: true, mode: 'broadcast', audience, sent, failed, total: recipients.length, errors: errors.slice(0, 3) })
 
   } catch (err) {
     console.error('send-broadcast error:', err)
