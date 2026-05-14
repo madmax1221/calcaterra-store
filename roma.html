@@ -214,16 +214,27 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .ref-stage-cta:hover{background:#1a1814;color:#f2efe9;border-color:#1a1814;gap:20px;}
 .ref-stage-cta .arrow{display:inline-block;font-size:13px;line-height:1;transform:translateY(-1px);}
 
+/* Sticky reference indicator (I / II / III) */
+.ref-nav{position:fixed;right:36px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:22px;opacity:0;pointer-events:none;transition:opacity .55s ease;}
+.ref-nav.show{opacity:1;pointer-events:auto;}
+.ref-nav a{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.32);text-decoration:none;display:flex;align-items:center;gap:14px;transition:color .35s ease,gap .35s ease;}
+.ref-nav a::after{content:'';display:block;width:16px;height:1px;background:rgba(26,24,20,0.32);transition:width .35s ease,background .35s ease;}
+.ref-nav a:hover{color:rgba(26,24,20,0.7);}
+.ref-nav a:hover::after{width:24px;background:rgba(26,24,20,0.7);}
+.ref-nav a.active{color:#1a1814;}
+.ref-nav a.active::after{width:36px;background:#1a1814;}
+@media(max-width:1100px){.ref-nav{display:none;}}
+
 /* Finale — Silver as the closing visual punctuation */
 .ref-finale{max-width:1280px;margin:60px auto 80px;padding:0 52px;text-align:center;}
-.ref-finale-img{display:block;width:100%;max-width:540px;margin:0 auto 44px;aspect-ratio:1/1;overflow:visible;background:transparent;}
+.ref-finale-img{display:block;width:100%;max-width:440px;margin:0 auto 36px;aspect-ratio:1/1;overflow:visible;background:transparent;}
 .ref-finale-img img{width:100%;height:100%;object-fit:contain;transition:transform 1.4s cubic-bezier(.25,.46,.45,.94);}
 .ref-finale:hover .ref-finale-img img{transform:scale(1.03);}
-.ref-finale-eyebrow{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.62em;color:rgba(26,24,20,0.42);text-transform:uppercase;display:block;margin-bottom:16px;}
-.ref-finale-name{font-size:clamp(34px,4vw,56px);font-weight:300;line-height:1.08;letter-spacing:0.025em;color:#1a1814;margin-bottom:18px;}
+.ref-finale-eyebrow{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.62em;color:rgba(26,24,20,0.36);text-transform:uppercase;display:block;margin-bottom:14px;}
+.ref-finale-name{font-size:clamp(26px,3vw,42px);font-weight:300;line-height:1.1;letter-spacing:0.025em;color:#1a1814;margin-bottom:14px;}
 .ref-finale-name em{font-style:italic;color:rgba(26,24,20,0.4);}
-.ref-finale-spec{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.5);text-transform:uppercase;display:block;margin-bottom:30px;}
-.ref-finale-desc{font-family:'Times New Roman',Times,serif;font-size:clamp(15px,1.45vw,17px);font-style:italic;color:rgba(26,24,20,0.6);line-height:1.85;margin:0 auto 40px;max-width:480px;letter-spacing:0.005em;}
+.ref-finale-spec{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.4);text-transform:uppercase;display:block;margin-bottom:22px;}
+.ref-finale-desc{font-family:'Times New Roman',Times,serif;font-size:clamp(14px,1.35vw,16px);font-style:italic;color:rgba(26,24,20,0.55);line-height:1.7;margin:0 auto 36px;max-width:360px;letter-spacing:0.005em;}
 .ref-finale-link{display:inline-flex;align-items:center;gap:14px;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:#1a1814;text-decoration:none;padding:18px 36px;border:1px solid rgba(26,24,20,0.35);text-transform:uppercase;transition:background .35s,color .35s,border-color .35s,gap .35s;}
 .ref-finale-link:hover{background:#1a1814;color:#f2efe9;border-color:#1a1814;gap:20px;}
 .ref-finale-link .arrow{display:inline-block;font-size:13px;line-height:1;transform:translateY(-1px);}
@@ -449,43 +460,49 @@ footer{background:#141210;padding:80px 52px 48px;}
     <p class="section-sub fade fade-d2">One conviction, expressed in three voices.</p>
   </div>
 
+  <nav class="ref-nav" id="refNav" aria-label="Reference navigation">
+    <a href="#ref-black" data-target="ref-black">I</a>
+    <a href="#ref-navy" data-target="ref-navy">II</a>
+    <a href="#ref-silver" data-target="ref-silver">III</a>
+  </nav>
+
   <!-- I — ROMA BLACK — declarative -->
-  <article class="ref-stage fade">
+  <article id="ref-black" class="ref-stage fade">
     <a href="/collections/roma/black" class="ref-stage-img" aria-label="Discover Roma Black">
       <img src="/images/roma-black.png" alt="Roma Black">
     </a>
     <div class="ref-stage-info">
       <span class="ref-stage-eyebrow">Reference I</span>
       <h3 class="ref-stage-name">Roma <em>Black.</em></h3>
-      <span class="ref-stage-spec">Quartz &middot; 40mm &middot; Brushed Steel</span>
+      <span class="ref-stage-spec">Steel on Steel &middot; 40mm</span>
       <p class="ref-stage-desc">The first reference. The line itself.</p>
       <a href="/collections/roma/black" class="ref-stage-cta">Discover <span class="arrow">&rarr;</span></a>
     </div>
   </article>
 
-  <!-- II — ROMA NAVY — reversed, poetic, slightly fuller -->
-  <article class="ref-stage reverse fade">
+  <!-- II — ROMA NAVY — reversed, poetic, self-contained -->
+  <article id="ref-navy" class="ref-stage reverse fade">
     <a href="/collections/roma/navy" class="ref-stage-img" aria-label="Discover Roma Navy">
       <img src="/images/roma-navy.png" alt="Roma Navy">
     </a>
     <div class="ref-stage-info">
       <span class="ref-stage-eyebrow">Reference II</span>
       <h3 class="ref-stage-name">Roma <em>Navy.</em></h3>
-      <span class="ref-stage-spec">Quartz &middot; 40mm &middot; Brushed Steel</span>
-      <p class="ref-stage-desc">A quieter register. Depth where black declares, restraint where silver yields.</p>
+      <span class="ref-stage-spec">Steel on Steel &middot; 40mm</span>
+      <p class="ref-stage-desc">A quieter register. The collection's deeper voice.</p>
       <a href="/collections/roma/navy" class="ref-stage-cta">Discover <span class="arrow">&rarr;</span></a>
     </div>
   </article>
 
-  <!-- III — ROMA SILVER — centered finale, broken pattern -->
-  <article class="ref-finale fade">
+  <!-- III — ROMA SILVER — centered finale, whispered close -->
+  <article id="ref-silver" class="ref-finale fade">
     <a href="/collections/roma/silver" class="ref-finale-img" aria-label="Discover Roma Silver">
       <img src="/images/roma-silver.png" alt="Roma Silver">
     </a>
     <span class="ref-finale-eyebrow">Reference III</span>
     <h3 class="ref-finale-name">Roma <em>Silver.</em></h3>
-    <span class="ref-finale-spec">Quartz &middot; 40mm &middot; Brushed Steel</span>
-    <p class="ref-finale-desc">The closing voice. Light, proportion, and the lightest hand the collection allows.</p>
+    <span class="ref-finale-spec">Steel on Steel &middot; 40mm</span>
+    <p class="ref-finale-desc">The collection's lightest hand.</p>
     <a href="/collections/roma/silver" class="ref-finale-link">Discover <span class="arrow">&rarr;</span></a>
   </article>
 </section>
@@ -494,7 +511,7 @@ footer{background:#141210;padding:80px 52px 48px;}
   <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_hglsrxhglsrxhgls.png?v=1773595864" alt="Roma — Wrist Shot">
   <div class="editorial-strip-inner">
     <span class="editorial-strip-label">THE ROMA</span>
-    <h3 class="editorial-strip-quote">The decision,<br><em>made three ways.</em></h3>
+    <h3 class="editorial-strip-quote">A reference is a vow<br><em>you make to a future self.</em></h3>
   </div>
 </div>
 
@@ -761,6 +778,35 @@ footer{background:#141210;padding:80px 52px 48px;}
     })
   }
 
+  // Sticky reference indicator (I / II / III) — shows while inside the
+  // references section, marks the reference closest to viewport center.
+  const refNavEl = document.getElementById('refNav')
+  const refSections = ['ref-black','ref-navy','ref-silver'].map(id => document.getElementById(id))
+  const refLinks = refNavEl ? refNavEl.querySelectorAll('a') : []
+  if (refNavEl && refSections.every(Boolean)) {
+    refLinks.forEach(a => a.addEventListener('click', e => {
+      e.preventDefault()
+      const t = document.getElementById(a.dataset.target)
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }))
+  }
+  function updateRefNav() {
+    if (!refNavEl || !refSections.every(Boolean)) return
+    const firstTop = refSections[0].getBoundingClientRect().top
+    const lastBottom = refSections[2].getBoundingClientRect().bottom
+    const inRange = firstTop < window.innerHeight * 0.7 && lastBottom > window.innerHeight * 0.2
+    refNavEl.classList.toggle('show', inRange)
+    if (!inRange) return
+    const centerY = window.innerHeight / 2
+    let activeIdx = 0, bestDist = Infinity
+    refSections.forEach((s, i) => {
+      const r = s.getBoundingClientRect()
+      const d = Math.abs((r.top + r.height / 2) - centerY)
+      if (d < bestDist) { bestDist = d; activeIdx = i }
+    })
+    refLinks.forEach((a, i) => a.classList.toggle('active', i === activeIdx))
+  }
+
   function navScroll() {
     if (window.scrollY > 60) { document.getElementById('nav').classList.add('scrolled') }
     else { document.getElementById('nav').classList.remove('scrolled') }
@@ -793,7 +839,8 @@ footer{background:#141210;padding:80px 52px 48px;}
       if (query.length < 2) { document.getElementById('cal-search-results').innerHTML = ''; return }
       debounceTimer = setTimeout(() => fetchSearchResults(query), 250)
     })
-    window.addEventListener('scroll', () => { navScroll(); reveal() }, { passive: true })
+    window.addEventListener('scroll', () => { navScroll(); reveal(); updateRefNav() }, { passive: true })
+    updateRefNav()
     setTimeout(reveal, 300)
   })
 </script>
