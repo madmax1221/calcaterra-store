@@ -193,20 +193,25 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .philosophy-text{padding:100px 80px;display:flex;flex-direction:column;justify-content:center;background:#f2efe9;}
 .philosophy-text .section-body{max-width:420px;}
 
-/* REFERENCES */
-.references-section{padding:80px 52px 140px;max-width:1200px;margin:0 auto;}
-.references-header{text-align:center;margin-bottom:72px;}
-.references-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
-.ref-card{position:relative;display:block;text-decoration:none;color:inherit;background:#f2efe9;overflow:hidden;}
-.ref-card-img{position:relative;overflow:hidden;aspect-ratio:3/4;background:#e9e5de;}
-.ref-card-img img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.9) saturate(0.85);transition:transform 1s cubic-bezier(.25,.46,.45,.94),filter .8s ease;}
-.ref-card:hover .ref-card-img img{transform:scale(1.04);filter:brightness(1) saturate(1);}
-.ref-card-body{padding:32px 28px 40px;border-top:1px solid rgba(26,24,20,0.06);}
-.ref-card-name{font-size:clamp(22px,2.2vw,30px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;display:block;margin-bottom:8px;}
-.ref-card-name em{font-style:italic;color:rgba(26,24,20,0.4);}
-.ref-card-spec{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.5);display:block;margin-bottom:28px;}
-.ref-card-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.45);border:1px solid rgba(26,24,20,0.15);padding:12px 24px;text-decoration:none;transition:background .3s,color .3s,border-color .3s;}
-.ref-card:hover .ref-card-cta{background:#1a1814;color:#f2efe9;border-color:#1a1814;}
+/* REFERENCES — editorial showcase, one stage per watch */
+.references-section{padding:120px 0 80px;background:#f2efe9;}
+.references-header{text-align:center;margin:0 auto 140px;padding:0 52px;max-width:900px;}
+.references-header .section-sub{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:clamp(15px,1.5vw,18px);color:rgba(26,24,20,0.5);line-height:1.7;margin-top:12px;}
+.ref-stage{max-width:1280px;margin:0 auto 180px;padding:0 52px;display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:center;}
+.ref-stage:last-of-type{margin-bottom:60px;}
+.ref-stage.reverse .ref-stage-info{order:-1;}
+.ref-stage-img{position:relative;display:block;overflow:hidden;aspect-ratio:1/1;background:#e9e5de;}
+.ref-stage-img img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.95) saturate(0.9);transition:transform 1.4s cubic-bezier(.25,.46,.45,.94),filter 1s ease;}
+.ref-stage:hover .ref-stage-img img{transform:scale(1.03);filter:brightness(1) saturate(1);}
+.ref-stage-info{display:flex;flex-direction:column;align-items:flex-start;max-width:440px;}
+.ref-stage.reverse .ref-stage-info{margin-left:auto;}
+.ref-stage-eyebrow{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.62em;color:rgba(26,24,20,0.42);text-transform:uppercase;margin-bottom:24px;}
+.ref-stage-name{font-size:clamp(34px,4vw,56px);font-weight:300;line-height:1.08;letter-spacing:0.025em;color:#1a1814;margin-bottom:18px;}
+.ref-stage-name em{font-style:italic;color:rgba(26,24,20,0.4);}
+.ref-stage-spec{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.5);text-transform:uppercase;display:block;margin-bottom:34px;}
+.ref-stage-desc{font-family:'Times New Roman',Times,serif;font-size:clamp(15px,1.45vw,17px);font-style:italic;color:rgba(26,24,20,0.6);line-height:1.85;margin-bottom:44px;letter-spacing:0.005em;}
+.ref-stage-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:#1a1814;text-decoration:none;padding:18px 38px;border:1px solid rgba(26,24,20,0.35);text-transform:uppercase;transition:background .35s,color .35s,border-color .35s;}
+.ref-stage-cta:hover{background:#1a1814;color:#f2efe9;border-color:#1a1814;}
 
 /* EDITORIAL STRIP */
 .editorial-strip{width:100%;height:55vh;min-height:380px;overflow:hidden;position:relative;background:#0e0d0b;display:flex;align-items:center;justify-content:center;}
@@ -267,8 +272,12 @@ footer{background:#141210;padding:80px 52px 48px;}
   .philosophy-section{grid-template-columns:1fr;}
   .philosophy-img{height:clamp(280px,55vw,400px);position:relative;}
   .philosophy-text{padding:60px 28px;}
-  .references-section{padding:60px 24px 100px;}
-  .references-grid{grid-template-columns:repeat(2,1fr);}
+  .references-section{padding:80px 0 60px;}
+  .references-header{padding:0 24px;margin-bottom:80px;}
+  .ref-stage{grid-template-columns:1fr;gap:36px;padding:0 24px;margin-bottom:100px;}
+  .ref-stage.reverse .ref-stage-info{order:0;}
+  .ref-stage.reverse .ref-stage-info{margin-left:0;}
+  .ref-stage-info{max-width:none;}
   .feature-image{height:55vh;min-height:280px;}
   .feature-image-caption{bottom:20px;right:24px;}
   .editorial-strip{height:38vh;}
@@ -281,7 +290,8 @@ footer{background:#141210;padding:80px 52px 48px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
 }
 @media(max-width:480px){
-  .references-grid{grid-template-columns:1fr;}
+  .ref-stage{margin-bottom:72px;}
+  .ref-stage-cta{width:100%;text-align:center;}
   .roma-hero{min-height:100svh;}
   .feature-image{height:48vh;min-height:240px;}
   .cinematic-block{height:48vh;}
@@ -419,39 +429,50 @@ footer{background:#141210;padding:80px 52px 48px;}
   <div class="references-header">
     <span class="section-label fade">THE ROMA COLLECTION</span>
     <h2 class="section-heading fade fade-d1">III References.</h2>
+    <p class="section-sub fade fade-d2">One conviction, expressed in three voices.</p>
   </div>
-  <div class="references-grid">
-    <a href="/collections/roma/black" class="ref-card fade">
-      <div class="ref-card-img">
-        <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_bv2rodbv2rodbv2r.png?v=1773599485" alt="Roma Black">
-      </div>
-      <div class="ref-card-body">
-        <span class="ref-card-name">Roma <em>Black.</em></span>
-        <span class="ref-card-spec">REF. I &nbsp;&middot;&nbsp; QUARTZ &nbsp;&middot;&nbsp; 40MM</span>
-        <span class="ref-card-cta">VIEW DETAILS</span>
-      </div>
+
+  <!-- I — ROMA BLACK -->
+  <article class="ref-stage fade">
+    <a href="/collections/roma/black" class="ref-stage-img" aria-label="Discover Roma Black">
+      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_bv2rodbv2rodbv2r.png?v=1773599485" alt="Roma Black">
     </a>
-    <a href="/collections/roma/navy" class="ref-card fade fade-d1" style="transform:scale(1.05) translateY(-2px);transform-origin:center;z-index:1;position:relative;">
-      <div class="ref-card-img">
-        <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_aqzqnnaqzqnnaqzq.png?v=1773599485" alt="Roma Navy">
-      </div>
-      <div class="ref-card-body">
-        <span class="ref-card-name">Roma <em>Navy.</em></span>
-        <span class="ref-card-spec">REF. II &nbsp;&middot;&nbsp; QUARTZ &nbsp;&middot;&nbsp; 40MM</span>
-        <span class="ref-card-cta">VIEW DETAILS</span>
-      </div>
+    <div class="ref-stage-info">
+      <span class="ref-stage-eyebrow">Reference I</span>
+      <h3 class="ref-stage-name">Roma <em>Black.</em></h3>
+      <span class="ref-stage-spec">Quartz &middot; 40mm &middot; Brushed Steel</span>
+      <p class="ref-stage-desc">The reference that defines the line. A matte black dial of architectural restraint, anchored by a brushed steel bracelet built for permanence.</p>
+      <a href="/collections/roma/black" class="ref-stage-cta">Discover the Reference</a>
+    </div>
+  </article>
+
+  <!-- II — ROMA NAVY (reversed) -->
+  <article class="ref-stage reverse fade">
+    <a href="/collections/roma/navy" class="ref-stage-img" aria-label="Discover Roma Navy">
+      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_aqzqnnaqzqnnaqzq.png?v=1773599485" alt="Roma Navy">
     </a>
-    <a href="/collections/roma/silver" class="ref-card fade fade-d2">
-      <div class="ref-card-img">
-        <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_9b58wm9b58wm9b58.png?v=1773599485" alt="Roma Silver">
-      </div>
-      <div class="ref-card-body">
-        <span class="ref-card-name">Roma <em>Silver.</em></span>
-        <span class="ref-card-spec">REF. III &nbsp;&middot;&nbsp; QUARTZ &nbsp;&middot;&nbsp; 40MM</span>
-        <span class="ref-card-cta">VIEW DETAILS</span>
-      </div>
+    <div class="ref-stage-info">
+      <span class="ref-stage-eyebrow">Reference II</span>
+      <h3 class="ref-stage-name">Roma <em>Navy.</em></h3>
+      <span class="ref-stage-spec">Quartz &middot; 40mm &middot; Brushed Steel</span>
+      <p class="ref-stage-desc">A second voice within the collection. Deep navy with a quieter presence, made for those who prefer their conviction whispered.</p>
+      <a href="/collections/roma/navy" class="ref-stage-cta">Discover the Reference</a>
+    </div>
+  </article>
+
+  <!-- III — ROMA SILVER -->
+  <article class="ref-stage fade">
+    <a href="/collections/roma/silver" class="ref-stage-img" aria-label="Discover Roma Silver">
+      <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_9b58wm9b58wm9b58.png?v=1773599485" alt="Roma Silver">
     </a>
-  </div>
+    <div class="ref-stage-info">
+      <span class="ref-stage-eyebrow">Reference III</span>
+      <h3 class="ref-stage-name">Roma <em>Silver.</em></h3>
+      <span class="ref-stage-spec">Quartz &middot; 40mm &middot; Brushed Steel</span>
+      <p class="ref-stage-desc">Light, presence, and proportion. The understated finalist, designed to disappear into a life well lived.</p>
+      <a href="/collections/roma/silver" class="ref-stage-cta">Discover the Reference</a>
+    </div>
+  </article>
 </section>
 
 <div class="editorial-strip fade">
