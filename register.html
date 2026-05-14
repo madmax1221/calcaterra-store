@@ -91,6 +91,13 @@ footer{background:#141210;padding:80px 52px 48px;}
 .error-msg.show{display:block;}
 .success-msg{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.3em;color:#27ae60;text-align:center;display:none;margin-top:4px;}
 .success-msg.show{display:block;}
+.auth-benefits{margin-top:56px;padding-top:36px;border-top:1px solid rgba(26,24,20,0.08);}
+.auth-benefits-label{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);text-transform:uppercase;display:block;margin-bottom:24px;}
+.auth-benefit{display:flex;gap:18px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(26,24,20,0.04);}
+.auth-benefit:last-child{border-bottom:none;}
+.auth-benefit-num{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.32);min-width:20px;flex-shrink:0;}
+.auth-benefit-text{font-family:'Times New Roman',Times,serif;font-size:14.5px;color:rgba(26,24,20,0.72);line-height:1.75;letter-spacing:0.005em;}
+.auth-benefit-text em{font-style:italic;color:rgba(26,24,20,0.45);}
 @media(max-width:860px){
   #nav{padding:0 24px;}
   .register-page{grid-template-columns:1fr;}
@@ -207,6 +214,13 @@ footer{background:#141210;padding:80px 52px 48px;}
       <p class="register-discretion">Your details are handled with discretion.</p>
       <p class="register-signin">Already have an account? <a href="/signin">SIGN IN</a></p>
     </form>
+
+    <div class="auth-benefits">
+      <span class="auth-benefits-label">Your account unlocks</span>
+      <div class="auth-benefit"><span class="auth-benefit-num">I.</span><span class="auth-benefit-text">Order history and tracking. <em>Every Calcaterra you have owned, in one place.</em></span></div>
+      <div class="auth-benefit"><span class="auth-benefit-num">II.</span><span class="auth-benefit-text">Warranty activation. <em>Each timepiece linked to your name, permanently.</em></span></div>
+      <div class="auth-benefit"><span class="auth-benefit-num">III.</span><span class="auth-benefit-text">Priority access. <em>First to know on new references, before public release.</em></span></div>
+    </div>
   </div>
 </div>
 
