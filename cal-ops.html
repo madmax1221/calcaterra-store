@@ -317,7 +317,8 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
         <div class="ops-section-header" style="margin-bottom:32px;"><div><span class="ops-section-eyebrow">ACTIVATION CODES</span><h1 class="ops-section-title">Code <em>Generator.</em></h1></div></div>
         <div class="code-gen-box">
           <div class="code-gen-form">
-            <div class="code-gen-field"><span class="code-gen-label">VARIANT</span><select class="ops-input ops-select" id="gen-variant" style="width:160px;"><option value="black">ROMA BLACK</option><option value="navy">ROMA NAVY</option><option value="silver">ROMA SILVER</option></select></div>
+            <div class="code-gen-field"><span class="code-gen-label">COLLECTION</span><select class="ops-input ops-select" id="gen-collection" style="width:150px;"><option value="roma">ROMA</option></select></div>
+            <div class="code-gen-field"><span class="code-gen-label">VARIANT</span><select class="ops-input ops-select" id="gen-variant" style="width:160px;"><option value="black">BLACK</option><option value="navy">NAVY</option><option value="silver">SILVER</option></select></div>
             <div class="code-gen-field"><span class="code-gen-label">QUANTITY</span><input class="ops-input" type="number" id="gen-qty" value="10" min="1" max="200" style="width:120px;"></div>
             <button class="ops-btn ops-btn-primary" onclick="generateCodes()">GENERATE CODES</button>
           </div>
@@ -335,8 +336,8 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
         </div>
         <div class="ops-table-wrap">
           <table class="ops-table">
-            <thead><tr><th>CODE</th><th>VARIANT</th><th>STATUS</th><th>ORDER</th><th>GENERATED</th><th>ACTIVATED</th></tr></thead>
-            <tbody id="codes-body"><tr><td colspan="6" class="ops-table-empty">LOADING...</td></tr></tbody>
+            <thead><tr><th>CODE</th><th>COLLECTION</th><th>VARIANT</th><th>STATUS</th><th>ORDER</th><th>GENERATED</th><th>ACTIVATED</th></tr></thead>
+            <tbody id="codes-body"><tr><td colspan="7" class="ops-table-empty">LOADING...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -625,6 +626,10 @@ const _supabase = createClient(
 const FROM_EMAIL = 'orders@calcaterra.co'
 const FROM_NAME = 'Calcaterra'
 const SAFE_CHARS = 'ACDEFGHJKMNPQRTUVWXYZ234679'
+// Single-letter suffix appended to the CAL prefix per collection.
+// Future collections: register them here. e.g. 'naples': 'N', 'paris': 'P'.
+const COLLECTION_LETTER = { roma: 'R' }
+const collectionLetter = (slug) => COLLECTION_LETTER[slug] || 'R'
 let currentOrder = null
 let allOrders = []
 let allCodes = []
@@ -894,27 +899,39 @@ async function openOrder(id) {
   const codeSection = document.getElementById('modal-code-section')
   if (order.status === 'confirmed') {
     codeSection.style.display = 'block'
-    const { data: availableCodes } = await _supabase.from('warranties').select('id, activation_code, variant').eq('status', 'inactive').order('created_at', { ascending: true })
-    const codesByVariant = {}
-    ;(availableCodes || []).forEach(c => { const v = (c.variant || 'unknown').toLowerCase(); if (!codesByVariant[v]) codesByVariant[v] = []; codesByVariant[v].push(c) })
+    const { data: availableCodes } = await _supabase.from('warranties').select('id, activation_code, variant, collection').eq('status', 'inactive').order('created_at', { ascending: true })
+    // Group available codes by collection + variant so we can match exactly
+    const codesByKey = {}
+    ;(availableCodes || []).forEach(c => {
+      const key = (c.collection || 'roma').toLowerCase() + ':' + (c.variant || 'unknown').toLowerCase()
+      if (!codesByKey[key]) codesByKey[key] = []
+      codesByKey[key].push(c)
+    })
     const assignRows = expandedItems.map((item, idx) => {
       if (item.serial_number) return ''
       const variantRaw = item.product_variants?.name || ''
       const variant = variantRaw.toLowerCase().includes('black') ? 'black' : variantRaw.toLowerCase().includes('navy') ? 'navy' : variantRaw.toLowerCase().includes('silver') ? 'silver' : 'black'
-      const variantCodes = codesByVariant[variant] || []
+      // Derive collection from the variant name. Add new lookups here as
+      // new collections come online (e.g. naples, paris).
+      const lowerName = variantRaw.toLowerCase()
+      const collection = lowerName.includes('naples') ? 'naples'
+                       : lowerName.includes('paris')  ? 'paris'
+                       : 'roma'
+      const matchingCodes = codesByKey[collection + ':' + variant] || []
       const instanceLabel = item._totalInstances > 1 ? ` (${item._instance} of ${item._totalInstances})` : ''
+      const tagText = `${collection.toUpperCase()} ${variant.toUpperCase()} CODES ONLY`
       return `<div style="padding:16px 0;border-bottom:1px solid rgba(242,239,233,0.05);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
           <div>
             <span style="font-size:11px;font-weight:300;color:rgba(242,239,233,0.7);">${item.product_variants?.name || 'Roma Watch'}${instanceLabel}</span>
-            <span style="display:block;font-size:7px;letter-spacing:0.4em;color:rgba(242,239,233,0.3);margin-top:2px;">${variant.toUpperCase()} CODES ONLY</span>
+            <span style="display:block;font-size:7px;letter-spacing:0.4em;color:rgba(242,239,233,0.3);margin-top:2px;">${tagText}</span>
           </div>
-          <span style="font-size:7px;letter-spacing:0.3em;color:rgba(242,239,233,0.25);">${variantCodes.length} AVAILABLE</span>
+          <span style="font-size:7px;letter-spacing:0.3em;color:rgba(242,239,233,0.25);">${matchingCodes.length} AVAILABLE</span>
         </div>
         <div style="display:flex;gap:0;">
           <select class="ops-input ops-select item-code-select" data-item-id="${item.id}" style="flex:1;" onchange="onCodeSelectChange(this)">
             <option value="">— SELECT ${variant.toUpperCase()} CODE —</option>
-            ${variantCodes.map(c => `<option value="${c.id}">${c.activation_code}</option>`).join('')}
+            ${matchingCodes.map(c => `<option value="${c.id}">${c.activation_code}</option>`).join('')}
           </select>
           <button class="ops-btn ops-btn-confirm ops-btn-sm" onclick="assignItemCode(this, '${item.id}', '${id}')">ASSIGN</button>
         </div>
@@ -1017,25 +1034,27 @@ async function saveTracking() {
   toast('Tracking saved')
 }
 
-function generateUniqueCode(existing) {
-  const gen = () => { let c = 'CAL-'; for (let g = 0; g < 2; g++) { if (g > 0) c += '-'; for (let i = 0; i < 4; i++) c += SAFE_CHARS[Math.floor(Math.random() * SAFE_CHARS.length)] } return c }
+function generateUniqueCode(existing, collectionSlug = 'roma') {
+  const prefix = 'CAL' + collectionLetter(collectionSlug)
+  const gen = () => { let c = prefix + '-'; for (let g = 0; g < 2; g++) { if (g > 0) c += '-'; for (let i = 0; i < 4; i++) c += SAFE_CHARS[Math.floor(Math.random() * SAFE_CHARS.length)] } return c }
   let code; let attempts = 0
   do { code = gen(); attempts++ } while (existing.has(code) && attempts < 1000)
   return code
 }
 
 async function generateCodes() {
+  const collection = document.getElementById('gen-collection').value
   const variant = document.getElementById('gen-variant').value
   const qty = parseInt(document.getElementById('gen-qty').value) || 10
   if (qty < 1 || qty > 200) { toast('Enter a quantity between 1 and 200', 'error'); return }
   const { data: existingCodes } = await _supabase.from('warranties').select('activation_code')
   const existingSet = new Set((existingCodes || []).map(c => c.activation_code))
   const newCodes = []
-  for (let i = 0; i < qty; i++) { const code = generateUniqueCode(existingSet); existingSet.add(code); newCodes.push({ activation_code: code, status: 'inactive', variant }) }
+  for (let i = 0; i < qty; i++) { const code = generateUniqueCode(existingSet, collection); existingSet.add(code); newCodes.push({ activation_code: code, status: 'inactive', variant, collection }) }
   const { error } = await _supabase.from('warranties').insert(newCodes)
   if (error) { toast('Error: ' + error.message, 'error'); return }
   document.getElementById('generated-codes-preview').style.display = 'block'
-  document.getElementById('gen-preview-label').textContent = `${qty} CODES GENERATED — ${variant.toUpperCase()}`
+  document.getElementById('gen-preview-label').textContent = `${qty} CODES GENERATED — ${collection.toUpperCase()} / ${variant.toUpperCase()}`
   const dotClass = { black: 'dot-black', navy: 'dot-navy', silver: 'dot-silver' }
   document.getElementById('codes-preview-list').innerHTML = newCodes.map(c => `<div class="code-preview-item"><span>${c.activation_code}</span><div class="variant-dot ${dotClass[variant]}"></div></div>`).join('')
   toast(`${qty} codes generated`)
@@ -1053,7 +1072,7 @@ function printCodes() {
 }
 
 async function loadCodes() {
-  const { data } = await _supabase.from('warranties').select('id, activation_code, status, variant, created_at, activated_at, order_id').order('created_at', { ascending: false })
+  const { data } = await _supabase.from('warranties').select('id, activation_code, status, variant, collection, created_at, activated_at, order_id').order('created_at', { ascending: false })
   allCodes = data || []
   renderCodes(allCodes)
 }
@@ -1062,12 +1081,13 @@ function renderCodes(codes) {
   document.getElementById('codes-body').innerHTML = codes.length ? codes.map(c => `
     <tr>
       <td style="font-family:monospace;font-size:12px;letter-spacing:0.08em;">${c.activation_code}</td>
+      <td><span class="variant-tag" style="background:rgba(242,239,233,0.06);">${(c.collection || 'roma').toUpperCase()}</span></td>
       <td><span class="variant-tag">${(c.variant || '—').toUpperCase()}</span></td>
       <td><span class="status-pill status-${c.status}">${c.status.toUpperCase()}</span></td>
       <td style="font-size:10px;">${c.order_id ? 'CAL-' + c.order_id.slice(0,8).toUpperCase() : '—'}</td>
       <td>${new Date(c.created_at).toLocaleDateString('en-ZA')}</td>
       <td>${c.activated_at ? new Date(c.activated_at).toLocaleDateString('en-ZA') : '—'}</td>
-    </tr>`).join('') : '<tr><td colspan="6" class="ops-table-empty">NO CODES YET</td></tr>'
+    </tr>`).join('') : '<tr><td colspan="7" class="ops-table-empty">NO CODES YET</td></tr>'
 }
 
 function filterCodes() {
