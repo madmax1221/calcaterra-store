@@ -98,6 +98,23 @@ footer{background:#141210;padding:80px 52px 48px;}
 .auth-benefit-num{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.32);min-width:20px;flex-shrink:0;}
 .auth-benefit-text{font-family:'Times New Roman',Times,serif;font-size:14.5px;color:rgba(26,24,20,0.72);line-height:1.75;letter-spacing:0.005em;}
 .auth-benefit-text em{font-style:italic;color:rgba(26,24,20,0.45);}
+/* Password strength meter — minimal, on-brand */
+.pw-strength{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+.pw-strength-track{display:flex;gap:4px;}
+.pw-strength-seg{flex:1;height:2px;background:rgba(26,24,20,0.08);transition:background .35s ease;}
+.pw-strength-label{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.42em;color:rgba(26,24,20,0.4);text-transform:uppercase;}
+.pw-strength[data-score="1"] .pw-strength-seg:nth-child(-n+1){background:#c0392b;}
+.pw-strength[data-score="2"] .pw-strength-seg:nth-child(-n+2){background:#d99a40;}
+.pw-strength[data-score="3"] .pw-strength-seg:nth-child(-n+3){background:#b8a368;}
+.pw-strength[data-score="4"] .pw-strength-seg:nth-child(-n+4){background:#4d6b3e;}
+.pw-strength[data-score="1"] .pw-strength-label{color:#c0392b;}
+.pw-strength[data-score="2"] .pw-strength-label{color:#d99a40;}
+.pw-strength[data-score="3"] .pw-strength-label{color:rgba(26,24,20,0.55);}
+.pw-strength[data-score="4"] .pw-strength-label{color:#4d6b3e;}
+.pw-match{margin-top:8px;font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:300;letter-spacing:0.32em;color:rgba(26,24,20,0.4);text-transform:uppercase;display:none;}
+.pw-match.show{display:block;}
+.pw-match.match{color:#4d6b3e;}
+.pw-match.mismatch{color:#c0392b;}
 @media(max-width:860px){
   #nav{padding:0 24px;}
   .register-page{grid-template-columns:1fr;}
@@ -186,7 +203,21 @@ footer{background:#141210;padding:80px 52px 48px;}
       </div>
       <div class="form-group">
         <label class="form-label">PASSWORD</label>
-        <input type="password" id="password" class="form-input" placeholder="••••••••" required minlength="8">
+        <input type="password" id="password" class="form-input" placeholder="Min. 8 characters" required minlength="8" oninput="updatePwStrength(); updatePwMatch();" autocomplete="new-password">
+        <div class="pw-strength" id="pw-strength" data-score="0">
+          <div class="pw-strength-track">
+            <span class="pw-strength-seg"></span>
+            <span class="pw-strength-seg"></span>
+            <span class="pw-strength-seg"></span>
+            <span class="pw-strength-seg"></span>
+          </div>
+          <span class="pw-strength-label" id="pw-strength-label">Strength</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">CONFIRM PASSWORD</label>
+        <input type="password" id="passwordConfirm" class="form-input" placeholder="Repeat password" required minlength="8" oninput="updatePwMatch();" autocomplete="new-password">
+        <span class="pw-match" id="pw-match"></span>
       </div>
       <div class="form-toggles">
         <div class="toggle-item">
@@ -272,12 +303,50 @@ footer{background:#141210;padding:80px 52px 48px;}
     if (session) window.location.href = '/'
   })
 
+  // Password strength scoring — 0 to 4 buckets:
+  // 0 empty | 1 too short / one class | 2 two classes | 3 three classes | 4 long + four classes
+  function scorePassword(pw) {
+    if (!pw) return 0
+    const classes =
+      (/[a-z]/.test(pw) ? 1 : 0) +
+      (/[A-Z]/.test(pw) ? 1 : 0) +
+      (/[0-9]/.test(pw) ? 1 : 0) +
+      (/[^A-Za-z0-9]/.test(pw) ? 1 : 0)
+    if (pw.length < 8) return 1
+    if (pw.length >= 12 && classes >= 3) return 4
+    if (pw.length >= 10 && classes >= 2) return 3
+    if (classes >= 2) return 2
+    return 1
+  }
+  function updatePwStrength() {
+    const pw = document.getElementById('password').value
+    const score = scorePassword(pw)
+    const el = document.getElementById('pw-strength')
+    const label = document.getElementById('pw-strength-label')
+    el.setAttribute('data-score', score.toString())
+    label.textContent = ['Strength','Too weak','Fair','Good','Strong'][score] || 'Strength'
+  }
+  function updatePwMatch() {
+    const pw = document.getElementById('password').value
+    const conf = document.getElementById('passwordConfirm').value
+    const el = document.getElementById('pw-match')
+    if (!conf) { el.classList.remove('show','match','mismatch'); el.textContent=''; return }
+    if (pw === conf) {
+      el.classList.add('show','match'); el.classList.remove('mismatch')
+      el.textContent = 'Match'
+    } else {
+      el.classList.add('show','mismatch'); el.classList.remove('match')
+      el.textContent = 'Passwords do not match'
+    }
+  }
+
   async function handleRegister(e) {
     e.preventDefault()
     const firstName = document.getElementById('firstName').value.trim()
     const lastName = document.getElementById('lastName').value.trim()
     const email = document.getElementById('email').value.trim()
     const password = document.getElementById('password').value
+    const passwordConfirm = document.getElementById('passwordConfirm').value
     const newsletter = document.getElementById('newsletterToggle').checked
     const btn = document.getElementById('submitBtn')
     const errorMsg = document.getElementById('errorMsg')
@@ -285,6 +354,19 @@ footer{background:#141210;padding:80px 52px 48px;}
 
     errorMsg.classList.remove('show')
     successMsg.classList.remove('show')
+
+    // Guard: passwords must match, and at least 'fair' strength
+    if (password !== passwordConfirm) {
+      errorMsg.textContent = 'PASSWORDS DO NOT MATCH'
+      errorMsg.classList.add('show')
+      return
+    }
+    if (scorePassword(password) < 2) {
+      errorMsg.textContent = 'PASSWORD TOO WEAK. USE LETTERS, NUMBERS, AND 8+ CHARACTERS.'
+      errorMsg.classList.add('show')
+      return
+    }
+
     btn.disabled = true
     btn.textContent = 'CREATING ACCOUNT...'
 
