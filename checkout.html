@@ -617,6 +617,19 @@ btn.textContent = 'PROCESSING...'
       if (error) throw error
       orderId = newOrderId
 
+      // Auto-subscribe the buyer to the newsletter (soft opt-in under GDPR PECR
+      // Article 13 — same-product/similar-product communications are permitted
+      // for customers, and unsubscribe is one click from every email).
+      if (email) {
+        const firstName = currentCustomer?.first_name
+          || (document.getElementById('info-first')?.value || '').trim()
+          || null
+        _supabase.from('newsletter_subscribers').upsert(
+          { email: email.toLowerCase(), first_name: firstName, source: 'customer' },
+          { onConflict: 'email' }
+        ).then(() => {}).catch(err => console.error('Newsletter auto-subscribe:', err))
+      }
+
       // Auto-save address for logged-in users who typed in the guest form
       if (currentCustomer && !selectedAddressId && shippingAddress.line1) {
         const { data: savedAddr } = await _supabase.from('addresses').insert({

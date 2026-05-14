@@ -106,11 +106,12 @@ serve(async (req) => {
     if (audience === 'all') {
       recipients = subs.map(s => s.email).filter(Boolean)
     } else {
-      // Build a set of buyer emails (customers who have a paid order)
+      // Build a set of buyer emails (customers who have any order — pending,
+      // confirmed, shipped, or delivered; excludes cancelled).
       const { data: paidOrders, error: ordErr } = await admin
         .from('orders')
         .select('customers(email)')
-        .in('status', ['confirmed', 'shipped', 'delivered'])
+        .in('status', ['pending', 'confirmed', 'shipped', 'delivered'])
       if (ordErr) return json({ error: 'Failed to load orders', details: ordErr }, 500)
       const buyerEmails = new Set(
         (paidOrders || [])
