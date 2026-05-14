@@ -20,7 +20,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;scroll-snap-type:y proximity;scroll-padding-top:96px;}
 body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;overflow-x:hidden;}
 ::-webkit-scrollbar{width:1px;}
 ::-webkit-scrollbar-thumb{background:rgba(26,24,20,0.15);}
@@ -197,7 +197,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .references-section{padding:120px 0 80px;background:#f2efe9;}
 .references-header{text-align:center;margin:0 auto 140px;padding:0 52px;max-width:900px;}
 .references-header .section-sub{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:clamp(15px,1.5vw,18px);color:rgba(26,24,20,0.5);line-height:1.7;margin-top:12px;}
-.ref-stage{max-width:1280px;margin:0 auto 180px;padding:0 52px;display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:center;}
+.ref-stage{max-width:1280px;margin:0 auto 180px;padding:0 52px;display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:center;scroll-snap-align:center;scroll-snap-stop:normal;}
 .ref-stage:last-of-type{margin-bottom:60px;}
 .ref-stage.reverse .ref-stage-info{order:-1;}
 .ref-stage-img{position:relative;display:block;overflow:visible;aspect-ratio:1/1;background:transparent;}
@@ -226,7 +226,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 @media(max-width:1100px){.ref-nav{display:none;}}
 
 /* Finale — Silver as the closing visual punctuation */
-.ref-finale{max-width:1280px;margin:60px auto 80px;padding:0 52px;text-align:center;}
+.ref-finale{max-width:1280px;margin:60px auto 80px;padding:0 52px;text-align:center;scroll-snap-align:center;scroll-snap-stop:normal;}
 .ref-finale-img{display:block;width:100%;max-width:440px;margin:0 auto 36px;aspect-ratio:1/1;overflow:visible;background:transparent;}
 .ref-finale-img img{width:100%;height:100%;object-fit:contain;transition:transform 1.4s cubic-bezier(.25,.46,.45,.94);}
 .ref-finale:hover .ref-finale-img img{transform:scale(1.03);}
