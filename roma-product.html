@@ -195,6 +195,71 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .detail-heading{font-size:clamp(28px,3vw,44px);font-weight:300;line-height:1.2;letter-spacing:0.02em;color:#f2efe9;margin-bottom:28px;}
 .detail-heading em{font-style:italic;color:rgba(242,239,233,0.4);}
 .detail-body{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.05em;line-height:2;color:rgba(242,239,233,0.58);}
+
+/* ── DETAILED SPECIFICATIONS ───────────────────────────────────── */
+.specs-deep{max-width:1100px;margin:0 auto;padding:120px 52px;}
+.specs-deep-header{text-align:center;margin-bottom:80px;}
+.specs-deep-eyebrow{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);display:block;margin-bottom:20px;text-transform:uppercase;}
+.specs-deep-title{font-size:clamp(34px,4vw,56px);font-weight:300;line-height:1.1;letter-spacing:0.025em;color:#1a1814;}
+.specs-deep-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.specs-deep-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 96px;}
+.specs-deep-col h3{font-family:'Times New Roman',Times,serif;font-size:20px;font-weight:300;letter-spacing:0.03em;color:#1a1814;margin:0 0 20px;padding-bottom:12px;border-bottom:1px solid rgba(26,24,20,0.12);}
+.specs-deep-col h3 em{font-style:italic;color:rgba(26,24,20,0.4);}
+.specs-deep-col h3:not(:first-child){margin-top:48px;}
+.specs-deep-row{display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:13px 0;border-bottom:1px solid rgba(26,24,20,0.05);}
+.specs-deep-row:last-child{border-bottom:none;}
+.specs-deep-key{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.42em;color:rgba(26,24,20,0.45);text-transform:uppercase;flex-shrink:0;}
+.specs-deep-val{font-family:'Times New Roman',Times,serif;font-size:14px;color:rgba(26,24,20,0.78);text-align:right;letter-spacing:0.005em;}
+
+/* ── IN THE BOX ──────────────────────────────────────────────── */
+.in-box{background:#141210;padding:120px 52px;}
+.in-box-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:80px;align-items:start;}
+.in-box-header h2{font-size:clamp(34px,4vw,52px);font-weight:300;line-height:1.1;letter-spacing:0.025em;color:#f2efe9;margin:0 0 14px;}
+.in-box-header h2 em{font-style:italic;color:rgba(242,239,233,0.4);}
+.in-box-eyebrow{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(242,239,233,0.45);display:block;margin-bottom:20px;text-transform:uppercase;}
+.in-box-sub{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:16px;color:rgba(242,239,233,0.55);line-height:1.7;margin-top:18px;}
+.in-box-list{list-style:none;padding:0;margin:0;}
+.in-box-item{display:flex;gap:24px;align-items:flex-start;padding:22px 0;border-bottom:1px solid rgba(242,239,233,0.06);}
+.in-box-item:last-child{border-bottom:none;}
+.in-box-num{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:18px;color:rgba(242,239,233,0.32);min-width:36px;flex-shrink:0;}
+.in-box-text{font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:rgba(242,239,233,0.85);line-height:1.55;}
+.in-box-text em{font-style:italic;font-size:14px;color:rgba(242,239,233,0.45);display:block;margin-top:6px;letter-spacing:0.01em;}
+
+/* ── FAQ ─────────────────────────────────────────────────────── */
+.faq-section{max-width:880px;margin:0 auto;padding:120px 52px;}
+.faq-header{text-align:center;margin-bottom:64px;}
+.faq-eyebrow{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);display:block;margin-bottom:20px;text-transform:uppercase;}
+.faq-title{font-size:clamp(34px,4vw,56px);font-weight:300;line-height:1.1;letter-spacing:0.025em;color:#1a1814;}
+.faq-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.faq-item{border-bottom:1px solid rgba(26,24,20,0.1);}
+.faq-item:first-of-type{border-top:1px solid rgba(26,24,20,0.1);}
+.faq-q{width:100%;background:none;border:none;cursor:pointer;text-align:left;padding:26px 0;display:flex;justify-content:space-between;align-items:center;gap:24px;font-family:'Times New Roman',Times,serif;font-size:clamp(17px,1.6vw,20px);font-weight:300;color:#1a1814;letter-spacing:0.005em;transition:color .25s;}
+.faq-q:hover{color:rgba(26,24,20,0.6);}
+.faq-q-icon{font-family:'Times New Roman',Times,serif;font-size:22px;font-weight:300;color:rgba(26,24,20,0.4);transition:transform .35s ease;flex-shrink:0;}
+.faq-item.open .faq-q-icon{transform:rotate(45deg);color:#1a1814;}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1);}
+.faq-item.open .faq-a{max-height:600px;}
+.faq-a-inner{padding:0 0 26px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.04em;line-height:1.95;color:rgba(26,24,20,0.62);}
+.faq-a-inner a{color:#1a1814;border-bottom:1px solid rgba(26,24,20,0.25);text-decoration:none;}
+.faq-a-inner a:hover{border-bottom-color:#1a1814;}
+
+/* ── STICKY ATC BAR (mobile + desktop on scroll) ─────────────── */
+.sticky-atc{position:fixed;left:0;right:0;bottom:0;z-index:200;background:#1a1814;border-top:1px solid rgba(242,239,233,0.08);padding:14px 24px;display:flex;align-items:center;gap:18px;transform:translateY(110%);transition:transform .45s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 32px rgba(14,13,11,0.35);}
+.sticky-atc.show{transform:translateY(0);}
+.sticky-atc-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.sticky-atc-name{font-family:'Times New Roman',Times,serif;font-size:15px;font-weight:300;letter-spacing:0.02em;color:#f2efe9;line-height:1.2;}
+.sticky-atc-name em{font-style:italic;color:rgba(242,239,233,0.55);}
+.sticky-atc-meta{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.42em;color:rgba(242,239,233,0.45);text-transform:uppercase;}
+.sticky-atc-price{font-family:'Times New Roman',Times,serif;font-size:18px;font-weight:300;color:#f2efe9;letter-spacing:0.02em;flex-shrink:0;}
+.sticky-atc-btn{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:400;letter-spacing:0.45em;color:#1a1814;background:#f2efe9;border:none;cursor:pointer;padding:14px 22px;text-transform:uppercase;transition:background .25s,letter-spacing .25s;flex-shrink:0;}
+.sticky-atc-btn:hover{background:#fff;letter-spacing:0.55em;}
+@media(max-width:560px){
+  .sticky-atc{padding:10px 16px;gap:10px;}
+  .sticky-atc-name{font-size:13px;}
+  .sticky-atc-meta{display:none;}
+  .sticky-atc-price{font-size:15px;}
+  .sticky-atc-btn{padding:12px 14px;font-size:8.5px;letter-spacing:0.32em;}
+}
 footer{background:#141210;padding:80px 52px 48px;}
 .foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
 .foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
@@ -216,6 +281,13 @@ footer{background:#141210;padding:80px 52px 48px;}
   .product-main-img{aspect-ratio:3/2;max-height:70vw;}
   .product-detail-section{grid-template-columns:1fr;padding:0 24px 80px;}
   .detail-text{padding:52px 32px;}
+  .specs-deep{padding:80px 24px;}
+  .specs-deep-header{margin-bottom:56px;}
+  .specs-deep-grid{grid-template-columns:1fr;gap:0;}
+  .specs-deep-col h3:not(:first-child){margin-top:40px;}
+  .in-box{padding:80px 24px;}
+  .in-box-inner{grid-template-columns:1fr;gap:48px;}
+  .faq-section{padding:80px 24px;}
   footer{padding:48px 24px 36px;}
   .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
   #account-drawer{width:100%;top:96px;}
@@ -401,6 +473,110 @@ footer{background:#141210;padding:80px 52px 48px;}
   </div>
 </div>
 
+<!-- DETAILED SPECIFICATIONS -->
+<section class="specs-deep">
+  <div class="specs-deep-header fade">
+    <span class="specs-deep-eyebrow">Materials &amp; Construction</span>
+    <h2 class="specs-deep-title">Every choice <em>deliberate.</em></h2>
+  </div>
+  <div class="specs-deep-grid">
+    <div class="specs-deep-col fade">
+      <h3>Case &amp; <em>crystal.</em></h3>
+      <div class="specs-deep-row"><span class="specs-deep-key">Material</span><span class="specs-deep-val">316L Stainless Steel</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Finish</span><span class="specs-deep-val">Brushed &amp; polished</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Diameter</span><span class="specs-deep-val">40 mm</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Thickness</span><span class="specs-deep-val">10.8 mm</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Lug to lug</span><span class="specs-deep-val">46 mm</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Lug width</span><span class="specs-deep-val">20 mm</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Crystal</span><span class="specs-deep-val">Domed Sapphire</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">AR coating</span><span class="specs-deep-val">Interior, single layer</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Caseback</span><span class="specs-deep-val">Solid steel, engraved</span></div>
+
+      <h3>Dial &amp; <em>hands.</em></h3>
+      <div class="specs-deep-row"><span class="specs-deep-key">Dial</span><span class="specs-deep-val" id="deepDial">Sunburst Textured Black</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Indices</span><span class="specs-deep-val">Applied steel, lume-tipped</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Hands</span><span class="specs-deep-val">Polished steel, lume-filled</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Lume</span><span class="specs-deep-val">Super-LumiNova C3</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Date</span><span class="specs-deep-val">3 o'clock, matched dial</span></div>
+    </div>
+
+    <div class="specs-deep-col fade fade-d1">
+      <h3>Movement &amp; <em>accuracy.</em></h3>
+      <div class="specs-deep-row"><span class="specs-deep-key">Caliber</span><span class="specs-deep-val">Japanese Quartz</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Accuracy</span><span class="specs-deep-val">±15 sec / month</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Battery</span><span class="specs-deep-val">SR626SW, 2 to 3 year life</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Functions</span><span class="specs-deep-val">Hours, minutes, seconds, date</span></div>
+
+      <h3>Bracelet &amp; <em>clasp.</em></h3>
+      <div class="specs-deep-row"><span class="specs-deep-key">Style</span><span class="specs-deep-val">Integrated H-link, tapered</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Finish</span><span class="specs-deep-val">Brushed centre, polished edge</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Clasp</span><span class="specs-deep-val">Butterfly deployant</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Micro-adjust</span><span class="specs-deep-val">3 positions, 2 mm each</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Removable links</span><span class="specs-deep-val">Tool included</span></div>
+
+      <h3>Water &amp; <em>warranty.</em></h3>
+      <div class="specs-deep-row"><span class="specs-deep-key">Water resistance</span><span class="specs-deep-val">5 ATM / 50 m</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Suitable for</span><span class="specs-deep-val">Rain, hand-washing</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Not suitable for</span><span class="specs-deep-val">Swimming, showering</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Warranty</span><span class="specs-deep-val">2 years international</span></div>
+      <div class="specs-deep-row"><span class="specs-deep-key">Origin</span><span class="specs-deep-val">Designed in Italy</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- IN THE BOX -->
+<section class="in-box">
+  <div class="in-box-inner">
+    <div class="in-box-header fade">
+      <span class="in-box-eyebrow">What arrives</span>
+      <h2>In the <em>box.</em></h2>
+      <p class="in-box-sub">A complete unboxing. Nothing missing. Nothing for show.</p>
+    </div>
+    <ul class="in-box-list fade fade-d1">
+      <li class="in-box-item"><span class="in-box-num">I.</span><span class="in-box-text">The Roma timepiece<em>Your chosen reference, in its full presentation case.</em></span></li>
+      <li class="in-box-item"><span class="in-box-num">II.</span><span class="in-box-text">Activation card<em>Your unique warranty activation code. Keep it. It links the watch to your name.</em></span></li>
+      <li class="in-box-item"><span class="in-box-num">III.</span><span class="in-box-text">Two-year warranty document<em>International coverage, manufacturer defects.</em></span></li>
+      <li class="in-box-item"><span class="in-box-num">IV.</span><span class="in-box-text">Bracelet sizing tool<em>For at-home link removal. No appointment required.</em></span></li>
+      <li class="in-box-item"><span class="in-box-num">V.</span><span class="in-box-text">Calcaterra owner's guide<em>Care, water resistance, daily wear.</em></span></li>
+      <li class="in-box-item"><span class="in-box-num">VI.</span><span class="in-box-text">Calcaterra outer presentation box<em>For storage, gifting, or display.</em></span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-header fade">
+    <span class="faq-eyebrow">Frequently asked</span>
+    <h2 class="faq-title">Before you <em>decide.</em></h2>
+  </div>
+  <div class="faq-list fade">
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">When will my order ship?<span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Orders are dispatched within 2 to 3 business days of payment confirmation. Tracking is sent the moment your timepiece leaves us. Most European destinations arrive within 3 to 7 business days, North America within 7 to 10, rest of world within 10 to 14. See the full <a href="/shipping">shipping policy</a>.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">How do I activate the two-year warranty?<span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Your activation code is printed on the card included with your watch. Sign in to your <a href="/dashboard?tab=register">account</a>, navigate to Register a Watch, and enter the code. The watch is then permanently linked to your name. Full details on the <a href="/warranty">warranty page</a>.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I return or exchange the watch?<span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Yes. We accept returns within 30 days of delivery, provided the timepiece is unworn and in its original packaging. Exchanges across colorways are available subject to stock. See the <a href="/returns">returns policy</a>.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is the bracelet adjustable at home?<span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Yes. Each Roma ships with a bracelet sizing tool. Links are screwed and removable in minutes without a watchmaker. The clasp also includes three micro-adjustment positions of 2 mm each, for daily comfort changes.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is it water-resistant for swimming?<span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">No. 5 ATM (50 m) is rated for splashes, rain, and hand-washing. It is not designed for swimming, showering, or saunas. Removing the watch before water contact extends seal life and protects the movement.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">Are all duties and taxes included in the price?<span class="faq-q-icon">+</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Yes. Calcaterra ships on a Delivered Duty Paid (DDP) basis worldwide. The price you see at checkout is the total. No surprise customs invoice on delivery.</div></div>
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="foot-grid">
     <div>
@@ -414,6 +590,16 @@ footer{background:#141210;padding:80px 52px 48px;}
   </div>
   <div class="foot-bottom"><span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span></div>
 </footer>
+
+<!-- STICKY ADD-TO-CART (appears on scroll past the hero ATC) -->
+<div class="sticky-atc" id="stickyAtc" role="region" aria-label="Add to cart">
+  <div class="sticky-atc-info">
+    <span class="sticky-atc-name">Roma <em id="stickyName">Black.</em></span>
+    <span class="sticky-atc-meta" id="stickyRef">Ref. I · Steel on Steel</span>
+  </div>
+  <span class="sticky-atc-price">€<span id="stickyPrice">329</span></span>
+  <button class="sticky-atc-btn" onclick="addToCart(); document.getElementById('stickyAtc').classList.remove('show');">Add</button>
+</div>
 
 <script>
   const { createClient } = supabase
@@ -483,7 +669,8 @@ footer{background:#141210;padding:80px 52px 48px;}
     initNav()
     initSearch()
     setTimeout(reveal, 300)
-    window.addEventListener('scroll', reveal, { passive: true })
+    window.addEventListener('scroll', () => { reveal(); updateStickyAtc() }, { passive: true })
+    updateStickyAtc()
   })
 
   async function loadFromSupabase() {
@@ -584,6 +771,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     document.getElementById('productRef').innerHTML = v.ref
     document.getElementById('productDescription').textContent = v.description
     document.getElementById('specDial').textContent = v.dial
+    const deepDial = document.getElementById('deepDial'); if (deepDial) deepDial.textContent = v.dial
     document.getElementById('breadcrumb-current').textContent = v.name
     document.title = 'Roma ' + v.name + ' — Calcaterra'
     const mainEl = document.getElementById('mainImgEl')
@@ -602,6 +790,30 @@ footer{background:#141210;padding:80px 52px 48px;}
       t.onclick = () => setThumb(t, src)
     })
     document.getElementById('atcConfirm').classList.remove('show')
+    // Sync sticky ATC bar to current variant
+    const stickyName = document.getElementById('stickyName')
+    const stickyRef = document.getElementById('stickyRef')
+    const stickyPrice = document.getElementById('stickyPrice')
+    if (stickyName) stickyName.textContent = v.name + '.'
+    if (stickyRef) {
+      const refMap = { black: 'I', navy: 'II', silver: 'III' }
+      stickyRef.textContent = `Ref. ${refMap[key] || 'I'} · Steel on Steel`
+    }
+    if (stickyPrice) stickyPrice.textContent = productPrice
+  }
+
+  // Show the sticky ATC bar once the hero ATC has scrolled out of view,
+  // hide it again near the very top or once footer is mostly visible.
+  function updateStickyAtc() {
+    const stickyEl = document.getElementById('stickyAtc')
+    const heroAtc = document.querySelector('.atc-btn')
+    const footer = document.querySelector('footer')
+    if (!stickyEl || !heroAtc) return
+    const heroBottom = heroAtc.getBoundingClientRect().bottom
+    const footerTop = footer ? footer.getBoundingClientRect().top : Infinity
+    const past = heroBottom < 0
+    const beforeFooter = footerTop > window.innerHeight * 0.5
+    stickyEl.classList.toggle('show', past && beforeFooter)
   }
 
   async function addToCart() {
