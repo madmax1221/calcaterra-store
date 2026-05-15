@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Roma Owner's Guide &amp; Warranty · Calcaterra</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   PRINT SETUP · A6 booklet (105 × 148 mm)
+   ───────────────────────────────────────────────────────────── */
+@page {
+  size: 105mm 148mm;
+  margin: 0;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+html,body{
+  background:#e0ddd6;
+  font-family:'Times New Roman',Times,serif;
+  color:#1a1814;
+  -webkit-print-color-adjust:exact;
+  print-color-adjust:exact;
+}
+
+/* On-screen viewer: stack pages vertically with a faint shadow so the booklet
+   feels like real pages on the table. Disappears in print. */
+.viewer{
+  display:flex;flex-direction:column;align-items:center;
+  padding:48px 24px;gap:32px;
+}
+.viewer-toolbar{
+  position:fixed;top:0;left:0;right:0;background:#1a1814;color:#f2efe9;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 24px;z-index:100;
+  font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.32em;
+  border-bottom:1px solid rgba(242,239,233,0.1);
+}
+.viewer-toolbar-title{opacity:0.9;}
+.viewer-toolbar-meta{opacity:0.55;font-size:9px;}
+.viewer-toolbar-btn{
+  background:#f2efe9;color:#1a1814;border:none;cursor:pointer;
+  padding:10px 18px;font-family:'Montserrat',sans-serif;font-size:9px;
+  font-weight:400;letter-spacing:0.4em;transition:letter-spacing .25s;
+}
+.viewer-toolbar-btn:hover{letter-spacing:0.55em;}
+.viewer-spacer{height:60px;}
+
+/* The page itself · A6 */
+.page{
+  width:105mm;height:148mm;
+  background:#f2efe9;
+  position:relative;
+  overflow:hidden;
+  page-break-after:always;
+  padding:14mm 12mm;
+  display:flex;flex-direction:column;
+}
+.page.dark{background:#141210;color:#e9e5de;}
+.page:last-child{page-break-after:auto;}
+
+/* On screen, give pages a subtle shadow */
+@media screen {
+  .page{box-shadow:0 6px 28px rgba(20,18,16,0.22);}
+}
+
+/* Brand atoms inside a page */
+.b-mark{
+  font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;
+  letter-spacing:0.65em;color:rgba(26,24,20,0.55);text-transform:uppercase;
+}
+.dark .b-mark{color:rgba(242,239,233,0.55);}
+.b-num{
+  font-family:'Times New Roman',Times,serif;font-style:italic;
+  font-size:13px;color:rgba(26,24,20,0.32);
+}
+.dark .b-num{color:rgba(242,239,233,0.32);}
+.b-eyebrow{
+  font-family:'Montserrat',sans-serif;font-size:6.5px;font-weight:300;
+  letter-spacing:0.55em;color:rgba(26,24,20,0.45);text-transform:uppercase;
+  margin-bottom:10px;display:block;
+}
+.dark .b-eyebrow{color:rgba(242,239,233,0.45);}
+.b-h1{
+  font-family:'Times New Roman',Times,serif;font-size:26px;font-weight:300;
+  line-height:1.1;letter-spacing:0.02em;color:#1a1814;margin-bottom:12px;
+}
+.dark .b-h1{color:#f2efe9;}
+.b-h1 em{font-style:italic;color:rgba(26,24,20,0.4);}
+.dark .b-h1 em{color:rgba(242,239,233,0.4);}
+.b-h2{
+  font-family:'Times New Roman',Times,serif;font-size:14px;font-weight:300;
+  letter-spacing:0.025em;color:#1a1814;margin-bottom:10px;
+}
+.b-h2 em{font-style:italic;color:rgba(26,24,20,0.4);}
+.b-body{
+  font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;
+  letter-spacing:0.04em;line-height:1.85;color:rgba(26,24,20,0.72);
+}
+.b-body em{font-style:italic;color:#1a1814;}
+.dark .b-body{color:rgba(242,239,233,0.72);}
+.b-body strong{font-weight:400;color:#1a1814;}
+.dark .b-body strong{color:#f2efe9;}
+.b-hairline{height:1px;background:rgba(26,24,20,0.12);margin:14px 0;}
+.dark .b-hairline{background:rgba(242,239,233,0.12);}
+.b-footer{
+  position:absolute;left:12mm;right:12mm;bottom:8mm;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  font-family:'Montserrat',sans-serif;font-size:6px;font-weight:300;
+  letter-spacing:0.45em;color:rgba(26,24,20,0.4);
+}
+.dark .b-footer{color:rgba(242,239,233,0.4);}
+
+/* Header strip at top of inner pages */
+.page-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:8mm;margin-bottom:6mm;
+  border-bottom:1px solid rgba(26,24,20,0.08);
+}
+.dark .page-head{border-bottom-color:rgba(242,239,233,0.08);}
+
+/* Specific page styles */
+.cover{justify-content:space-between;align-items:center;text-align:center;padding:18mm 12mm;}
+.cover-mark{font-size:36px;line-height:1;letter-spacing:0;color:#1a1814;margin-bottom:0;}
+.cover-eyebrow{font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:0.68em;color:rgba(26,24,20,0.5);margin-top:14mm;}
+.cover-title{font-family:'Times New Roman',Times,serif;font-size:30px;font-weight:300;letter-spacing:0.03em;line-height:1.05;color:#1a1814;margin-top:4mm;}
+.cover-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.cover-sub{font-family:'Times New Roman',Times,serif;font-size:14px;font-style:italic;color:rgba(26,24,20,0.5);margin-top:4mm;}
+.cover-footer{font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:0.62em;color:rgba(26,24,20,0.4);}
+
+.note-list{list-style:none;padding:0;margin:0;}
+.note-list li{padding:6px 0;border-bottom:1px dotted rgba(26,24,20,0.12);font-family:'Montserrat',sans-serif;font-size:8.5px;letter-spacing:0.04em;line-height:1.7;color:rgba(26,24,20,0.7);}
+.note-list li:last-child{border-bottom:none;}
+.note-list li strong{font-weight:400;color:#1a1814;display:block;letter-spacing:0.32em;font-size:7px;margin-bottom:2px;text-transform:uppercase;}
+
+.diagram{
+  border:1px solid rgba(26,24,20,0.18);padding:8mm 6mm;margin:6mm 0;
+  text-align:center;font-family:'Montserrat',sans-serif;font-size:8px;
+  letter-spacing:0.12em;color:rgba(26,24,20,0.6);line-height:1.7;
+}
+.diagram .pos{display:block;font-family:'Times New Roman',Times,serif;font-style:italic;font-size:13px;color:#1a1814;margin-bottom:2px;}
+
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:5mm;}
+.do-dont-col h4{font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:0.45em;font-weight:400;text-transform:uppercase;margin-bottom:5mm;color:#1a1814;}
+.do-dont-col li{font-family:'Montserrat',sans-serif;font-size:7.5px;letter-spacing:0.04em;line-height:1.7;color:rgba(26,24,20,0.7);list-style:none;padding-left:8px;position:relative;margin-bottom:3mm;}
+.do-dont-col li::before{content:'·';position:absolute;left:0;color:rgba(26,24,20,0.4);}
+.do-dont-col.dont li::before{content:'×';font-family:'Times New Roman';color:rgba(180,60,60,0.55);font-size:8px;top:-1px;}
+
+.warranty-block{padding:5mm 0;border-bottom:1px solid rgba(26,24,20,0.08);}
+.warranty-block:last-child{border-bottom:none;}
+.warranty-block h3{font-family:'Times New Roman',Times,serif;font-size:11px;font-weight:300;letter-spacing:0.02em;color:#1a1814;margin-bottom:3mm;}
+.warranty-block h3 em{font-style:italic;color:rgba(26,24,20,0.45);}
+
+.spec-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(26,24,20,0.06);font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.06em;}
+.spec-row:last-child{border-bottom:none;}
+.spec-row .k{color:rgba(26,24,20,0.5);letter-spacing:0.32em;font-size:7px;text-transform:uppercase;}
+.spec-row .v{color:#1a1814;}
+
+.signature{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:13px;color:#1a1814;margin-top:5mm;}
+.signature-sub{font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:0.45em;color:rgba(26,24,20,0.5);margin-top:2mm;text-transform:uppercase;}
+
+.back-cover{justify-content:space-between;align-items:center;text-align:center;}
+.back-cover-mark{font-family:'Times New Roman',Times,serif;font-size:18px;letter-spacing:0.18em;color:#1a1814;}
+.back-cover-statement{font-family:'Times New Roman',Times,serif;font-size:18px;font-weight:300;line-height:1.25;color:#1a1814;max-width:75mm;}
+.back-cover-statement em{font-style:italic;color:rgba(26,24,20,0.4);}
+.back-cover-footer{font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:0.62em;color:rgba(26,24,20,0.4);}
+
+@media print {
+  html,body{background:#fff;}
+  .viewer{padding:0;gap:0;}
+  .viewer-toolbar,.viewer-spacer{display:none !important;}
+  .page{box-shadow:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- Toolbar · screen-only -->
+<div class="viewer-toolbar">
+  <span class="viewer-toolbar-title">Roma Owner's Guide · A6 (105 × 148 mm)</span>
+  <span class="viewer-toolbar-meta">13 pages · print at 100%</span>
+  <button class="viewer-toolbar-btn" onclick="window.print()">DOWNLOAD PDF</button>
+</div>
+<div class="viewer-spacer"></div>
+
+<div class="viewer">
+
+<!-- ════ PAGE 1 · COVER ════ -->
+<section class="page cover">
+  <div></div>
+  <div>
+    <div class="cover-mark">✦</div>
+    <p class="cover-eyebrow">CALCATERRA</p>
+    <h1 class="cover-title">Owner's Guide<br><em>&amp; Warranty.</em></h1>
+    <p class="cover-sub">The Roma.</p>
+  </div>
+  <p class="cover-footer">REF. I · QUARTZ · 40MM</p>
+</section>
+
+<!-- ════ PAGE 2 · A NOTE FROM THE FOUNDER ════ -->
+<section class="page">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">I.</span>
+  </div>
+  <span class="b-eyebrow">A note from the founder</span>
+  <h2 class="b-h1">Thank you for <em>deciding.</em></h2>
+  <div class="b-hairline"></div>
+  <p class="b-body">
+    The watch in your hand is the first reference Calcaterra has produced. It exists because we believed an object could be both quiet and resolved, both restrained and complete.
+    <br><br>
+    What follows is everything you need to know to wear it well, to keep it accurately, and to claim against it should something fail. We have kept this short, because the watch should speak more than the booklet.
+  </p>
+  <p class="signature">Massimo Calcaterra.</p>
+  <p class="signature-sub">Founder</p>
+  <div class="b-footer"><span>OWNER'S GUIDE</span><span>02</span></div>
+</section>
+
+<!-- ════ PAGE 3 · YOUR TIMEPIECE ════ -->
+<section class="page">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">II.</span>
+  </div>
+  <span class="b-eyebrow">Your timepiece</span>
+  <h2 class="b-h1">The Roma <em>at a glance.</em></h2>
+  <div class="b-hairline"></div>
+  <div>
+    <div class="spec-row"><span class="k">Reference</span><span class="v">CR.0_.<em>_</em></span></div>
+    <div class="spec-row"><span class="k">Case</span><span class="v">316L Stainless Steel</span></div>
+    <div class="spec-row"><span class="k">Diameter</span><span class="v">40 mm</span></div>
+    <div class="spec-row"><span class="k">Crystal</span><span class="v">Sapphire</span></div>
+    <div class="spec-row"><span class="k">Movement</span><span class="v">Japanese Quartz</span></div>
+    <div class="spec-row"><span class="k">Bracelet</span><span class="v">Integrated steel</span></div>
+    <div class="spec-row"><span class="k">Clasp</span><span class="v">Butterfly deployant</span></div>
+    <div class="spec-row"><span class="k">Water resistance</span><span class="v">5 ATM</span></div>
+    <div class="spec-row"><span class="k">Warranty</span><span class="v">2 years international</span></div>
+  </div>
+  <div class="b-footer"><span>YOUR TIMEPIECE</span><span>03</span></div>
+</section>
+
+<!-- ════ PAGE 4 · SETTING THE TIME ════ -->
+<section class="page">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">III.</span>
+  </div>
+  <span class="b-eyebrow">Setting the time</span>
+  <h2 class="b-h1">Three positions. <em>One crown.</em></h2>
+  <div class="b-hairline"></div>
+  <p class="b-body">
+    The crown sits at three o'clock and has two pulled positions. The watch is always running while the crown is in position one.
+  </p>
+  <div class="diagram">
+    <span class="pos">Position 0.</span>
+    Pushed in. Normal wear. Water-resistant.
+  </div>
+  <div class="diagram">
+    <span class="pos">Position 1.</span>
+    Pulled one click. Date adjustment. Rotate clockwise.
+  </div>
+  <div class="diagram">
+    <span class="pos">Position 2.</span>
+    Pulled fully. Time setting. Seconds hand pauses.
+  </div>
+  <p class="b-body"><em>Always return the crown to position 0 after setting. Never pull the crown when the watch is wet.</em></p>
+  <div class="b-footer"><span>SETTING</span><span>04</span></div>
+</section>
+
+<!-- ════ PAGE 5 · WATER RESISTANCE ════ -->
+<section class="page">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">IV.</span>
+  </div>
+  <span class="b-eyebrow">Water resistance</span>
+  <h2 class="b-h1">5 ATM. <em>Read this carefully.</em></h2>
+  <div class="b-hairline"></div>
+  <p class="b-body">
+    The Roma is rated to 5 ATM, equivalent to roughly 50 metres of static water pressure. This rating describes <em>resistance,</em> not depth of use. The figure assumes a still watch on a still wrist.
+  </p>
+  <div class="do-dont">
+    <ul class="do-dont-col">
+      <h4>Suitable for</h4>
+      <li>Light rain</li>
+      <li>Hand-washing</li>
+      <li>Splashes at a sink</li>
+    </ul>
+    <ul class="do-dont-col dont">
+      <h4>Not suitable for</h4>
+      <li>Showering</li>
+      <li>Swimming</li>
+      <li>Diving or snorkelling</li>
+      <li>Hot tubs or saunas</li>
+    </ul>
+  </div>
+  <p class="b-body" style="margin-top:5mm;"><em>Hot water, soap, and steam degrade the seals. Damage caused by water exposure beyond the stated rating is not covered by the warranty.</em></p>
+  <div class="b-footer"><span>WATER</span><span>05</span></div>
+</section>
+
+<!-- ════ PAGE 6 · DAILY WEAR & CARE ════ -->
+<section class="page">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">V.</span>
+  </div>
+  <span class="b-eyebrow">Daily wear &amp; care</span>
+  <h2 class="b-h1">How to keep it <em>well.</em></h2>
+  <div class="b-hairline"></div>
+  <ul class="note-list">
+    <li><strong>Cleaning</strong>Wipe the case and bracelet with the supplied microfiber cloth. For build-up between links, a soft toothbrush with water works.</li>
+    <li><strong>Magnetism</strong>Quartz movements are more resilient than mechanical, but avoid placing the watch against speaker magnets or laptops for long periods.</li>
+    <li><strong>Temperature</strong>Avoid extreme heat (saunas, dashboards in summer) and rapid temperature changes.</li>
+    <li><strong>Chemicals</strong>Perfume, sunscreen, salt water and cleaning agents will accelerate wear on the seals and finish. Apply scent before the watch goes on.</li>
+    <li><strong>Storage</strong>Return the watch to its presentation case when not worn. It is the only environment we made specifically for it.</li>
+  </ul>
+  <div class="b-footer"><span>CARE</span><span>06</span></div>
+</section>
+
+<!-- ════ PAGE 7 · SIZING YOUR BRACELET ════ -->
+<section class="page">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">VI.</span>
+  </div>
+  <span class="b-eyebrow">Sizing the bracelet</span>
+  <h2 class="b-h1">Removing <em>a link.</em></h2>
+  <div class="b-hairline"></div>
+  <p class="b-body">
+    The Roma's integrated bracelet is sized by pushing connecting pins out of the link. The link-removal pin supplied with the watch fits the channel. A small hammer or firm, steady pressure is required.
+  </p>
+  <p class="b-body" style="margin-top:4mm;">
+    <strong>I.</strong> Identify the arrow on the underside of the bracelet. Pins push out in the direction of the arrow.<br>
+    <strong>II.</strong> Place the bracelet on a stable surface. Hold the supplied pin against the connecting pin.<br>
+    <strong>III.</strong> Press or tap until the pin emerges enough to grip with pliers, then pull through.<br>
+    <strong>IV.</strong> Reattach the bracelet by pressing the pin back in the opposite direction until it sits flush.
+  </p>
+  <p class="b-body" style="margin-top:4mm;"><em>If unsure, any local jeweller can size an integrated bracelet in under five minutes. Keep removed links in the supplied pouch.</em></p>
+  <div class="b-footer"><span>SIZING</span><span>07</span></div>
+</section>
+
+<!-- ════ PAGE 8 · BATTERY ════ -->
+<section class="page">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">VII.</span>
+  </div>
+  <span class="b-eyebrow">The battery</span>
+  <h2 class="b-h1">When it <em>stops.</em></h2>
+  <div class="b-hairline"></div>
+  <p class="b-body">
+    The Japanese quartz movement runs on a standard SR626SW silver-oxide cell. Expected life is approximately <em>2 to 3 years</em> of continuous wear.
+  </p>
+  <p class="b-body" style="margin-top:4mm;">
+    Battery replacement should be carried out by a qualified watchmaker. Opening the caseback without the correct tools will compromise the gaskets and void the water resistance rating.
+  </p>
+  <p class="b-body" style="margin-top:4mm;"><em>Battery replacement is not covered by the warranty. It is normal consumable wear.</em></p>
+  <div class="b-footer"><span>BATTERY</span><span>08</span></div>
+</section>
+
+<!-- ════ PAGE 9 · REGISTRATION ════ -->
+<section class="page dark">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">VIII.</span>
+  </div>
+  <span class="b-eyebrow">Registration</span>
+  <h2 class="b-h1">Link this watch <em>to your name.</em></h2>
+  <div class="b-hairline"></div>
+  <p class="b-body">
+    Registration is optional but recommended. It links this timepiece permanently to your account. Useful for warranty claims, resale, and proof of ownership.
+  </p>
+  <p class="b-body" style="margin-top:4mm;">
+    <strong>I.</strong> Sign in or create an account at calcaterra.co<br>
+    <strong>II.</strong> Open the dashboard, choose <em>Watch Registration.</em><br>
+    <strong>III.</strong> Enter the activation code printed on the card included in the box. The format is CALR-XXXX-XXXX.<br>
+    <strong>IV.</strong> The watch will now appear under <em>Warranties</em> in your dashboard.
+  </p>
+  <div class="b-footer"><span>REGISTRATION</span><span>09</span></div>
+</section>
+
+<!-- ════ PAGE 10 · WARRANTY TERMS ════ -->
+<section class="page">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">IX.</span>
+  </div>
+  <span class="b-eyebrow">Warranty</span>
+  <h2 class="b-h1">Two years. <em>International.</em></h2>
+  <div class="b-hairline"></div>
+  <div class="warranty-block">
+    <h3>What <em>is covered.</em></h3>
+    <p class="b-body">Manufacturing defects in materials and workmanship for a period of two years from the date of original purchase. Movement faults, case defects, dial printing faults, bracelet structural defects.</p>
+  </div>
+  <div class="warranty-block">
+    <h3>What <em>is not.</em></h3>
+    <p class="b-body">Normal wear and ageing, accidental impact, water damage beyond the rated resistance, unauthorised modification or repair, and consumables such as battery replacement.</p>
+  </div>
+  <div class="b-footer"><span>WARRANTY</span><span>10</span></div>
+</section>
+
+<!-- ════ PAGE 11 · CLAIM PROCESS ════ -->
+<section class="page">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">X.</span>
+  </div>
+  <span class="b-eyebrow">Making a claim</span>
+  <h2 class="b-h1">If something <em>fails.</em></h2>
+  <div class="b-hairline"></div>
+  <ul class="note-list">
+    <li><strong>I. Email</strong>Write to orders@calcaterra.co with your order reference and a description of the issue. Include photographs where possible.</li>
+    <li><strong>II. Assessment</strong>Our team will respond within 2 business days and confirm next steps, including a return address if applicable.</li>
+    <li><strong>III. Resolution</strong>We will repair the defect at no cost. If repair is not possible we will replace the watch. If neither is available we will refund in full.</li>
+  </ul>
+  <p class="b-body" style="margin-top:5mm;"><em>Keep your order confirmation email and this booklet together. They are your proof of purchase.</em></p>
+  <div class="b-footer"><span>CLAIMS</span><span>11</span></div>
+</section>
+
+<!-- ════ PAGE 12 · CONTACT ════ -->
+<section class="page">
+  <div class="page-head">
+    <span class="b-mark">CALCATERRA</span>
+    <span class="b-num">XI.</span>
+  </div>
+  <span class="b-eyebrow">Contact</span>
+  <h2 class="b-h1">When you need <em>us.</em></h2>
+  <div class="b-hairline"></div>
+  <ul class="note-list">
+    <li><strong>Orders &amp; warranty</strong>orders@calcaterra.co</li>
+    <li><strong>General enquiry</strong>info@calcaterra.co</li>
+    <li><strong>Support</strong>support@calcaterra.co</li>
+    <li><strong>The site</strong>calcaterra.co</li>
+  </ul>
+  <p class="b-body" style="margin-top:5mm;">All enquiries are handled directly by our team. Response within 48 hours, Monday to Friday. No automated replies.</p>
+  <div class="b-footer"><span>CONTACT</span><span>12</span></div>
+</section>
+
+<!-- ════ PAGE 13 · BACK COVER ════ -->
+<section class="page dark back-cover">
+  <div></div>
+  <p class="back-cover-statement" style="color:#f2efe9;">Designed once.<br><em style="color:rgba(242,239,233,0.45);">Worn indefinitely.</em></p>
+  <p class="back-cover-footer" style="color:rgba(242,239,233,0.5);">CALCATERRA · 2026</p>
+</section>
+
+</div>
+
+</body>
+</html>
