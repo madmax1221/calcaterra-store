@@ -146,7 +146,14 @@ html,body{
 .step-list li:last-child{border-bottom:1px solid rgba(26,24,20,0.06);}
 .step-num{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:13px;color:rgba(26,24,20,0.4);letter-spacing:0.02em;line-height:1.2;}
 .step-text{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.04em;line-height:1.75;color:rgba(26,24,20,0.72);}
+.step-text em{font-style:italic;color:#1a1814;}
 .sizing-closer{margin-top:4mm;text-align:center;color:rgba(26,24,20,0.55);}
+/* Dark-page overrides so the registration step list reads clearly */
+.dark .step-list li{border-top-color:rgba(242,239,233,0.1);}
+.dark .step-list li:last-child{border-bottom-color:rgba(242,239,233,0.1);}
+.dark .step-num{color:rgba(242,239,233,0.5);}
+.dark .step-text{color:rgba(242,239,233,0.78);}
+.dark .step-text em{color:#f2efe9;}
 
 .diagram{
   border:1px solid rgba(26,24,20,0.18);padding:8mm 6mm;margin:6mm 0;
@@ -465,12 +472,12 @@ html,body{
   <p class="b-body">
     Registration is optional but recommended. It links this timepiece permanently to your account. Useful for warranty claims, resale, and proof of ownership.
   </p>
-  <p class="b-body" style="margin-top:4mm;">
-    <strong>I.</strong> Sign in or create an account at calcaterra.co<br>
-    <strong>II.</strong> Open the dashboard, choose <em>Watch Registration.</em><br>
-    <strong>III.</strong> Enter the activation code printed on the card included in the box. The format is CALR-XXXX-XXXX.<br>
-    <strong>IV.</strong> The watch will now appear under <em>Warranties</em> in your dashboard.
-  </p>
+  <ol class="step-list">
+    <li><span class="step-num">I.</span><span class="step-text">Sign in or create an account at calcaterra.co</span></li>
+    <li><span class="step-num">II.</span><span class="step-text">Open the dashboard, choose <em>Watch Registration.</em></span></li>
+    <li><span class="step-num">III.</span><span class="step-text">Enter the activation code printed on the card included in the box. The format is CALR-XXXX-XXXX.</span></li>
+    <li><span class="step-num">IV.</span><span class="step-text">The watch will now appear under <em>Warranties</em> in your dashboard.</span></li>
+  </ol>
   <div class="b-footer"><span>REGISTRATION</span><span>09</span></div>
 </section>
 
