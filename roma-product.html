@@ -182,6 +182,10 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .atc-btn:hover{background:#0e0d0b;letter-spacing:0.45em;}
 .atc-meta{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.18em;color:rgba(26,24,20,0.45);text-align:center;display:block;margin-top:14px;margin-bottom:48px;}
 .product-description{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.05em;line-height:2;color:rgba(26,24,20,0.65);margin-bottom:48px;border-top:1px solid rgba(26,24,20,0.07);padding-top:32px;}
+.product-specs{border-top:1px solid rgba(26,24,20,0.07);}
+.spec-row{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px solid rgba(26,24,20,0.06);}
+.spec-key{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.5);}
+.spec-val{font-family:'Montserrat',sans-serif;font-size:10.5px;font-weight:300;letter-spacing:0.08em;color:#1a1814;text-align:right;}
 .product-detail-section{display:grid;grid-template-columns:1fr 1fr;gap:2px;max-width:1200px;margin:0 auto;padding:0 52px 120px;}
 .detail-img{aspect-ratio:4/5;background:#1a1814;overflow:hidden;}
 .detail-img img{width:100%;height:100%;object-fit:cover;filter:brightness(0.85) saturate(0.8);transition:transform 8s ease;}
@@ -212,21 +216,6 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
   .key-spec{border-right:none;border-bottom:1px solid rgba(26,24,20,0.07);padding:40px 24px;}
   .key-spec:last-child{border-bottom:none;}
 }
-
-/* ── DETAILED SPECIFICATIONS ───────────────────────────────────── */
-.specs-deep{max-width:1100px;margin:0 auto;padding:60px 52px 120px;}
-.specs-deep-header{text-align:center;margin-bottom:80px;}
-.specs-deep-eyebrow{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);display:block;margin-bottom:20px;text-transform:uppercase;}
-.specs-deep-title{font-size:clamp(34px,4vw,56px);font-weight:300;line-height:1.1;letter-spacing:0.025em;color:#1a1814;}
-.specs-deep-title em{font-style:italic;color:rgba(26,24,20,0.4);}
-.specs-deep-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 96px;}
-.specs-deep-col h3{font-family:'Times New Roman',Times,serif;font-size:20px;font-weight:300;letter-spacing:0.03em;color:#1a1814;margin:0 0 20px;padding-bottom:12px;border-bottom:1px solid rgba(26,24,20,0.12);}
-.specs-deep-col h3 em{font-style:italic;color:rgba(26,24,20,0.4);}
-.specs-deep-col h3:not(:first-child){margin-top:48px;}
-.specs-deep-row{display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:13px 0;border-bottom:1px solid rgba(26,24,20,0.05);}
-.specs-deep-row:last-child{border-bottom:none;}
-.specs-deep-key{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.42em;color:rgba(26,24,20,0.45);text-transform:uppercase;flex-shrink:0;}
-.specs-deep-val{font-family:'Times New Roman',Times,serif;font-size:14px;color:rgba(26,24,20,0.78);text-align:right;letter-spacing:0.005em;}
 
 /* ── IN THE BOX ──────────────────────────────────────────────── */
 .in-box{background:#141210;padding:120px 52px;}
@@ -467,6 +456,15 @@ footer{background:#141210;padding:80px 52px 48px;}
     <button class="atc-btn" onclick="addToCart()">MAKE IT MINE</button>
     <span class="atc-meta">2 year warranty &nbsp;&middot;&nbsp; Complimentary worldwide shipping &nbsp;&middot;&nbsp; 30 day returns</span>
     <p class="product-description" id="productDescription">The Roma Black is the founding reference of Calcaterra. A sunburst-textured black dial set within a brushed and polished stainless steel case. Understated by design. Precise by conviction. Worn by those who have already decided.</p>
+    <div class="product-specs">
+      <div class="spec-row"><span class="spec-key">CASE</span><span class="spec-val">316L Stainless Steel, 40mm</span></div>
+      <div class="spec-row"><span class="spec-key">DIAL</span><span class="spec-val" id="specDial">Sunburst Textured Black</span></div>
+      <div class="spec-row"><span class="spec-key">CRYSTAL</span><span class="spec-val">Sapphire</span></div>
+      <div class="spec-row"><span class="spec-key">MOVEMENT</span><span class="spec-val">Japanese Quartz</span></div>
+      <div class="spec-row"><span class="spec-key">BRACELET</span><span class="spec-val">Integrated Steel, Butterfly Clasp</span></div>
+      <div class="spec-row"><span class="spec-key">WATER</span><span class="spec-val">5 ATM</span></div>
+      <div class="spec-row"><span class="spec-key">WARRANTY</span><span class="spec-val">2 Years International</span></div>
+    </div>
   </div>
 </div>
 
@@ -505,40 +503,6 @@ footer{background:#141210;padding:80px 52px 48px;}
       <span class="key-spec-label">Water resistance</span>
       <span class="key-spec-value">5 <em>ATM.</em></span>
       <span class="key-spec-note">Rain and hand-washing. Not for swimming or showering.</span>
-    </div>
-  </div>
-</section>
-
-<!-- DETAILED SPECIFICATIONS -->
-<section class="specs-deep">
-  <div class="specs-deep-header fade">
-    <span class="specs-deep-eyebrow">Materials &amp; Construction</span>
-    <h2 class="specs-deep-title">Every choice <em>deliberate.</em></h2>
-  </div>
-  <div class="specs-deep-grid">
-    <div class="specs-deep-col fade">
-      <h3>Case &amp; <em>crystal.</em></h3>
-      <div class="specs-deep-row"><span class="specs-deep-key">Material</span><span class="specs-deep-val">316L Stainless Steel</span></div>
-      <div class="specs-deep-row"><span class="specs-deep-key">Diameter</span><span class="specs-deep-val">40 mm</span></div>
-      <div class="specs-deep-row"><span class="specs-deep-key">Crystal</span><span class="specs-deep-val">Sapphire</span></div>
-
-      <h3>Dial &amp; <em>hands.</em></h3>
-      <div class="specs-deep-row"><span class="specs-deep-key">Dial</span><span class="specs-deep-val" id="deepDial">Sunburst Textured Black</span></div>
-      <div class="specs-deep-row"><span class="specs-deep-key">Indices</span><span class="specs-deep-val">Applied, lumed</span></div>
-      <div class="specs-deep-row"><span class="specs-deep-key">Hands</span><span class="specs-deep-val">Lumed</span></div>
-    </div>
-
-    <div class="specs-deep-col fade fade-d1">
-      <h3>Movement &amp; <em>bracelet.</em></h3>
-      <div class="specs-deep-row"><span class="specs-deep-key">Movement</span><span class="specs-deep-val">Japanese Quartz</span></div>
-      <div class="specs-deep-row"><span class="specs-deep-key">Bracelet</span><span class="specs-deep-val">Integrated steel</span></div>
-      <div class="specs-deep-row"><span class="specs-deep-key">Clasp</span><span class="specs-deep-val">Butterfly deployant</span></div>
-
-      <h3>Water &amp; <em>warranty.</em></h3>
-      <div class="specs-deep-row"><span class="specs-deep-key">Water resistance</span><span class="specs-deep-val">5 ATM / 50 m</span></div>
-      <div class="specs-deep-row"><span class="specs-deep-key">Suitable for</span><span class="specs-deep-val">Rain, hand-washing</span></div>
-      <div class="specs-deep-row"><span class="specs-deep-key">Not suitable for</span><span class="specs-deep-val">Swimming, showering</span></div>
-      <div class="specs-deep-row"><span class="specs-deep-key">Warranty</span><span class="specs-deep-val">2 years international</span></div>
     </div>
   </div>
 </section>
@@ -789,7 +753,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     document.getElementById('productVariantName').textContent = v.name + '.'
     document.getElementById('productRef').innerHTML = v.ref
     document.getElementById('productDescription').textContent = v.description
-    const deepDial = document.getElementById('deepDial'); if (deepDial) deepDial.textContent = v.dial
+    document.getElementById('specDial').textContent = v.dial
     document.getElementById('breadcrumb-current').textContent = v.name
     document.title = 'Roma ' + v.name + ' — Calcaterra'
     const mainEl = document.getElementById('mainImgEl')
