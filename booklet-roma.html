@@ -159,7 +159,7 @@ html,body{
 .crown-rows span{font-family:'Montserrat',sans-serif;font-size:6.5px;font-style:normal;letter-spacing:0.05em;line-height:1.6;}
 
 /* Bracelet pin direction diagram */
-.pin-svg{display:block;margin:4mm auto 2mm;width:78mm;height:auto;}
+.pin-svg{display:block;margin:5mm auto 3mm;width:82mm;height:auto;}
 
 .do-dont{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:5mm;}
 .do-dont-col h4{font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:0.45em;font-weight:400;text-transform:uppercase;margin-bottom:5mm;color:#1a1814;}
@@ -417,46 +417,78 @@ html,body{
     The Roma's integrated bracelet is sized by pushing connecting pins out of the link. The link-removal pin supplied with the watch fits the channel. A small hammer or firm, steady pressure is required.
   </p>
 
-  <!-- Bracelet section · top-down view of the underside, showing pin heads + etched arrow -->
-  <svg class="pin-svg" viewBox="0 0 240 92" xmlns="http://www.w3.org/2000/svg"
-       fill="none" stroke="#1a1814" stroke-width="0.9"
+  <!-- Bracelet visual · two-part diagram: top-down view + side-section callout -->
+  <svg class="pin-svg" viewBox="0 0 280 170" xmlns="http://www.w3.org/2000/svg"
+       fill="none" stroke="#1a1814" stroke-width="1"
        stroke-linecap="round" stroke-linejoin="round">
 
-    <!-- Eyebrow label -->
-    <text x="120" y="9" font-size="4" text-anchor="middle"
-          fill="rgba(26,24,20,0.5)" stroke="none"
-          font-family="Montserrat" letter-spacing="0.36em">UNDERSIDE OF BRACELET</text>
+    <!-- ═══════ A. TOP-DOWN BRACELET VIEW ═══════ -->
+    <text x="140" y="9" font-size="4.5" text-anchor="middle"
+          fill="rgba(26,24,20,0.55)" stroke="none"
+          font-family="Montserrat" letter-spacing="0.42em">A · UNDERSIDE</text>
 
-    <!-- Bracelet section · centered 5-link layout (top-down) -->
-    <g transform="translate(30,20)">
-      <!-- Top rail (outer half-link) -->
-      <rect x="0" y="0" width="180" height="6" rx="1"/>
-      <!-- Bottom rail (outer half-link) -->
-      <rect x="0" y="36" width="180" height="6" rx="1"/>
-      <!-- Three center H-links -->
-      <rect x="6" y="6" width="54" height="30" rx="1"/>
-      <rect x="62" y="6" width="54" height="30" rx="1"/>
-      <rect x="118" y="6" width="54" height="30" rx="1"/>
-      <!-- Center fine line on each link, hinting at the brushed grain -->
-      <line x1="6"   y1="21" x2="60"  y2="21" stroke-opacity="0.18"/>
-      <line x1="62"  y1="21" x2="116" y2="21" stroke-opacity="0.18"/>
-      <line x1="118" y1="21" x2="172" y2="21" stroke-opacity="0.18"/>
-      <!-- Pin heads visible at the junctions between links -->
-      <circle cx="61" cy="21" r="1.6" fill="#1a1814" stroke="none"/>
-      <circle cx="117" cy="21" r="1.6" fill="#1a1814" stroke="none"/>
-      <!-- Etched directional arrow on the middle link -->
-      <g stroke="rgba(26,24,20,0.45)" stroke-width="0.7" fill="rgba(26,24,20,0.45)">
-        <line x1="74" y1="21" x2="100" y2="21"/>
-        <polygon points="97,18 104,21 97,24" stroke="none"/>
+    <g transform="translate(20,18)">
+      <!-- Top rail -->
+      <rect x="0" y="0" width="240" height="8" rx="1.5"/>
+      <!-- Bottom rail -->
+      <rect x="0" y="48" width="240" height="8" rx="1.5"/>
+      <!-- Four center H-links -->
+      <rect x="8" y="8" width="56" height="40" rx="1.5"/>
+      <rect x="68" y="8" width="56" height="40" rx="1.5"/>
+      <rect x="128" y="8" width="56" height="40" rx="1.5"/>
+      <rect x="188" y="8" width="56" height="40" rx="1.5"/>
+      <!-- Brushed-steel grain hints · faint horizontal lines on each link -->
+      <g stroke-opacity="0.13" stroke-width="0.5">
+        <line x1="12"  y1="20" x2="60"  y2="20"/><line x1="12"  y1="28" x2="60"  y2="28"/><line x1="12"  y1="36" x2="60"  y2="36"/>
+        <line x1="72"  y1="20" x2="120" y2="20"/><line x1="72"  y1="28" x2="120" y2="28"/><line x1="72"  y1="36" x2="120" y2="36"/>
+        <line x1="132" y1="20" x2="180" y2="20"/><line x1="132" y1="28" x2="180" y2="28"/><line x1="132" y1="36" x2="180" y2="36"/>
+        <line x1="192" y1="20" x2="240" y2="20"/><line x1="192" y1="28" x2="240" y2="28"/><line x1="192" y1="36" x2="240" y2="36"/>
+      </g>
+      <!-- Pin heads · small rectangles at link junctions -->
+      <rect x="63" y="22" width="6" height="12" rx="0.6" fill="#1a1814" stroke="none"/>
+      <rect x="123" y="22" width="6" height="12" rx="0.6" fill="#1a1814" stroke="none"/>
+      <rect x="183" y="22" width="6" height="12" rx="0.6" fill="#1a1814" stroke="none"/>
+      <!-- Etched directional arrow on the second link -->
+      <g stroke="rgba(26,24,20,0.45)" stroke-width="1.1" fill="rgba(26,24,20,0.45)">
+        <line x1="80" y1="28" x2="112" y2="28"/>
+        <polygon points="109,24 117,28 109,32" stroke="none"/>
       </g>
     </g>
 
-    <!-- Push-direction indicator below the bracelet -->
-    <text x="120" y="76" text-anchor="middle" font-size="3.8"
+    <!-- Divider hairline between A and B -->
+    <line x1="40" y1="86" x2="240" y2="86" stroke-opacity="0.15" stroke-width="0.4"/>
+
+    <!-- ═══════ B. SIDE-SECTION CALLOUT ═══════ -->
+    <text x="140" y="100" font-size="4.5" text-anchor="middle"
           fill="rgba(26,24,20,0.55)" stroke="none"
-          font-family="Montserrat" letter-spacing="0.32em">PIN PUSHES IN ARROW DIRECTION</text>
-    <line x1="60" y1="84" x2="172" y2="84" stroke-width="0.8"/>
-    <polygon points="170,81 178,84 170,87" fill="#1a1814" stroke="none"/>
+          font-family="Montserrat" letter-spacing="0.42em">B · PIN IN SECTION</text>
+
+    <g transform="translate(40,110)">
+      <!-- Tool from the left -->
+      <rect x="0" y="14" width="18" height="6" rx="1" fill="#1a1814" stroke="none"/>
+      <text x="9" y="11" text-anchor="middle" font-size="3.6"
+            fill="rgba(26,24,20,0.55)" stroke="none"
+            font-family="Montserrat" letter-spacing="0.32em">TOOL</text>
+      <!-- Tool tip extending toward the link -->
+      <line x1="18" y1="17" x2="32" y2="17" stroke-width="1.4"/>
+      <!-- Link, side profile (thickness shown) -->
+      <rect x="32" y="6" width="120" height="22" rx="2"/>
+      <text x="92" y="3" text-anchor="middle" font-size="3.6"
+            fill="rgba(26,24,20,0.55)" stroke="none"
+            font-family="Montserrat" letter-spacing="0.32em">LINK</text>
+      <!-- Pin running through the link -->
+      <line x1="32" y1="17" x2="170" y2="17" stroke="#1a1814" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- Pin emerging on the right · direction arrow -->
+      <polygon points="166,13 174,17 166,21" fill="#1a1814" stroke="none"/>
+      <!-- Subtle hairlines on link to read as material -->
+      <line x1="36" y1="11" x2="148" y2="11" stroke-opacity="0.13" stroke-width="0.5"/>
+      <line x1="36" y1="23" x2="148" y2="23" stroke-opacity="0.13" stroke-width="0.5"/>
+    </g>
+
+    <!-- BOTTOM CAPTION -->
+    <text x="140" y="160" text-anchor="middle" font-size="5.5"
+          fill="#1a1814" stroke="none"
+          font-family="'Times New Roman',Times,serif" font-style="italic">Push in the direction of the etched arrow.</text>
   </svg>
 
   <p class="b-body" style="margin-top:2mm;">
