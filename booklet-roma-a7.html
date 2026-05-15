@@ -205,6 +205,20 @@ html,body{
 .viewer-toolbar-meta{font-size:9px;}
 .viewer-toolbar-btn{font-size:9px;}
 
+/* Tight overrides for pages V (daily wear) and VI (sizing) where the
+   bumped shared styles overflow into the footer. Pulls the note-list /
+   step-list / closer back to the compact sizes only on these pages. */
+.page.tight .note-list li{padding:4px 0;font-size:6.2px;line-height:1.55;}
+.page.tight .note-list li strong{font-size:5px;margin-bottom:1.5px;}
+.page.tight .step-list{margin-top:1.5mm;}
+.page.tight .step-list li{padding:1.4mm 0;}
+.page.tight .step-num{font-size:9px;}
+.page.tight .step-text{font-size:6.2px;line-height:1.5;}
+.page.tight .sizing-closer{margin-top:2mm;}
+.page.tight .b-body{line-height:1.55;}
+.page.tight .b-h1{font-size:16px;margin-bottom:4px;}
+.page.tight .b-hairline{margin:4px 0;}
+
 @media print {
   html,body{background:#fff;}
   .viewer{padding:0;gap:0;}
@@ -405,7 +419,7 @@ html,body{
 </section>
 
 <!-- ════ PAGE 6 · DAILY WEAR & CARE ════ -->
-<section class="page">
+<section class="page tight">
   <div class="page-head">
     <span class="b-logo-head"><img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/></span>
     <span class="b-num">V.</span>
@@ -424,7 +438,7 @@ html,body{
 </section>
 
 <!-- ════ PAGE 7 · SIZING YOUR BRACELET ════ -->
-<section class="page">
+<section class="page tight">
   <div class="page-head">
     <span class="b-logo-head"><img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/></span>
     <span class="b-num">VI.</span>
