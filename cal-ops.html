@@ -254,7 +254,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
       </div>
       <div class="ops-topbar-right">
         <span class="ops-topbar-time" id="topbar-time"></span>
-        <button id="refresh-btn" onclick="location.reload()" style="background:none;border:1px solid rgba(242,239,233,0.1);color:rgba(242,239,233,0.3);font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.4em;padding:6px 14px;cursor:pointer;transition:all .2s;" onmouseover="this.style.color='rgba(242,239,233,0.7)';this.style.borderColor='rgba(242,239,233,0.25)'" onmouseout="this.style.color='rgba(242,239,233,0.3)';this.style.borderColor='rgba(242,239,233,0.1)'">REFRESH</button>
+        <button id="refresh-btn" onclick="refreshCurrent()" style="background:none;border:1px solid rgba(242,239,233,0.1);color:rgba(242,239,233,0.3);font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.4em;padding:6px 14px;cursor:pointer;transition:all .2s;" onmouseover="this.style.color='rgba(242,239,233,0.7)';this.style.borderColor='rgba(242,239,233,0.25)'" onmouseout="this.style.color='rgba(242,239,233,0.3)';this.style.borderColor='rgba(242,239,233,0.1)'">REFRESH</button>
         <div class="ops-topbar-dot"></div>
       </div>
     </div>
@@ -715,6 +715,41 @@ async function refreshAll() {
   btn.textContent = 'REFRESH'
   btn.disabled = false
   toast('REFRESHED')
+}
+
+// Re-fetch only the currently active panel so the user keeps their place
+// instead of suffering a full page reload that loses sidebar/scroll state.
+async function refreshCurrent() {
+  const btn = document.getElementById('refresh-btn')
+  if (btn) { btn.textContent = '...'; btn.disabled = true }
+  const active = document.querySelector('.ops-panel.active')
+  const id = active ? active.id.replace(/^panel-/, '') : 'dashboard'
+  const loaders = {
+    dashboard: loadDashboard,
+    orders: loadOrders,
+    codes: loadCodes,
+    warranties: loadWarranties,
+    customers: loadCustomers,
+    contact: loadContacts,
+    newsletter: loadNewsletter,
+    emaillog: loadEmailLog
+  }
+  const fn = loaders[id] || loadDashboard
+  // The dashboard tile widgets summarise every other panel, so keep them current too.
+  try {
+    if (id === 'dashboard') {
+      await fn()
+    } else {
+      await Promise.all([fn(), loadDashboard()])
+    }
+    orderChannel = null
+    startRealtimeOrders()
+    toast('REFRESHED · ' + id.toUpperCase())
+  } catch (e) {
+    toast('REFRESH FAILED', 'error')
+  } finally {
+    if (btn) { btn.textContent = 'REFRESH'; btn.disabled = false }
+  }
 }
 
 function toast(msg, type = 'success') {
