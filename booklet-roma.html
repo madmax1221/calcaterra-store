@@ -122,7 +122,7 @@ html,body{
 
 /* Logo · used on cover, back cover, and inside page header */
 .b-logo-head{display:flex;align-items:center;gap:6px;}
-.b-logo-head img{height:20px;width:auto;display:block;filter:invert(1);}
+.b-logo-head img{height:28px;width:auto;display:block;filter:invert(1);}
 .dark .b-logo-head img{filter:none;}
 
 /* Specific page styles */
@@ -154,8 +154,9 @@ html,body{
 .crown-svg .case-body{fill:none;stroke:#1a1814;stroke-width:0.9;}
 .crown-svg .stem{stroke:#1a1814;stroke-width:0.8;}
 .crown-svg .crown-shape{fill:none;stroke:#1a1814;stroke-width:0.9;}
-.crown-rows{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3mm;margin-top:3mm;font-family:'Montserrat',sans-serif;font-size:6.5px;letter-spacing:0.04em;line-height:1.6;color:rgba(26,24,20,0.7);text-align:center;}
-.crown-rows strong{display:block;font-family:'Times New Roman',Times,serif;font-style:italic;font-size:10px;color:#1a1814;margin-bottom:2mm;letter-spacing:0.02em;}
+.crown-rows{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm;margin-top:4mm;font-family:'Montserrat',sans-serif;font-size:6.8px;letter-spacing:0.04em;line-height:1.55;color:#1a1814;text-align:center;}
+.crown-rows > div{font-family:'Times New Roman',Times,serif;font-size:9px;font-style:italic;letter-spacing:0.02em;}
+.crown-rows span{font-family:'Montserrat',sans-serif;font-size:6.5px;font-style:normal;letter-spacing:0.05em;line-height:1.6;}
 
 /* Bracelet pin direction diagram */
 .pin-svg{display:block;margin:3mm auto;width:72mm;height:auto;}
@@ -276,77 +277,81 @@ html,body{
     The crown sits at three o'clock and has two pulled positions. The watch is always running while the crown is in position 0.
   </p>
 
-  <!-- Crown top-view SVG · three positions · refined watch profile -->
-  <svg class="crown-svg" viewBox="0 0 240 88" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1a1814" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Crown top-view SVG · three positions · integrated bracelet, hands at 10:10 -->
+  <svg class="crown-svg" viewBox="0 0 240 92" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#1a1814" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round">
     <!-- ═══════ POSITION 0 · CROWN FLUSH ═══════ -->
-    <g transform="translate(8,4)">
-      <!-- Lug arms (4) -->
-      <path d="M6,2 Q9,8 14,10"/>
-      <path d="M50,2 Q47,8 42,10"/>
-      <path d="M6,54 Q9,48 14,46"/>
-      <path d="M50,54 Q47,48 42,46"/>
-      <!-- Case body, rounded square -->
+    <g transform="translate(8,2)">
+      <!-- Integrated bracelet · top link -->
+      <path d="M14,0 L42,0 L42,8 Q42,10 40,10 L16,10 Q14,10 14,8 Z"/>
+      <line x1="14" y1="4" x2="42" y2="4" stroke-opacity="0.25"/>
+      <!-- Integrated bracelet · bottom link -->
+      <path d="M14,56 L42,56 L42,48 Q42,46 40,46 L16,46 Q14,46 14,48 Z"/>
+      <line x1="14" y1="52" x2="42" y2="52" stroke-opacity="0.25"/>
+      <!-- Case body · rounded square -->
       <rect x="10" y="10" width="36" height="36" rx="5"/>
-      <!-- Inner dial -->
+      <!-- Inner dial ring -->
       <rect x="14" y="14" width="28" height="28" rx="3" stroke-opacity="0.35"/>
+      <!-- Hour hand · pointing to 10 -->
+      <line x1="28" y1="28" x2="23" y2="23" stroke-width="1.4" stroke-linecap="round"/>
+      <!-- Minute hand · pointing to 2 (10:10 pose) -->
+      <line x1="28" y1="28" x2="34" y2="22" stroke-width="1" stroke-linecap="round"/>
       <!-- Center pin -->
-      <circle cx="28" cy="28" r="0.7" fill="#1a1814" stroke="none"/>
-      <!-- Crown body (flush against case) -->
+      <circle cx="28" cy="28" r="1" fill="#1a1814" stroke="none"/>
+      <!-- Crown body · flush -->
       <rect x="46" y="24" width="6" height="8" rx="1"/>
-      <!-- Crown grip ridges -->
       <line x1="47.5" y1="25.5" x2="47.5" y2="30.5" stroke-opacity="0.55"/>
       <line x1="49" y1="25.5" x2="49" y2="30.5" stroke-opacity="0.55"/>
       <line x1="50.5" y1="25.5" x2="50.5" y2="30.5" stroke-opacity="0.55"/>
-      <!-- Labels -->
-      <text x="28" y="68" text-anchor="middle" font-size="11">0.</text>
-      <text class="crown-label-sub" x="28" y="80" text-anchor="middle">PUSHED IN</text>
+      <!-- Number only · no subtitle (avoids duplication with legend below) -->
+      <text x="28" y="74" text-anchor="middle" font-size="12" font-style="italic" fill="#1a1814" stroke="none">0.</text>
     </g>
 
     <!-- ═══════ POSITION 1 · ONE CLICK OUT ═══════ -->
-    <g transform="translate(88,4)">
-      <path d="M6,2 Q9,8 14,10"/>
-      <path d="M50,2 Q47,8 42,10"/>
-      <path d="M6,54 Q9,48 14,46"/>
-      <path d="M50,54 Q47,48 42,46"/>
+    <g transform="translate(88,2)">
+      <path d="M14,0 L42,0 L42,8 Q42,10 40,10 L16,10 Q14,10 14,8 Z"/>
+      <line x1="14" y1="4" x2="42" y2="4" stroke-opacity="0.25"/>
+      <path d="M14,56 L42,56 L42,48 Q42,46 40,46 L16,46 Q14,46 14,48 Z"/>
+      <line x1="14" y1="52" x2="42" y2="52" stroke-opacity="0.25"/>
       <rect x="10" y="10" width="36" height="36" rx="5"/>
       <rect x="14" y="14" width="28" height="28" rx="3" stroke-opacity="0.35"/>
-      <circle cx="28" cy="28" r="0.7" fill="#1a1814" stroke="none"/>
-      <!-- Stem (small gap) -->
+      <line x1="28" y1="28" x2="23" y2="23" stroke-width="1.4" stroke-linecap="round"/>
+      <line x1="28" y1="28" x2="34" y2="22" stroke-width="1" stroke-linecap="round"/>
+      <circle cx="28" cy="28" r="1" fill="#1a1814" stroke="none"/>
+      <!-- Stem (one click out) -->
       <line x1="46" y1="28" x2="49" y2="28" stroke-width="0.7"/>
-      <!-- Crown (pulled out 3) -->
       <rect x="49" y="24" width="6" height="8" rx="1"/>
       <line x1="50.5" y1="25.5" x2="50.5" y2="30.5" stroke-opacity="0.55"/>
       <line x1="52" y1="25.5" x2="52" y2="30.5" stroke-opacity="0.55"/>
       <line x1="53.5" y1="25.5" x2="53.5" y2="30.5" stroke-opacity="0.55"/>
-      <text x="28" y="68" text-anchor="middle" font-size="11">1.</text>
-      <text class="crown-label-sub" x="28" y="80" text-anchor="middle">ONE CLICK</text>
+      <text x="28" y="74" text-anchor="middle" font-size="12" font-style="italic" fill="#1a1814" stroke="none">1.</text>
     </g>
 
     <!-- ═══════ POSITION 2 · FULLY OUT ═══════ -->
-    <g transform="translate(168,4)">
-      <path d="M6,2 Q9,8 14,10"/>
-      <path d="M50,2 Q47,8 42,10"/>
-      <path d="M6,54 Q9,48 14,46"/>
-      <path d="M50,54 Q47,48 42,46"/>
+    <g transform="translate(168,2)">
+      <path d="M14,0 L42,0 L42,8 Q42,10 40,10 L16,10 Q14,10 14,8 Z"/>
+      <line x1="14" y1="4" x2="42" y2="4" stroke-opacity="0.25"/>
+      <path d="M14,56 L42,56 L42,48 Q42,46 40,46 L16,46 Q14,46 14,48 Z"/>
+      <line x1="14" y1="52" x2="42" y2="52" stroke-opacity="0.25"/>
       <rect x="10" y="10" width="36" height="36" rx="5"/>
       <rect x="14" y="14" width="28" height="28" rx="3" stroke-opacity="0.35"/>
-      <circle cx="28" cy="28" r="0.7" fill="#1a1814" stroke="none"/>
-      <!-- Stem (longer gap) -->
+      <line x1="28" y1="28" x2="23" y2="23" stroke-width="1.4" stroke-linecap="round"/>
+      <line x1="28" y1="28" x2="34" y2="22" stroke-width="1" stroke-linecap="round"/>
+      <circle cx="28" cy="28" r="1" fill="#1a1814" stroke="none"/>
+      <!-- Stem (fully out) -->
       <line x1="46" y1="28" x2="52" y2="28" stroke-width="0.7"/>
-      <!-- Crown (fully out) -->
       <rect x="52" y="24" width="6" height="8" rx="1"/>
       <line x1="53.5" y1="25.5" x2="53.5" y2="30.5" stroke-opacity="0.55"/>
       <line x1="55" y1="25.5" x2="55" y2="30.5" stroke-opacity="0.55"/>
       <line x1="56.5" y1="25.5" x2="56.5" y2="30.5" stroke-opacity="0.55"/>
-      <text x="28" y="68" text-anchor="middle" font-size="11">2.</text>
-      <text class="crown-label-sub" x="28" y="80" text-anchor="middle">FULLY OUT</text>
+      <text x="28" y="74" text-anchor="middle" font-size="12" font-style="italic" fill="#1a1814" stroke="none">2.</text>
     </g>
   </svg>
 
+  <!-- Legend below · descriptions only, no number prefix (numbers live in the SVG) -->
   <div class="crown-rows">
-    <div><strong>0.</strong>Normal wear. Water-resistant.</div>
-    <div><strong>1.</strong>Date set. Rotate clockwise.</div>
-    <div><strong>2.</strong>Time set. Seconds pause.</div>
+    <div>Pushed in.<br><span style="opacity:0.6;">Normal wear. Water-resistant.</span></div>
+    <div>One click.<br><span style="opacity:0.6;">Date set. Rotate clockwise.</span></div>
+    <div>Fully out.<br><span style="opacity:0.6;">Time set. Seconds pause.</span></div>
   </div>
 
   <p class="b-body" style="margin-top:5mm;"><em>Always return the crown to position 0 after setting. Never pull the crown when the watch is wet.</em></p>
