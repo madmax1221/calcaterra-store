@@ -140,6 +140,14 @@ html,body{
 .note-list li:last-child{border-bottom:none;}
 .note-list li strong{font-weight:400;color:#1a1814;display:block;letter-spacing:0.32em;font-size:7px;margin-bottom:2px;text-transform:uppercase;}
 
+/* Numbered step list with breathing room between items */
+.step-list{list-style:none;padding:0;margin:7mm 0 0;}
+.step-list li{display:grid;grid-template-columns:9mm 1fr;gap:3mm;padding:4mm 0;border-top:1px solid rgba(26,24,20,0.06);align-items:start;}
+.step-list li:last-child{border-bottom:1px solid rgba(26,24,20,0.06);}
+.step-num{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:13px;color:rgba(26,24,20,0.4);letter-spacing:0.02em;line-height:1.2;}
+.step-text{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.04em;line-height:1.85;color:rgba(26,24,20,0.72);}
+.sizing-closer{margin-top:7mm;text-align:center;color:rgba(26,24,20,0.55);}
+
 .diagram{
   border:1px solid rgba(26,24,20,0.18);padding:8mm 6mm;margin:6mm 0;
   text-align:center;font-family:'Montserrat',sans-serif;font-size:8px;
@@ -415,13 +423,14 @@ html,body{
     The Roma's integrated bracelet is sized by pushing connecting pins out of the link. The link-removal pin supplied with the watch fits the channel. A small hammer or firm, steady pressure is required.
   </p>
 
-  <p class="b-body" style="margin-top:4mm;">
-    <strong>I.</strong> Identify the arrow on the underside of the bracelet. Pins push out in the direction of the arrow.<br>
-    <strong>II.</strong> Place the bracelet on a stable surface. Hold the supplied pin against the connecting pin.<br>
-    <strong>III.</strong> Press or tap until the pin emerges, then grip with pliers and pull through.<br>
-    <strong>IV.</strong> Reattach by pressing the pin back the opposite way until flush.
-  </p>
-  <p class="b-body" style="margin-top:3mm;"><em>If unsure, any jeweller can size an integrated bracelet in under five minutes.</em></p>
+  <ol class="step-list">
+    <li><span class="step-num">I.</span><span class="step-text">Identify the arrow on the underside of the bracelet. Pins push out in the direction of the arrow.</span></li>
+    <li><span class="step-num">II.</span><span class="step-text">Place the bracelet on a stable surface. Hold the supplied pin against the connecting pin.</span></li>
+    <li><span class="step-num">III.</span><span class="step-text">Press or tap until the pin emerges, then grip with pliers and pull through.</span></li>
+    <li><span class="step-num">IV.</span><span class="step-text">Reattach by pressing the pin back the opposite way until flush.</span></li>
+  </ol>
+
+  <p class="b-body sizing-closer"><em>If unsure, any jeweller can size an integrated bracelet in under five minutes.</em></p>
   <div class="b-footer"><span>SIZING</span><span>07</span></div>
 </section>
 
