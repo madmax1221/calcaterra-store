@@ -103,6 +103,37 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .order-empty-text{font-size:clamp(22px,2.5vw,32px);font-weight:300;letter-spacing:0.03em;color:#1a1814;margin-bottom:12px;}
 .order-empty-text em{font-style:italic;color:rgba(26,24,20,0.35);}
 .order-empty-sub{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-bottom:40px;}
+
+/* Welcome stat strip — at top of Orders tab */
+.dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:56px;border-top:1px solid rgba(26,24,20,0.08);border-bottom:1px solid rgba(26,24,20,0.08);}
+.dash-stat{padding:28px 24px;border-right:1px solid rgba(26,24,20,0.06);text-align:center;}
+.dash-stat:last-child{border-right:none;}
+.dash-stat-label{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);text-transform:uppercase;display:block;margin-bottom:12px;}
+.dash-stat-value{font-family:'Times New Roman',Times,serif;font-size:clamp(28px,2.8vw,36px);font-weight:300;letter-spacing:0.02em;color:#1a1814;line-height:1.1;}
+.dash-stat-value em{font-style:italic;color:rgba(26,24,20,0.42);font-size:0.6em;margin-left:4px;}
+@media(max-width:720px){
+  .dash-stats{grid-template-columns:1fr;}
+  .dash-stat{border-right:none;border-bottom:1px solid rgba(26,24,20,0.06);padding:22px 0;}
+  .dash-stat:last-child{border-bottom:none;}
+}
+
+/* Edit / address form inputs — extracted from inline styles for maintainability */
+.dash-form{display:flex;flex-direction:column;gap:24px;}
+.dash-form-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.dash-form-field{display:flex;flex-direction:column;gap:10px;}
+.dash-form-input{width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;transition:border-color .25s;border-radius:0;}
+.dash-form-input:focus{border-bottom-color:rgba(26,24,20,0.6);}
+.dash-form-input::placeholder{color:rgba(26,24,20,0.25);}
+.dash-form-section{border-top:1px solid rgba(26,24,20,0.06);padding-top:24px;}
+.dash-form-section-label{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);display:block;margin-bottom:24px;text-transform:uppercase;}
+.dash-form-section-label .optional{color:rgba(26,24,20,0.3);font-size:7.5px;margin-left:8px;}
+.dash-form-actions{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;}
+.dash-form-cancel{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.5);background:none;border:1px solid rgba(26,24,20,0.15);cursor:pointer;padding:20px;text-align:center;text-transform:uppercase;transition:border-color .25s,color .25s;}
+.dash-form-cancel:hover{color:#1a1814;border-color:#1a1814;}
+@media(max-width:560px){
+  .dash-form-row{grid-template-columns:1fr;}
+  .dash-form-actions{grid-template-columns:1fr;}
+}
 .order-card{border:1px solid rgba(26,24,20,0.07);padding:32px;margin-bottom:16px;transition:border-color .2s;}
 .order-card:hover{border-color:rgba(26,24,20,0.2);}
 .order-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(26,24,20,0.06);}
@@ -236,10 +267,25 @@ footer{background:#141210;padding:80px 52px 48px;}
     <div class="dash-section active" id="section-orders">
       <span class="dash-section-eyebrow">YOUR HISTORY</span>
       <h2 class="dash-section-title">My <em>Orders.</em></h2>
+      <div class="dash-stats">
+        <div class="dash-stat">
+          <span class="dash-stat-label">Orders placed</span>
+          <span class="dash-stat-value" id="stat-orders">—</span>
+        </div>
+        <div class="dash-stat">
+          <span class="dash-stat-label">Watches owned</span>
+          <span class="dash-stat-value" id="stat-watches">—</span>
+        </div>
+        <div class="dash-stat">
+          <span class="dash-stat-label">Member since</span>
+          <span class="dash-stat-value" id="stat-since">—</span>
+        </div>
+      </div>
       <div id="orders-content">
         <div class="order-empty">
-          <div class="order-empty-text">Nothing <em>yet.</em></div>
-          <p class="order-empty-sub">YOUR ORDERS WILL APPEAR HERE</p>
+          <div class="order-empty-text">No orders <em>yet.</em></div>
+          <p class="order-empty-sub">YOUR DECISION AWAITS</p>
+          <a class="dash-cta" href="/collections/roma">DISCOVER THE ROMA</a>
         </div>
       </div>
     </div>
@@ -251,7 +297,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       <div id="watches-content">
         <div class="order-empty">
           <div class="order-empty-text">Nothing <em>registered.</em></div>
-          <p class="order-empty-sub">YOUR WATCHES WILL APPEAR HERE</p>
+          <p class="order-empty-sub">LINK A TIMEPIECE TO YOUR NAME, PERMANENTLY</p>
           <a class="dash-cta" onclick="showSection('register'); return false;" href="#">REGISTER YOUR WATCH</a>
         </div>
       </div>
@@ -315,33 +361,33 @@ footer{background:#141210;padding:80px 52px 48px;}
       <button class="details-edit" id="edit-toggle-btn" onclick="toggleEditForm()">EDIT DETAILS</button>
       <div id="edit-form-wrap" style="display:none;margin-top:40px;max-width:520px;">
         <div style="border-top:1px solid rgba(26,24,20,0.07);padding-top:40px;">
-          <span style="font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.35);display:block;margin-bottom:28px;">EDIT YOUR DETAILS</span>
+          <span class="dash-form-section-label">EDIT YOUR DETAILS</span>
           <div id="edit-msg" class="msg-box"></div>
-          <form style="display:flex;flex-direction:column;gap:24px;" onsubmit="saveDetails(event)">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-              <div style="display:flex;flex-direction:column;gap:10px;">
+          <form class="dash-form" onsubmit="saveDetails(event)">
+            <div class="dash-form-row">
+              <div class="dash-form-field">
                 <label class="details-label">FIRST NAME *</label>
-                <input type="text" id="edit-first" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" placeholder="First name" required>
+                <input type="text" id="edit-first" class="dash-form-input" placeholder="First name" required>
               </div>
-              <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="dash-form-field">
                 <label class="details-label">LAST NAME *</label>
-                <input type="text" id="edit-last" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" placeholder="Last name" required>
+                <input type="text" id="edit-last" class="dash-form-input" placeholder="Last name" required>
               </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="dash-form-field">
               <label class="details-label">EMAIL ADDRESS *</label>
-              <input type="email" id="edit-email" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" placeholder="your@email.com" required>
+              <input type="email" id="edit-email" class="dash-form-input" placeholder="your@email.com" required>
             </div>
-            <div style="border-top:1px solid rgba(26,24,20,0.06);padding-top:24px;">
-              <span style="font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.35);display:block;margin-bottom:24px;">CHANGE PASSWORD <span style="color:rgba(26,24,20,0.3);font-size:7px;">OPTIONAL</span></span>
-              <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="dash-form-section">
+              <span class="dash-form-section-label">CHANGE PASSWORD<span class="optional">OPTIONAL</span></span>
+              <div class="dash-form-field">
                 <label class="details-label">NEW PASSWORD</label>
-                <input type="password" id="edit-pass-new" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" placeholder="Min. 8 characters" minlength="8">
+                <input type="password" id="edit-pass-new" class="dash-form-input" placeholder="Min. 8 characters" minlength="8">
               </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;">
+            <div class="dash-form-actions">
               <button type="submit" id="save-btn" class="reg-submit">SAVE CHANGES</button>
-              <button type="button" onclick="toggleEditForm()" style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.5);background:none;border:1px solid rgba(26,24,20,0.15);cursor:pointer;padding:20px;text-align:center;">CANCEL</button>
+              <button type="button" class="dash-form-cancel" onclick="toggleEditForm()">CANCEL</button>
             </div>
           </form>
         </div>
@@ -361,38 +407,38 @@ footer{background:#141210;padding:80px 52px 48px;}
       <a class="dash-cta" id="add-address-btn" onclick="toggleAddressForm(); return false;" href="#" style="margin-top:24px;display:inline-block;">ADD NEW ADDRESS</a>
       <div id="address-form-wrap" style="display:none;margin-top:40px;max-width:400px;">
         <div style="border-top:1px solid rgba(26,24,20,0.07);padding-top:40px;">
-          <span style="font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.35);display:block;margin-bottom:28px;">NEW ADDRESS</span>
+          <span class="dash-form-section-label">NEW ADDRESS</span>
           <div id="addr-msg" class="msg-box"></div>
-          <form style="display:flex;flex-direction:column;gap:24px;" onsubmit="addAddress(event)">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-              <div style="display:flex;flex-direction:column;gap:10px;">
+          <form class="dash-form" onsubmit="addAddress(event)">
+            <div class="dash-form-row">
+              <div class="dash-form-field">
                 <label class="details-label">FIRST NAME *</label>
-                <input type="text" id="addr-first" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" required>
+                <input type="text" id="addr-first" class="dash-form-input" required>
               </div>
-              <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="dash-form-field">
                 <label class="details-label">LAST NAME *</label>
-                <input type="text" id="addr-last" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" required>
+                <input type="text" id="addr-last" class="dash-form-input" required>
               </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="dash-form-field">
               <label class="details-label">ADDRESS LINE 1 *</label>
-              <input type="text" id="addr-line1" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" required>
+              <input type="text" id="addr-line1" class="dash-form-input" required>
             </div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <label class="details-label">ADDRESS LINE 2 <span style="color:rgba(26,24,20,0.3);font-size:7px;">OPTIONAL</span></label>
-              <input type="text" id="addr-line2" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;">
+            <div class="dash-form-field">
+              <label class="details-label">ADDRESS LINE 2 <span class="optional">OPTIONAL</span></label>
+              <input type="text" id="addr-line2" class="dash-form-input">
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-              <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="dash-form-row">
+              <div class="dash-form-field">
                 <label class="details-label">CITY *</label>
-                <input type="text" id="addr-city" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" required>
+                <input type="text" id="addr-city" class="dash-form-input" required>
               </div>
-              <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="dash-form-field">
                 <label class="details-label">POSTAL CODE *</label>
-                <input type="text" id="addr-zip" style="width:100%;background:none;border:none;border-bottom:1px solid rgba(26,24,20,0.2);padding:14px 0;font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;color:#1a1814;outline:none;" required>
+                <input type="text" id="addr-zip" class="dash-form-input" required>
               </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
+            <div class="dash-form-field">
               <label class="details-label">COUNTRY *</label>
               <select id="addr-country" class="addr-select" onchange="updateProvinceField()" required>
                 <option value="" disabled selected>Select country</option>
@@ -444,15 +490,15 @@ footer{background:#141210;padding:80px 52px 48px;}
                 </optgroup>
               </select>
             </div>
-            <div id="province-wrap" style="display:none;flex-direction:column;gap:10px;">
+            <div id="province-wrap" class="dash-form-field" style="display:none;">
               <label class="details-label" id="province-label">STATE / PROVINCE *</label>
               <select id="addr-province" class="addr-select">
                 <option value="" disabled selected>Select</option>
               </select>
             </div>
-            <div style="display:flex;gap:16px;margin-top:8px;">
-              <button type="submit" class="reg-submit" style="flex:1;">SAVE ADDRESS</button>
-              <button type="button" onclick="toggleAddressForm()" style="flex:1;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.5);background:none;border:1px solid rgba(26,24,20,0.15);cursor:pointer;padding:20px;text-align:center;">CANCEL</button>
+            <div class="dash-form-actions">
+              <button type="submit" class="reg-submit">SAVE ADDRESS</button>
+              <button type="button" class="dash-form-cancel" onclick="toggleAddressForm()">CANCEL</button>
             </div>
           </form>
         </div>
@@ -600,6 +646,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     const email = customer?.email || session.user.email || ''
 
     updateDisplay(firstName, lastName, email)
+    updateMemberSince(customer)
     loadOrders(customer?.id)
     loadWatches(customer?.id)
     loadAddresses(customer?.id)
@@ -636,6 +683,7 @@ footer{background:#141210;padding:80px 52px 48px;}
   async function loadOrders(customerId) {
     if (!customerId) return
     const { data: orders } = await _supabase.from('orders').select('*').eq('customer_id', customerId).order('created_at', { ascending: false })
+    updateOrderStat((orders || []).filter(o => o.status !== 'cancelled').length)
     if (!orders || orders.length === 0) return
     const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
     let html = ''
@@ -655,6 +703,23 @@ footer{background:#141210;padding:80px 52px 48px;}
     document.getElementById('orders-content').innerHTML = html
   }
 
+  // ── Stat strip helpers ──────────────────────────────────────
+  function updateOrderStat(n) {
+    const el = document.getElementById('stat-orders')
+    if (el) el.textContent = n
+  }
+  function updateWatchStat(n) {
+    const el = document.getElementById('stat-watches')
+    if (el) el.textContent = n
+  }
+  function updateMemberSince(customer) {
+    const el = document.getElementById('stat-since')
+    if (!el || !customer?.created_at) return
+    const d = new Date(customer.created_at)
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    el.innerHTML = `${months[d.getMonth()]}<em>${d.getFullYear()}</em>`
+  }
+
   const variantCartImages = {
     black:  'https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-9.png?v=1773611466',
     navy:   'https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitleddesign-10.png?v=1773611585',
@@ -669,6 +734,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       .eq('customer_id', customerId)
       .eq('status', 'active')
       .order('activated_at', { ascending: false })
+    updateWatchStat((regs || []).length)
     if (!regs || regs.length === 0) return
     const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
     let html = ''
