@@ -95,7 +95,7 @@ html,body{
 }
 .b-h2 em{font-style:italic;color:rgba(26,24,20,0.4);}
 .b-body{
-  font-family:'Montserrat',sans-serif;font-size:6.5px;font-weight:300;
+  font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;
   letter-spacing:0.04em;line-height:1.7;color:rgba(26,24,20,0.72);
 }
 .b-body em{font-style:italic;color:#1a1814;}
@@ -176,7 +176,7 @@ html,body{
 
 .do-dont{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin-top:3mm;}
 .do-dont-col h4{font-family:'Montserrat',sans-serif;font-size:5.5px;letter-spacing:0.45em;font-weight:400;text-transform:uppercase;margin-bottom:2.5mm;color:#1a1814;}
-.do-dont-col li{font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:0.04em;line-height:1.7;color:rgba(26,24,20,0.7);list-style:none;padding-left:7px;position:relative;margin-bottom:2mm;}
+.do-dont-col li{font-family:'Montserrat',sans-serif;font-size:7.5px;letter-spacing:0.04em;line-height:1.7;color:rgba(26,24,20,0.7);list-style:none;padding-left:7px;position:relative;margin-bottom:2mm;}
 .do-dont-col li::before{content:'·';position:absolute;left:0;color:rgba(26,24,20,0.4);}
 .do-dont-col.dont li::before{content:'×';font-family:'Times New Roman';color:rgba(180,60,60,0.55);font-size:6px;top:-1px;}
 
@@ -208,17 +208,19 @@ html,body{
 /* Tight overrides for pages V (daily wear) where content density pushes
    into the footer. Headers stay at default sizes; only body content is
    compressed. */
-.page.tight .note-list li{padding:4px 0;font-size:6.2px;line-height:1.5;}
+.page.tight .note-list li{padding:4.5px 0;font-size:6.7px;line-height:1.55;}
 .page.tight .note-list li strong{font-size:5px;margin-bottom:1.5px;}
-.page.tight .b-body{line-height:1.5;}
+.page.tight .b-body{line-height:1.55;}
 
-/* Semi-tight · light compression on body content only (VI sizing) */
+/* Semi-tight · light compression on body content only (VI sizing).
+   Keep b-body at original 6.5px so the bumped default does not push
+   page VI over the footer. */
+.page.semi .b-body{font-size:6.5px;line-height:1.55;}
 .page.semi .step-list{margin-top:1.5mm;}
 .page.semi .step-list li{padding:1.6mm 0;}
 .page.semi .step-num{font-size:9.5px;}
 .page.semi .step-text{font-size:6.6px;line-height:1.52;}
 .page.semi .sizing-closer{margin-top:2mm;}
-.page.semi .b-body{line-height:1.55;}
 
 @media print {
   html,body{background:#fff;}
