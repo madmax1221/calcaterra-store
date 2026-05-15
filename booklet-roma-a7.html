@@ -146,6 +146,8 @@ html,body{
 .step-list li:last-child{border-bottom:1px solid rgba(26,24,20,0.06);}
 .step-num{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:10px;color:rgba(26,24,20,0.4);letter-spacing:0.02em;line-height:1.2;}
 .step-text{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.04em;line-height:1.65;color:rgba(26,24,20,0.72);}
+.step-label{display:block;font-family:'Montserrat',sans-serif;font-weight:400;font-size:5.5px;letter-spacing:0.32em;color:#1a1814;text-transform:uppercase;margin-bottom:2.5px;line-height:1.2;}
+.dark .step-label{color:#f2efe9;}
 .step-text em{font-style:italic;color:#1a1814;}
 .sizing-closer{margin-top:2.5mm;text-align:center;color:rgba(26,24,20,0.55);}
 /* Dark-page overrides so the registration step list reads clearly */
@@ -730,12 +732,12 @@ html,body{
   <span class="b-eyebrow">Making a claim</span>
   <h2 class="b-h1">If something <em>fails.</em></h2>
   <div class="b-hairline"></div>
-  <ul class="note-list">
-    <li><strong>I. Email</strong>Write to orders@calcaterra.co with your order reference and a description of the issue. Include photographs where possible.</li>
-    <li><strong>II. Assessment</strong>Our team will respond within 2 business days and confirm next steps, including a return address if applicable.</li>
-    <li><strong>III. Resolution</strong>We will repair the defect at no cost. If repair is not possible we will replace the watch. If neither is available we will refund in full.</li>
-  </ul>
-  <p class="b-body" style="margin-top:3mm;"><em>Keep your order confirmation email and this booklet together. They are your proof of purchase.</em></p>
+  <ol class="step-list">
+    <li><span class="step-num">I.</span><span class="step-text"><span class="step-label">Email</span>Write to orders@calcaterra.co with your order reference and a description of the issue. Include photographs where possible.</span></li>
+    <li><span class="step-num">II.</span><span class="step-text"><span class="step-label">Assessment</span>Our team will respond within 2 business days and confirm next steps, including a return address if applicable.</span></li>
+    <li><span class="step-num">III.</span><span class="step-text"><span class="step-label">Resolution</span>We will repair the defect at no cost. If repair is not possible we will replace the watch. If neither is available we will refund in full.</span></li>
+  </ol>
+  <p class="b-body" style="margin-top:3mm;text-align:center;color:rgba(26,24,20,0.55);"><em>Keep your order confirmation email and this booklet together. They are your proof of purchase.</em></p>
   <div class="b-footer"><span>CLAIMS</span><span>11</span></div>
 </section>
 
