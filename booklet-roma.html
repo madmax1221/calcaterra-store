@@ -211,19 +211,22 @@ html,body{
 .viewer-toolbar-btn.alt:hover{background:rgba(242,239,233,0.05);}
 .reader-overlay{position:fixed;inset:0;background:#1a1814;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;}
 .reader-overlay.open{display:flex;}
-.reader-stage{position:relative;display:flex;align-items:center;justify-content:center;height:100%;width:100%;padding:48px 24px;}
-.reader-stage .page{transform:scale(1.7);transform-origin:center;box-shadow:0 16px 64px rgba(0,0,0,0.4);}
+.reader-stage{position:relative;display:flex;align-items:center;justify-content:center;height:100%;width:100%;padding:80px 90px;box-sizing:border-box;overflow:hidden;}
+.reader-stage .page{transform-origin:center;box-shadow:0 16px 64px rgba(0,0,0,0.4);transition:transform .2s ease;}
 .reader-stage .page:not(.active){display:none;}
-.reader-nav{position:fixed;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;background:rgba(242,239,233,0.1);border:1px solid rgba(242,239,233,0.2);color:#f2efe9;cursor:pointer;font-family:'Times New Roman',Times,serif;font-size:22px;display:flex;align-items:center;justify-content:center;z-index:210;transition:background .25s;}
+.reader-nav{position:fixed;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(242,239,233,0.1);border:1px solid rgba(242,239,233,0.2);color:#f2efe9;cursor:pointer;font-family:'Times New Roman',Times,serif;font-size:20px;display:flex;align-items:center;justify-content:center;z-index:210;transition:background .25s;}
 .reader-nav:hover{background:rgba(242,239,233,0.2);}
-.reader-nav.prev{left:24px;}
-.reader-nav.next{right:24px;}
+.reader-nav.prev{left:18px;}
+.reader-nav.next{right:18px;}
 .reader-nav:disabled{opacity:0.25;cursor:not-allowed;}
-.reader-counter{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.42em;color:rgba(242,239,233,0.5);z-index:210;}
-.reader-close{position:fixed;top:18px;right:24px;background:none;border:1px solid rgba(242,239,233,0.2);color:rgba(242,239,233,0.7);font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.4em;padding:9px 16px;cursor:pointer;z-index:210;}
+.reader-counter{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.42em;color:rgba(242,239,233,0.5);z-index:210;}
+.reader-close{position:fixed;top:14px;right:18px;background:none;border:1px solid rgba(242,239,233,0.2);color:rgba(242,239,233,0.7);font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.4em;padding:9px 16px;cursor:pointer;z-index:210;}
 .reader-close:hover{color:#f2efe9;border-color:rgba(242,239,233,0.6);}
-@media (max-width:880px){.reader-stage .page{transform:scale(1.25);}}
-@media (max-width:560px){.reader-stage .page{transform:scale(0.95);}}
+.reader-zoom{position:fixed;top:14px;left:18px;display:flex;gap:6px;z-index:210;}
+.reader-zoom button{width:30px;height:30px;background:none;border:1px solid rgba(242,239,233,0.2);color:rgba(242,239,233,0.7);font-family:'Times New Roman',Times,serif;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .25s,color .25s;}
+.reader-zoom button:hover{background:rgba(242,239,233,0.1);color:#f2efe9;}
+.reader-zoom-level{font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.32em;color:rgba(242,239,233,0.5);align-self:center;padding:0 6px;}
+@media (max-width:560px){.reader-stage{padding:60px 16px;}.reader-nav{width:40px;height:40px;}.reader-nav.prev{left:6px;}.reader-nav.next{right:6px;}}
 </style>
 </head>
 <body>
@@ -245,6 +248,12 @@ html,body{
 
 <!-- Fullscreen reader overlay (populated on open) -->
 <div class="reader-overlay" id="readerOverlay">
+  <div class="reader-zoom">
+    <button onclick="readerZoom(-0.15)" aria-label="Zoom out">−</button>
+    <span class="reader-zoom-level" id="readerZoomLevel">100%</span>
+    <button onclick="readerZoom(0.15)" aria-label="Zoom in">+</button>
+    <button onclick="readerZoomReset()" aria-label="Reset zoom" style="font-size:9px;letter-spacing:0.2em;padding:0 8px;width:auto;">FIT</button>
+  </div>
   <button class="reader-close" onclick="closeReader()">CLOSE</button>
   <button class="reader-nav prev" id="readerPrev" onclick="readerStep(-1)" aria-label="Previous">‹</button>
   <div class="reader-stage" id="readerStage"></div>
@@ -253,6 +262,53 @@ html,body{
 </div>
 
 <script>
+  // ── Logo inversion helper ──
+  // html2canvas cannot reliably render CSS filter:invert, so before generating
+  // the PDF we redraw any inverted logo onto a canvas, manually invert pixels,
+  // and swap the img src to the result. Originals restored after.
+  async function invertImagePixels(img) {
+    await img.decode().catch(() => {})
+    const canvas = document.createElement('canvas')
+    canvas.width = img.naturalWidth || img.width || 100
+    canvas.height = img.naturalHeight || img.height || 100
+    const ctx = canvas.getContext('2d')
+    try { ctx.drawImage(img, 0, 0, canvas.width, canvas.height) } catch(e) { return null }
+    let imageData
+    try { imageData = ctx.getImageData(0, 0, canvas.width, canvas.height) } catch(e) { return null }
+    const d = imageData.data
+    for (let i = 0; i < d.length; i += 4) {
+      d[i] = 255 - d[i]
+      d[i + 1] = 255 - d[i + 1]
+      d[i + 2] = 255 - d[i + 2]
+    }
+    ctx.putImageData(imageData, 0, 0)
+    return canvas.toDataURL('image/png')
+  }
+  async function preprocessLogosForPDF() {
+    const swapped = []
+    const imgs = document.querySelectorAll('.viewer img')
+    for (const img of imgs) {
+      const f = getComputedStyle(img).filter || ''
+      if (!f.includes('invert')) continue
+      img.crossOrigin = 'anonymous'
+      // Force reload with CORS if needed
+      if (!img.complete || !img.naturalWidth) {
+        const src = img.src
+        await new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; img.src = src })
+      }
+      const dataURL = await invertImagePixels(img)
+      if (dataURL) {
+        swapped.push({ img, src: img.src, filter: img.style.filter })
+        img.src = dataURL
+        img.style.filter = 'none'
+      }
+    }
+    return swapped
+  }
+  function restoreLogos(swapped) {
+    swapped.forEach(({ img, src, filter }) => { img.src = src; img.style.filter = filter })
+  }
+
   // ── One-click PDF download ── exact A6 size, one .page per PDF page
   async function downloadBooklet(btn) {
     if (!window.jspdf || !window.html2canvas) {
@@ -261,24 +317,54 @@ html,body{
     }
     const orig = btn.textContent
     btn.disabled = true
-    const { jsPDF } = window.jspdf
-    const pages = document.querySelectorAll('.viewer > .page')
-    const W = 105, H = 148 // A6 in millimetres
-    const pdf = new jsPDF({ unit: 'mm', format: [W, H], orientation: 'portrait' })
-    for (let i = 0; i < pages.length; i++) {
-      btn.textContent = `PAGE ${i + 1} / ${pages.length}`
-      const canvas = await html2canvas(pages[i], { scale: 3, useCORS: true, backgroundColor: null, logging: false })
-      const img = canvas.toDataURL('image/jpeg', 0.95)
-      if (i > 0) pdf.addPage([W, H], 'portrait')
-      pdf.addImage(img, 'JPEG', 0, 0, W, H, undefined, 'FAST')
+    btn.textContent = 'PREPARING...'
+    let swapped = []
+    try {
+      swapped = await preprocessLogosForPDF()
+      const { jsPDF } = window.jspdf
+      const pages = document.querySelectorAll('.viewer > .page')
+      const W = 105, H = 148 // A6 in millimetres
+      const pdf = new jsPDF({ unit: 'mm', format: [W, H], orientation: 'portrait' })
+      for (let i = 0; i < pages.length; i++) {
+        btn.textContent = `PAGE ${i + 1} / ${pages.length}`
+        const el = pages[i]
+        const canvas = await html2canvas(el, {
+          scale: 3, useCORS: true, allowTaint: false, backgroundColor: null, logging: false,
+          width: el.offsetWidth, height: el.offsetHeight,
+          windowWidth: el.offsetWidth, windowHeight: el.offsetHeight
+        })
+        const img = canvas.toDataURL('image/jpeg', 0.95)
+        if (i > 0) pdf.addPage([W, H], 'portrait')
+        pdf.addImage(img, 'JPEG', 0, 0, W, H, undefined, 'FAST')
+      }
+      pdf.save('calcaterra-roma-owners-guide-a6.pdf')
+    } finally {
+      restoreLogos(swapped)
+      btn.disabled = false
+      btn.textContent = orig
     }
-    pdf.save('calcaterra-roma-owners-guide-a6.pdf')
-    btn.disabled = false
-    btn.textContent = orig
   }
 
-  // ── Fullscreen reader · one page at a time, arrow-key navigation ──
-  let readerIndex = 0
+  // ── Fullscreen reader · responsive, zoomable ──
+  let readerIndex = 0, readerZoomLevel = 1
+  const READER_PAGE_W_MM = 105, READER_PAGE_H_MM = 148
+  function pxPerMM() { return 96 / 25.4 } // ~3.78
+  function computeFitScale() {
+    const padX = 200, padY = 160 // room for nav buttons + top/bottom chrome
+    const availW = window.innerWidth - padX
+    const availH = window.innerHeight - padY
+    const pxW = READER_PAGE_W_MM * pxPerMM()
+    const pxH = READER_PAGE_H_MM * pxPerMM()
+    return Math.min(availW / pxW, availH / pxH)
+  }
+  function applyReaderScale() {
+    const fit = computeFitScale()
+    const finalScale = fit * readerZoomLevel
+    document.querySelectorAll('#readerStage > .page').forEach(p => {
+      p.style.transform = `scale(${finalScale})`
+    })
+    document.getElementById('readerZoomLevel').textContent = Math.round(readerZoomLevel * 100) + '%'
+  }
   function openReader() {
     const stage = document.getElementById('readerStage')
     const overlay = document.getElementById('readerOverlay')
@@ -289,7 +375,9 @@ html,body{
       stage.appendChild(clone)
     })
     readerIndex = 0
+    readerZoomLevel = 1
     updateReaderUI()
+    applyReaderScale()
     overlay.classList.add('open')
     document.body.style.overflow = 'hidden'
   }
@@ -307,6 +395,11 @@ html,body{
     readerIndex = next
     updateReaderUI()
   }
+  function readerZoom(delta) {
+    readerZoomLevel = Math.max(0.4, Math.min(3, readerZoomLevel + delta))
+    applyReaderScale()
+  }
+  function readerZoomReset() { readerZoomLevel = 1; applyReaderScale() }
   function updateReaderUI() {
     const pages = document.querySelectorAll('#readerStage > .page')
     document.getElementById('readerCounter').textContent =
@@ -319,6 +412,12 @@ html,body{
     if (e.key === 'ArrowRight') readerStep(1)
     else if (e.key === 'ArrowLeft') readerStep(-1)
     else if (e.key === 'Escape') closeReader()
+    else if (e.key === '+' || e.key === '=') readerZoom(0.15)
+    else if (e.key === '-' || e.key === '_') readerZoom(-0.15)
+    else if (e.key === '0') readerZoomReset()
+  })
+  window.addEventListener('resize', () => {
+    if (document.getElementById('readerOverlay').classList.contains('open')) applyReaderScale()
   })
 </script>
 
