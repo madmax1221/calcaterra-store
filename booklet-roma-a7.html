@@ -77,10 +77,12 @@ html,body{
 }
 .dark .b-num{color:rgba(242,239,233,0.32);}
 .b-eyebrow{
-  font-family:'Montserrat',sans-serif;font-size:4.5px;font-weight:300;
+  font-family:'Montserrat',sans-serif;font-size:5px;font-weight:300;
   letter-spacing:0.55em;color:rgba(26,24,20,0.45);text-transform:uppercase;
   margin-bottom:5px;display:block;
+  padding-bottom:4px;border-bottom:1px solid rgba(26,24,20,0.12);
 }
+.dark .b-eyebrow{border-bottom-color:rgba(242,239,233,0.12);}
 .dark .b-eyebrow{color:rgba(242,239,233,0.45);}
 .b-h1{
   font-family:'Times New Roman',Times,serif;font-size:17.5px;font-weight:300;
@@ -208,12 +210,12 @@ html,body{
 /* Tight overrides for pages V (daily wear) and VI (sizing) where the
    bumped shared styles overflow into the footer. Pulls the note-list /
    step-list / closer back to the compact sizes only on these pages. */
-.page.tight .note-list li{padding:4px 0;font-size:6.2px;line-height:1.55;}
+.page.tight .note-list li{padding:4.5px 0;font-size:6.5px;line-height:1.55;}
 .page.tight .note-list li strong{font-size:5px;margin-bottom:1.5px;}
 .page.tight .step-list{margin-top:1.5mm;}
-.page.tight .step-list li{padding:1.4mm 0;}
+.page.tight .step-list li{padding:1.5mm 0;}
 .page.tight .step-num{font-size:9px;}
-.page.tight .step-text{font-size:6.2px;line-height:1.5;}
+.page.tight .step-text{font-size:6.5px;line-height:1.5;}
 .page.tight .sizing-closer{margin-top:2mm;}
 .page.tight .b-body{line-height:1.55;}
 .page.tight .b-h1{font-size:16px;margin-bottom:4px;}
