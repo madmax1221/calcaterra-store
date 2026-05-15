@@ -225,9 +225,28 @@ html,body{
 @media print {
   html,body{background:#fff;}
   .viewer{padding:0;gap:0;}
-  .viewer-toolbar,.viewer-spacer{display:none !important;}
+  .viewer-toolbar,.viewer-spacer,.reader-overlay,.reader-nav{display:none !important;}
   .page{box-shadow:none;}
 }
+
+/* ── Reader mode · fullscreen, one page at a time ── */
+.viewer-toolbar-btn.alt{background:none;color:#f2efe9;border:1px solid rgba(242,239,233,0.3);margin-right:10px;}
+.viewer-toolbar-btn.alt:hover{background:rgba(242,239,233,0.05);}
+.reader-overlay{position:fixed;inset:0;background:#1a1814;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;}
+.reader-overlay.open{display:flex;}
+.reader-stage{position:relative;display:flex;align-items:center;justify-content:center;height:100%;width:100%;padding:48px 24px;}
+.reader-stage .page{transform:scale(2.4);transform-origin:center;box-shadow:0 16px 64px rgba(0,0,0,0.4);}
+.reader-stage .page:not(.active){display:none;}
+.reader-nav{position:fixed;top:50%;transform:translateY(-50%);width:54px;height:54px;border-radius:50%;background:rgba(242,239,233,0.1);border:1px solid rgba(242,239,233,0.2);color:#f2efe9;cursor:pointer;font-family:'Times New Roman',Times,serif;font-size:22px;display:flex;align-items:center;justify-content:center;z-index:210;transition:background .25s;}
+.reader-nav:hover{background:rgba(242,239,233,0.2);}
+.reader-nav.prev{left:24px;}
+.reader-nav.next{right:24px;}
+.reader-nav:disabled{opacity:0.25;cursor:not-allowed;}
+.reader-counter{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.42em;color:rgba(242,239,233,0.5);z-index:210;}
+.reader-close{position:fixed;top:18px;right:24px;background:none;border:1px solid rgba(242,239,233,0.2);color:rgba(242,239,233,0.7);font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.4em;padding:9px 16px;cursor:pointer;z-index:210;}
+.reader-close:hover{color:#f2efe9;border-color:rgba(242,239,233,0.6);}
+@media (max-width:880px){.reader-stage .page{transform:scale(1.8);}}
+@media (max-width:560px){.reader-stage .page{transform:scale(1.2);}}
 </style>
 </head>
 <body>
@@ -235,10 +254,96 @@ html,body{
 <!-- Toolbar · screen-only -->
 <div class="viewer-toolbar">
   <span class="viewer-toolbar-title">Roma Owner's Guide · A7 (74 × 105 mm)</span>
-  <span class="viewer-toolbar-meta">13 pages · A7 · print at 100%</span>
-  <button class="viewer-toolbar-btn" onclick="window.print()">DOWNLOAD PDF</button>
+  <span class="viewer-toolbar-meta">13 pages</span>
+  <div>
+    <button class="viewer-toolbar-btn alt" onclick="openReader()">READ</button>
+    <button class="viewer-toolbar-btn" onclick="downloadBooklet(this)">DOWNLOAD</button>
+  </div>
 </div>
 <div class="viewer-spacer"></div>
+
+<!-- PDF + canvas libs for one-click download -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Fullscreen reader overlay (populated on open) -->
+<div class="reader-overlay" id="readerOverlay">
+  <button class="reader-close" onclick="closeReader()">CLOSE</button>
+  <button class="reader-nav prev" id="readerPrev" onclick="readerStep(-1)" aria-label="Previous">‹</button>
+  <div class="reader-stage" id="readerStage"></div>
+  <button class="reader-nav next" id="readerNext" onclick="readerStep(1)" aria-label="Next">›</button>
+  <span class="reader-counter" id="readerCounter">01 · 13</span>
+</div>
+
+<script>
+  // ── One-click PDF download ── exact A7 size, one .page per PDF page
+  async function downloadBooklet(btn) {
+    if (!window.jspdf || !window.html2canvas) {
+      alert('PDF libraries are still loading. Please try again in a second.')
+      return
+    }
+    const orig = btn.textContent
+    btn.disabled = true
+    const { jsPDF } = window.jspdf
+    const pages = document.querySelectorAll('.viewer > .page')
+    const W = 74, H = 105 // A7 in millimetres
+    const pdf = new jsPDF({ unit: 'mm', format: [W, H], orientation: 'portrait' })
+    for (let i = 0; i < pages.length; i++) {
+      btn.textContent = `PAGE ${i + 1} / ${pages.length}`
+      const canvas = await html2canvas(pages[i], { scale: 3, useCORS: true, backgroundColor: null, logging: false })
+      const img = canvas.toDataURL('image/jpeg', 0.95)
+      if (i > 0) pdf.addPage([W, H], 'portrait')
+      pdf.addImage(img, 'JPEG', 0, 0, W, H, undefined, 'FAST')
+    }
+    pdf.save('calcaterra-roma-owners-guide-a7.pdf')
+    btn.disabled = false
+    btn.textContent = orig
+  }
+
+  // ── Fullscreen reader · one page at a time, arrow-key navigation ──
+  let readerIndex = 0
+  function openReader() {
+    const stage = document.getElementById('readerStage')
+    const overlay = document.getElementById('readerOverlay')
+    stage.innerHTML = ''
+    document.querySelectorAll('.viewer > .page').forEach((p, i) => {
+      const clone = p.cloneNode(true)
+      if (i === 0) clone.classList.add('active')
+      stage.appendChild(clone)
+    })
+    readerIndex = 0
+    updateReaderUI()
+    overlay.classList.add('open')
+    document.body.style.overflow = 'hidden'
+  }
+  function closeReader() {
+    document.getElementById('readerOverlay').classList.remove('open')
+    document.body.style.overflow = ''
+  }
+  function readerStep(delta) {
+    const pages = document.querySelectorAll('#readerStage > .page')
+    if (!pages.length) return
+    const next = readerIndex + delta
+    if (next < 0 || next >= pages.length) return
+    pages[readerIndex].classList.remove('active')
+    pages[next].classList.add('active')
+    readerIndex = next
+    updateReaderUI()
+  }
+  function updateReaderUI() {
+    const pages = document.querySelectorAll('#readerStage > .page')
+    document.getElementById('readerCounter').textContent =
+      String(readerIndex + 1).padStart(2, '0') + ' · ' + String(pages.length).padStart(2, '0')
+    document.getElementById('readerPrev').disabled = readerIndex === 0
+    document.getElementById('readerNext').disabled = readerIndex === pages.length - 1
+  }
+  document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('readerOverlay').classList.contains('open')) return
+    if (e.key === 'ArrowRight') readerStep(1)
+    else if (e.key === 'ArrowLeft') readerStep(-1)
+    else if (e.key === 'Escape') closeReader()
+  })
+</script>
 
 <div class="viewer">
 
