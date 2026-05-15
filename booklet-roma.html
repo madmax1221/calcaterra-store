@@ -122,13 +122,13 @@ html,body{
 
 /* Logo · used on cover, back cover, and inside page header */
 .b-logo-head{display:flex;align-items:center;gap:6px;}
-.b-logo-head img{height:28px;width:auto;display:block;filter:invert(1);}
+.b-logo-head img{height:28px;width:auto;display:block;filter:invert(1);transform:scale(1.55);transform-origin:left center;}
 .dark .b-logo-head img{filter:none;}
 
 /* Specific page styles */
 .cover{justify-content:space-between;align-items:center;text-align:center;padding:18mm 12mm;}
 .cover-logo-wrap{display:flex;flex-direction:column;align-items:center;gap:6mm;}
-.cover-logo{height:34mm;width:auto;display:block;filter:invert(1);}
+.cover-logo{height:34mm;width:auto;display:block;filter:invert(1);transform:scale(1.3);transform-origin:bottom center;}
 .cover-eyebrow{font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:0.68em;color:rgba(26,24,20,0.5);margin-top:14mm;}
 .cover-title{font-family:'Times New Roman',Times,serif;font-size:30px;font-weight:300;letter-spacing:0.03em;line-height:1.05;color:#1a1814;margin-top:4mm;}
 .cover-title em{font-style:italic;color:rgba(26,24,20,0.4);}
@@ -185,7 +185,7 @@ html,body{
 .signature-sub{font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:0.45em;color:rgba(26,24,20,0.5);margin-top:2mm;text-transform:uppercase;}
 
 .back-cover{justify-content:space-between;align-items:center;text-align:center;}
-.back-cover-logo{height:18mm;width:auto;display:block;}
+.back-cover-logo{height:18mm;width:auto;display:block;transform:scale(1.5);transform-origin:center center;}
 .back-cover-statement{font-family:'Times New Roman',Times,serif;font-size:18px;font-weight:300;line-height:1.25;color:#1a1814;max-width:75mm;}
 .back-cover-statement em{font-style:italic;color:rgba(26,24,20,0.4);}
 .back-cover-footer{font-family:'Montserrat',sans-serif;font-size:7px;letter-spacing:0.62em;color:rgba(26,24,20,0.4);}
