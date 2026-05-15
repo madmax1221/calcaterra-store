@@ -48,7 +48,12 @@ footer{background:#141210;padding:80px 52px 48px;}
 .foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;}
 .foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.3);text-decoration:none;margin-bottom:12px;transition:color .25s;}
 .foot-col a:hover{color:rgba(242,239,233,0.72);}
-.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;gap:24px;flex-wrap:wrap;}
+.foot-legal{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.foot-legal a{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.32em;color:rgba(242,239,233,0.45);text-decoration:none;transition:color .25s;text-transform:uppercase;}
+.foot-legal a:hover{color:rgba(242,239,233,0.85);}
+.foot-legal-sep{font-family:'Times New Roman',Times,serif;color:rgba(242,239,233,0.25);font-size:11px;}
+@media(max-width:560px){.foot-bottom{flex-direction:column-reverse;align-items:flex-start;gap:16px;}}
 .foot-bottom span{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.55);}
 .register-page{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;}
 .register-image{position:relative;overflow:hidden;min-height:100vh;}
@@ -265,9 +270,8 @@ footer{background:#141210;padding:80px 52px 48px;}
     <div class="foot-col">
       <h5>THE HOUSE</h5>
       <a href="/about">Our Story</a>
-      <a href="/about">Philosophy</a>
-      <a href="/terms">Terms of Service</a>
-      <a href="/privacy">Privacy Policy</a>
+      <a href="/philosophy">Philosophy</a>
+      <a href="/join">Join the House</a>
     </div>
     <div class="foot-col">
       <h5>COLLECTIONS</h5>
@@ -278,11 +282,18 @@ footer{background:#141210;padding:80px 52px 48px;}
       <a href="/contact">Contact</a>
       <a href="/warranty">Warranty</a>
       <a href="/shipping">Shipping</a>
-      <a href="/returns">Returns</a><a href="#" onclick="event.preventDefault();window.CalcaterraCookies&&window.CalcaterraCookies.openPreferences();">Cookie Preferences</a>
+      <a href="/returns">Returns</a>
     </div>
   </div>
   <div class="foot-bottom">
     <span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span>
+    <div class="foot-legal">
+      <a href="/terms">Terms of Service</a>
+      <span class="foot-legal-sep">·</span>
+      <a href="/privacy">Privacy</a>
+      <span class="foot-legal-sep">·</span>
+      <a href="#" onclick="event.preventDefault();window.CalcaterraCookies&&window.CalcaterraCookies.openPreferences();">Cookie Preferences</a>
+    </div>
   </div>
 </footer>
 

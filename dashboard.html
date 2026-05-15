@@ -197,7 +197,12 @@ footer{background:#141210;padding:80px 52px 48px;}
 .foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;}
 .foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.3);text-decoration:none;margin-bottom:12px;transition:color .25s;}
 .foot-col a:hover{color:rgba(242,239,233,0.72);}
-.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;gap:24px;flex-wrap:wrap;}
+.foot-legal{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.foot-legal a{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.32em;color:rgba(242,239,233,0.45);text-decoration:none;transition:color .25s;text-transform:uppercase;}
+.foot-legal a:hover{color:rgba(242,239,233,0.85);}
+.foot-legal-sep{font-family:'Times New Roman',Times,serif;color:rgba(242,239,233,0.25);font-size:11px;}
+@media(max-width:560px){.foot-bottom{flex-direction:column-reverse;align-items:flex-start;gap:16px;}}
 .foot-bottom span{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.55);}
 @media(max-width:860px){
   #nav{padding:0 24px;}
@@ -515,11 +520,11 @@ footer{background:#141210;padding:80px 52px 48px;}
       <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
       <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
     </div>
-    <div class="foot-col"><h5>THE HOUSE</h5><a href="/about">Our Story</a><a href="/philosophy">Philosophy</a><a href="/terms">Terms of Service</a><a href="/privacy">Privacy Policy</a></div>
+    <div class="foot-col"><h5>THE HOUSE</h5><a href="/about">Our Story</a><a href="/philosophy">Philosophy</a><a href="/join">Join the House</a></div>
     <div class="foot-col"><h5>COLLECTIONS</h5><a href="/collections/roma">Roma</a></div>
-    <div class="foot-col"><h5>SUPPORT</h5><a href="/contact">Contact</a><a href="/warranty">Warranty</a><a href="/shipping">Shipping</a><a href="/returns">Returns</a><a href="#" onclick="event.preventDefault();window.CalcaterraCookies&&window.CalcaterraCookies.openPreferences();">Cookie Preferences</a></div>
+    <div class="foot-col"><h5>SUPPORT</h5><a href="/contact">Contact</a><a href="/warranty">Warranty</a><a href="/shipping">Shipping</a><a href="/returns">Returns</a></div>
   </div>
-  <div class="foot-bottom"><span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span></div>
+  <div class="foot-bottom"><span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span><div class="foot-legal"><a href="/terms">Terms of Service</a><span class="foot-legal-sep">·</span><a href="/privacy">Privacy</a><span class="foot-legal-sep">·</span><a href="#" onclick="event.preventDefault();window.CalcaterraCookies&&window.CalcaterraCookies.openPreferences();">Cookie Preferences</a></div></div>
 </footer>
 
 <div id="cart-overlay" onclick="closeCartDrawer()"></div>
