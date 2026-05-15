@@ -20,7 +20,8 @@
     { "source": "/forgot-password", "destination": "/forgot-password.html" },
     { "source": "/cal-ops", "destination": "/cal-ops.html" },
     { "source": "/philosophy", "destination": "/philosophy.html" },
-    { "source": "/unsubscribe", "destination": "/unsubscribe.html" }
+    { "source": "/unsubscribe", "destination": "/unsubscribe.html" },
+    { "source": "/join", "destination": "/join.html" }
   ],
   "headers": [
     {
@@ -50,6 +51,7 @@
     { "source": "/signin.html", "destination": "/signin", "permanent": true },
     { "source": "/register.html", "destination": "/register", "permanent": true },
     { "source": "/forgot-password.html", "destination": "/forgot-password", "permanent": true },
-    { "source": "/unsubscribe.html", "destination": "/unsubscribe", "permanent": true }
+    { "source": "/unsubscribe.html", "destination": "/unsubscribe", "permanent": true },
+    { "source": "/join.html", "destination": "/join", "permanent": true }
   ]
 }
