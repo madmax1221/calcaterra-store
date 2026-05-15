@@ -279,21 +279,6 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 footer{background:#141210;padding:80px 52px 48px;}
 .foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
 
-/* Newsletter inline · sits in the empty grid space under THE HOUSE + COLLECTIONS columns
-   (row 1, columns 2-3, anchored to the bottom so it fills the dead space left by the
-   shorter HOUSE/COLLECTIONS link lists while SUPPORT is the tallest column) */
-.foot-newsletter-inline{grid-column:2 / 4;grid-row:1;align-self:end;padding-bottom:4px;}
-.foot-newsletter-label{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.5em;color:rgba(242,239,233,0.45);text-transform:uppercase;display:block;margin-bottom:14px;}
-.foot-newsletter form{position:relative;display:flex;align-items:center;max-width:280px;border-bottom:1px solid rgba(242,239,233,0.18);transition:border-color .35s;}
-.foot-newsletter form:focus-within{border-bottom-color:rgba(242,239,233,0.55);}
-.foot-newsletter input{flex:1;background:none;border:none;outline:none;font-family:'Times New Roman',Times,serif;font-size:13px;font-weight:300;color:rgba(242,239,233,0.9);padding:8px 0;letter-spacing:0.02em;}
-.foot-newsletter input::placeholder{color:rgba(242,239,233,0.25);font-style:italic;}
-.foot-newsletter button{position:absolute;right:0;background:none;border:none;cursor:pointer;color:rgba(242,239,233,0.4);padding:8px 0 8px 12px;font-family:'Times New Roman',Times,serif;font-size:15px;font-weight:300;line-height:1;transition:color .3s,transform .3s;}
-.foot-newsletter button:hover{color:rgba(242,239,233,0.85);transform:translateX(2px);}
-.foot-newsletter-msg{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.32em;color:rgba(242,239,233,0.45);margin-top:10px;min-height:14px;text-transform:uppercase;}
-.foot-newsletter-msg.ok{color:rgba(242,239,233,0.75);}
-.foot-newsletter-msg.err{color:#d9a18a;}
-@media(max-width:860px){.foot-newsletter-inline{grid-column:1 / -1;grid-row:auto;}.foot-newsletter form{margin:0 auto;}}
 .foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
 .foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;letter-spacing:0.04em;color:rgba(242,239,233,0.25);line-height:1.9;max-width:250px;}
 .foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.6);margin-bottom:20px;}
@@ -579,19 +564,9 @@ footer{background:#141210;padding:80px 52px 48px;}
       <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
       <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
     </div>
-    <div class="foot-col"><h5>THE HOUSE</h5><a href="/about">Our Story</a><a href="/philosophy">Philosophy</a></div>
+    <div class="foot-col"><h5>THE HOUSE</h5><a href="/about">Our Story</a><a href="/philosophy">Philosophy</a><a href="/join">Join the House</a></div>
     <div class="foot-col"><h5>COLLECTIONS</h5><a href="/collections/roma">Roma</a></div>
     <div class="foot-col"><h5>SUPPORT</h5><a href="/contact">Contact</a><a href="/warranty">Warranty</a><a href="/shipping">Shipping</a><a href="/returns">Returns</a></div>
-    <div class="foot-newsletter-inline">
-      <span class="foot-newsletter-label">Subscribe to our newsletter</span>
-      <div class="foot-newsletter">
-        <form id="footNewsletter" onsubmit="return footSubscribe(event)">
-          <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
-          <button type="submit" aria-label="Subscribe">→</button>
-        </form>
-        <p class="foot-newsletter-msg" id="footNewsletterMsg"></p>
-      </div>
-    </div>
   </div>
 
   <div class="foot-bottom">
@@ -606,39 +581,6 @@ footer{background:#141210;padding:80px 52px 48px;}
   </div>
 </footer>
 
-<script>
-  // Footer newsletter signup · posts to the existing subscribe-newsletter edge function
-  async function footSubscribe(e) {
-    e.preventDefault()
-    const form = e.target
-    const email = form.email.value.trim()
-    const msgEl = document.getElementById('footNewsletterMsg')
-    msgEl.className = 'foot-newsletter-msg'
-    msgEl.textContent = ''
-    if (!email) return false
-    msgEl.textContent = 'SUBSCRIBING…'
-    try {
-      const res = await fetch('https://tnjuxcdcwcxoipbsowih.supabase.co/functions/v1/subscribe-newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'website' })
-      })
-      const data = await res.json().catch(() => ({}))
-      if (res.ok) {
-        msgEl.className = 'foot-newsletter-msg ok'
-        msgEl.textContent = data.existing ? 'ALREADY ON THE LIST.' : 'WELCOME. CHECK YOUR INBOX.'
-        form.reset()
-      } else {
-        msgEl.className = 'foot-newsletter-msg err'
-        msgEl.textContent = (data?.error || 'COULD NOT SUBSCRIBE. TRY AGAIN.').toUpperCase()
-      }
-    } catch (err) {
-      msgEl.className = 'foot-newsletter-msg err'
-      msgEl.textContent = 'NETWORK ERROR. TRY AGAIN.'
-    }
-    return false
-  }
-</script>
 
 <script>
   const { createClient } = supabase

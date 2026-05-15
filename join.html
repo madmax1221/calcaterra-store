@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Join the House · Calcaterra</title>
+<meta name="description" content="An invitation to those who decided to be here early. A quiet correspondence on new references, atelier moments, and considered releases.">
+<meta property="og:title" content="Join the House · Calcaterra">
+<meta property="og:description" content="An invitation to those who decided to be here early. A quiet correspondence on new references, atelier moments, and considered releases.">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117">
+<meta property="og:url" content="https://calcaterra.co/join">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Calcaterra">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Join the House · Calcaterra">
+<meta name="twitter:description" content="An invitation to those who decided to be here early.">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117">
+<link rel="canonical" href="https://calcaterra.co/join">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:96px;}
+body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;overflow-x:hidden;}
+::-webkit-scrollbar{width:1px;}
+::-webkit-scrollbar-thumb{background:rgba(26,24,20,0.15);}
+::selection{background:rgba(26,24,20,0.08);}
+#nav{position:fixed;top:0;left:0;right:0;z-index:500;height:96px;display:flex;justify-content:space-between;align-items:center;padding:18px 52px;background:rgba(242,239,233,0.95);border-bottom:1px solid rgba(26,24,20,0.07);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.nav-l,.nav-r{display:flex;gap:28px;align-items:center;}
+.nav-center{position:absolute;left:50%;transform:translateX(-50%);}
+.nav-logo-img{height:58px;width:auto;display:block;filter:invert(1);margin-top:4px;}
+.nav-hamburger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:28px;height:28px;background:none;border:none;cursor:pointer;padding:0;}
+.nav-hamburger span{display:block;width:22px;height:1.5px;background:rgba(26,24,20,0.85);transition:transform .35s,opacity .3s;transform-origin:center;}
+.nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+.nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;position:relative;}
+.nav-icon-btn:hover{opacity:1;}
+.nav-icon-btn svg{width:18px;height:18px;stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.cart-wrap{position:relative;}
+#menu-overlay{position:fixed;inset:0;z-index:480;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
+#menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
+#menu-drawer{position:fixed;top:0;left:0;bottom:0;width:300px;background:#f2efe9;z-index:490;transform:translateX(-100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;padding:120px 48px 60px;}
+#menu-drawer.open{transform:translateX(0);}
+.drawer-nav{display:flex;flex-direction:column;flex:1;}
+.drawer-nav a{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;letter-spacing:0.03em;color:#1a1814;text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(26,24,20,0.07);opacity:0;transform:translateX(-16px);transition:opacity .4s,transform .4s,color .2s;}
+.drawer-nav a:hover{color:rgba(26,24,20,0.4);}
+#menu-drawer.open .drawer-nav a{opacity:1;transform:translateX(0);}
+#menu-drawer.open .drawer-nav a:nth-child(1){transition-delay:.07s;}
+#menu-drawer.open .drawer-nav a:nth-child(2){transition-delay:.13s;}
+#menu-drawer.open .drawer-nav a:nth-child(3){transition-delay:.19s;}
+#menu-drawer.open .drawer-nav a:nth-child(4){transition-delay:.25s;}
+#menu-drawer.open .drawer-nav a:nth-child(5){transition-delay:.31s;}
+.drawer-footer{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.55);}
+.cart-badge{position:absolute;top:-5px;right:-6px;width:14px;height:14px;border-radius:50%;background:#1a1814;font-family:'Montserrat',sans-serif;font-size:7px;font-weight:500;color:#f2efe9;display:none;align-items:center;justify-content:center;}
+#account-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:498;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
+#account-overlay.open{background:rgba(26,24,20,0.35);pointer-events:all;}
+#account-drawer{position:fixed;top:96px;right:0;bottom:0;width:360px;background:#f2efe9;z-index:499;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.07);}
+#account-drawer.open{transform:translateX(0);}
+.acct-out{padding:52px 44px;display:flex;flex-direction:column;gap:28px;flex:1;}
+.acct-out-eyebrow{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.65em;color:rgba(26,24,20,0.55);display:block;}
+.acct-out-heading{font-family:'Times New Roman',Times,serif;font-size:clamp(26px,3vw,34px);font-weight:300;line-height:1.2;letter-spacing:0.03em;color:#1a1814;}
+.acct-out-heading em{font-style:italic;color:rgba(26,24,20,0.38);}
+.acct-out-body{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.08em;line-height:2;color:rgba(26,24,20,0.5);}
+.acct-out-btn{display:block;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.58em;padding:17px;text-align:center;text-decoration:none;transition:background .25s,color .25s,border-color .25s;}
+.acct-out-btn-primary{background:#1a1814;color:#f2efe9;border:1px solid #1a1814;}
+.acct-out-btn-primary:hover{background:#2a2620;}
+.acct-out-btn-secondary{background:none;color:rgba(26,24,20,0.55);border:1px solid rgba(26,24,20,0.18);}
+.acct-out-btn-secondary:hover{border-color:rgba(26,24,20,0.4);color:#1a1814;}
+.acct-in{display:flex;flex-direction:column;flex:1;}
+.acct-in-header{padding:44px 44px 36px;border-bottom:1px solid rgba(26,24,20,0.06);}
+.acct-in-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+.acct-in-label{font-family:'Montserrat',sans-serif;font-size:6.5px;font-weight:300;letter-spacing:0.65em;color:rgba(26,24,20,0.4);}
+.acct-in-name{font-family:'Times New Roman',Times,serif;font-size:34px;font-weight:300;letter-spacing:0.02em;color:#1a1814;display:block;line-height:1.1;margin-bottom:8px;}
+.acct-in-sub{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.28em;color:rgba(26,24,20,0.45);display:block;}
+.acct-in-nav{display:flex;flex-direction:column;flex:1;padding:8px 0;}
+.acct-in-item{position:relative;display:flex;justify-content:space-between;align-items:center;font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.62);text-decoration:none;padding:19px 44px;border-bottom:1px solid rgba(26,24,20,0.05);transition:color .25s ease;}
+.acct-in-item:hover{color:#1a1814;}
+.acct-in-arrow{opacity:0;font-size:10px;letter-spacing:0;transition:opacity .25s,transform .25s;transform:translateX(-4px);}
+.acct-in-item:hover .acct-in-arrow{opacity:0.4;transform:translateX(0);}
+.acct-in-admin{border-top:2px solid rgba(26,24,20,0.09);margin-top:6px;color:rgba(26,24,20,0.85);}
+.acct-in-footer{padding:32px 44px;border-top:1px solid rgba(26,24,20,0.05);flex-shrink:0;}
+.acct-in-signout{background:none;border:none;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.48em;color:rgba(26,24,20,0.55);cursor:pointer;transition:color .25s;padding:0;}
+#cart-overlay{position:fixed;inset:0;z-index:494;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
+#cart-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
+#cart-drawer{position:fixed;top:96px;right:0;bottom:0;z-index:495;width:420px;background:#f2efe9;transform:translateX(100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;border-left:1px solid rgba(26,24,20,0.08);}
+#cart-drawer.open{transform:translateX(0);}
+.cd-header{padding:36px 40px 28px;border-bottom:1px solid rgba(26,24,20,0.07);display:flex;justify-content:space-between;align-items:flex-start;flex-shrink:0;}
+.cd-eyebrow{font-size:9px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.55);font-family:'Montserrat',sans-serif;display:block;margin-bottom:6px;}
+.cd-title{font-family:'Times New Roman',Times,serif;font-size:26px;font-weight:300;letter-spacing:0.02em;color:#1a1814;line-height:1;}
+.cd-title em{font-style:italic;color:rgba(26,24,20,0.3);}
+.cd-close{background:none;border:none;cursor:pointer;padding:4px;margin-top:2px;opacity:0.35;transition:opacity .2s;font-family:'Times New Roman',Times,serif;font-size:22px;color:#1a1814;line-height:1;}
+.cd-close:hover{opacity:0.8;}
+.cd-items{flex:1;overflow-y:auto;padding:32px 40px;}
+.cd-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:12px;}
+.cd-footer{padding:28px 40px 36px;border-top:1px solid rgba(26,24,20,0.07);flex-shrink:0;background:#f2efe9;display:flex;flex-direction:column;}
+.cd-subtotal{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:28px;}
+.cd-subtotal-label{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.55);}
+.cd-subtotal-value{font-family:'Times New Roman',Times,serif;font-size:26px;font-weight:300;color:#1a1814;}
+.cd-note{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.55);margin-bottom:24px;display:block;}
+.cd-btn-checkout{width:100%;padding:18px 0;background:#1a1814;color:#f2efe9;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;border:none;cursor:pointer;text-align:center;transition:background .25s,letter-spacing .3s;display:block;text-decoration:none;margin-bottom:14px;}
+.cd-btn-checkout:hover{background:#2d2a25;letter-spacing:0.65em;}
+.cd-btn-cart{width:100%;padding:14px 0;background:none;color:rgba(26,24,20,0.55);font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.5em;border:1px solid rgba(26,24,20,0.1);cursor:pointer;text-align:center;transition:border-color .25s,color .25s;display:block;text-decoration:none;}
+.cd-btn-cart:hover{border-color:rgba(26,24,20,0.3);color:rgba(26,24,20,0.7);}
+@media(max-width:860px){#account-drawer{width:100%;top:96px;}}
+@media(max-width:480px){#cart-drawer{width:100%;}.cd-header{padding:28px 24px 20px;}.cd-items{padding:24px;}.cd-footer{padding:20px 24px 28px;}}
+#cal-search-overlay{position:fixed;inset:0;z-index:600;background:rgba(242,239,233,0.98);backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity 0.35s ease;display:flex;flex-direction:column;align-items:center;padding-top:120px;}
+#cal-search-overlay.open{opacity:1;pointer-events:all;}
+.cal-search-wrap{width:100%;max-width:640px;padding:0 24px;}
+.cal-search-input-row{display:flex;align-items:center;border-bottom:1px solid rgba(26,24,20,0.2);padding-bottom:16px;gap:16px;}
+.cal-search-icon-svg{width:18px;height:18px;stroke:rgba(26,24,20,0.4);fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0;}
+#cal-search-input{flex:1;background:none;border:none;outline:none;font-family:'Times New Roman',Times,serif;font-size:32px;font-weight:300;color:#1a1814;letter-spacing:0.02em;}
+#cal-search-input::placeholder{color:rgba(26,24,20,0.18);}
+.cal-search-close{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;opacity:.5;transition:opacity .2s;flex-shrink:0;}
+.cal-search-close:hover{opacity:1;}
+.cal-search-close svg{width:18px;height:18px;stroke:#1a1814;fill:none;stroke-width:1.8;stroke-linecap:round;}
+.cal-search-hint{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.4em;color:rgba(26,24,20,0.55);text-align:center;margin-top:48px;}
+
+/* ── Page-specific styles ─────────────────────────────────────── */
+.page-hero{padding:180px 52px 80px;max-width:900px;margin:0 auto;text-align:center;}
+.page-eyebrow{font-family:'Montserrat',sans-serif;font-size:10.5px;font-weight:300;letter-spacing:0.72em;color:rgba(26,24,20,0.55);display:block;margin-bottom:32px;}
+.page-title{font-size:clamp(42px,6vw,86px);font-weight:300;line-height:1.08;letter-spacing:0.04em;color:#1a1814;margin-bottom:48px;}
+.page-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.page-intro{font-size:clamp(17px,2vw,22px);font-weight:300;line-height:1.8;letter-spacing:0.02em;color:rgba(26,24,20,0.65);max-width:620px;margin:0 auto;font-style:italic;}
+.hairline-h{width:80px;height:1px;background:rgba(26,24,20,0.09);margin:60px auto;}
+
+.story-section{padding:60px 52px 80px;max-width:780px;margin:0 auto;text-align:center;}
+.story-label{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.55);display:block;margin-bottom:28px;}
+.story-heading{font-size:clamp(28px,3.5vw,42px);font-weight:300;line-height:1.25;letter-spacing:0.03em;color:#1a1814;margin-bottom:32px;}
+.story-heading em{font-style:italic;color:rgba(26,24,20,0.4);}
+.story-body{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;letter-spacing:0.08em;line-height:2.1;color:rgba(26,24,20,0.6);max-width:560px;margin:0 auto;}
+
+/* Benefits · three-item Roman numeral list */
+.benefits{padding:80px 52px 100px;max-width:780px;margin:0 auto;}
+.benefits-header{text-align:center;margin-bottom:64px;}
+.benefits-eyebrow{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.55);display:block;margin-bottom:20px;text-transform:uppercase;}
+.benefits-title{font-size:clamp(28px,3.4vw,40px);font-weight:300;letter-spacing:0.025em;color:#1a1814;}
+.benefits-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.benefit{display:grid;grid-template-columns:60px 1fr;gap:32px;padding:32px 0;border-top:1px solid rgba(26,24,20,0.08);align-items:start;}
+.benefit:last-child{border-bottom:1px solid rgba(26,24,20,0.08);}
+.benefit-num{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:36px;font-weight:300;color:rgba(26,24,20,0.3);letter-spacing:0.02em;line-height:1;}
+.benefit-content h3{font-family:'Times New Roman',Times,serif;font-size:22px;font-weight:300;letter-spacing:0.02em;color:#1a1814;margin-bottom:10px;}
+.benefit-content h3 em{font-style:italic;color:rgba(26,24,20,0.45);}
+.benefit-content p{font-family:'Montserrat',sans-serif;font-size:12.5px;font-weight:300;letter-spacing:0.05em;line-height:2;color:rgba(26,24,20,0.65);}
+
+/* CTA closing section · two side-by-side options */
+.cta-section{background:#141210;padding:120px 52px;}
+.cta-header{text-align:center;max-width:680px;margin:0 auto 64px;}
+.cta-eyebrow{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.58em;color:rgba(242,239,233,0.45);display:block;margin-bottom:20px;text-transform:uppercase;}
+.cta-title{font-size:clamp(32px,4vw,52px);font-weight:300;line-height:1.15;letter-spacing:0.025em;color:#f2efe9;}
+.cta-title em{font-style:italic;color:rgba(242,239,233,0.4);}
+.cta-cards{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(242,239,233,0.08);max-width:980px;margin:0 auto;}
+.cta-card{background:#141210;padding:56px 48px;display:flex;flex-direction:column;}
+.cta-card-label{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.62em;color:rgba(242,239,233,0.4);text-transform:uppercase;display:block;margin-bottom:18px;}
+.cta-card-title{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;line-height:1.2;letter-spacing:0.02em;color:#f2efe9;margin-bottom:14px;}
+.cta-card-title em{font-style:italic;color:rgba(242,239,233,0.45);}
+.cta-card-body{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.06em;line-height:2;color:rgba(242,239,233,0.55);margin-bottom:32px;flex:1;}
+.cta-form{position:relative;display:flex;align-items:center;border-bottom:1px solid rgba(242,239,233,0.25);transition:border-color .35s;margin-bottom:14px;}
+.cta-form:focus-within{border-bottom-color:rgba(242,239,233,0.7);}
+.cta-form input{flex:1;background:none;border:none;outline:none;font-family:'Times New Roman',Times,serif;font-size:15px;font-weight:300;color:rgba(242,239,233,0.92);padding:12px 0;letter-spacing:0.02em;}
+.cta-form input::placeholder{color:rgba(242,239,233,0.28);font-style:italic;}
+.cta-form button{position:absolute;right:0;background:none;border:none;cursor:pointer;color:rgba(242,239,233,0.5);padding:12px 0 12px 16px;font-family:'Times New Roman',Times,serif;font-size:18px;font-weight:300;line-height:1;transition:color .3s,transform .3s;}
+.cta-form button:hover{color:rgba(242,239,233,0.95);transform:translateX(3px);}
+.cta-msg{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.32em;color:rgba(242,239,233,0.45);min-height:14px;text-transform:uppercase;margin-bottom:8px;}
+.cta-msg.ok{color:rgba(242,239,233,0.78);}
+.cta-msg.err{color:#d9a18a;}
+.cta-card-btn{display:inline-block;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:400;letter-spacing:0.6em;color:#1a1814;background:#f2efe9;border:none;cursor:pointer;padding:20px 0;text-align:center;text-decoration:none;text-transform:uppercase;transition:background .25s,letter-spacing .3s;margin-top:auto;}
+.cta-card-btn:hover{background:#fff;letter-spacing:0.72em;}
+.cta-card-note{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:13px;color:rgba(242,239,233,0.4);margin-top:14px;text-align:center;}
+
+/* Closing statement */
+.closing{padding:140px 52px;text-align:center;}
+.closing-label{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.58em;color:rgba(26,24,20,0.55);display:block;margin-bottom:32px;}
+.closing-statement{font-size:clamp(32px,4.5vw,60px);font-weight:300;line-height:1.15;letter-spacing:0.03em;color:#1a1814;}
+.closing-statement em{font-style:italic;color:rgba(26,24,20,0.35);}
+
+footer{background:#141210;padding:80px 52px 48px;}
+.foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
+.foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
+.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;font-weight:400;letter-spacing:0.04em;color:rgba(242,239,233,0.2);line-height:1.9;max-width:250px;}
+.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;}
+.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.4);text-decoration:none;margin-bottom:12px;transition:color .25s;}
+.foot-col a:hover{color:rgba(242,239,233,0.8);}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;gap:24px;flex-wrap:wrap;}
+.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.55);}
+.foot-legal{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.foot-legal a{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.32em;color:rgba(242,239,233,0.45);text-decoration:none;transition:color .25s;text-transform:uppercase;}
+.foot-legal a:hover{color:rgba(242,239,233,0.85);}
+.foot-legal-sep{font-family:'Times New Roman',Times,serif;color:rgba(242,239,233,0.25);font-size:11px;}
+
+.fade{opacity:0;transform:translateY(28px);transition:opacity 1s ease,transform 1s ease;}
+.fade.in{opacity:1;transform:translateY(0);}
+.fade-d1{transition-delay:.1s;}
+.fade-d2{transition-delay:.2s;}
+.fade-d3{transition-delay:.3s;}
+.fade-d4{transition-delay:.4s;}
+
+@media(max-width:860px){
+  #nav{padding:0 24px;}
+  .page-hero{padding:140px 24px 60px;}
+  .story-section{padding:40px 24px 60px;}
+  .benefits{padding:40px 24px 80px;}
+  .benefit{grid-template-columns:44px 1fr;gap:18px;padding:24px 0;}
+  .benefit-num{font-size:28px;}
+  .benefit-content h3{font-size:18px;}
+  .cta-section{padding:80px 24px;}
+  .cta-cards{grid-template-columns:1fr;}
+  .cta-card{padding:48px 32px;}
+  .closing{padding:80px 24px;}
+  footer{padding:48px 24px 36px;}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:32px;}
+}
+@media(max-width:560px){.foot-bottom{flex-direction:column-reverse;align-items:flex-start;gap:16px;}}
+@media(max-width:480px){
+  .page-hero{padding:120px 24px 48px;}
+}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Join the House · Calcaterra","description":"An invitation to those who decided to be here early.","url":"https://calcaterra.co/join"}</script>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-l">
+    <button class="nav-hamburger" id="menuToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-center">
+    <a href="/"><img class="nav-logo-img" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/></a>
+  </div>
+  <div class="nav-r">
+    <button class="nav-icon-btn" id="calSearchBtn" aria-label="Search">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+    </button>
+    <button class="nav-icon-btn" id="accountToggle" aria-label="Account">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    </button>
+    <div class="cart-wrap">
+      <button class="nav-icon-btn" id="cartToggle" aria-label="Cart" onclick="openCartDrawer()">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </button>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </div>
+  </div>
+</nav>
+
+<div id="menu-overlay"></div>
+<div id="menu-drawer">
+  <nav class="drawer-nav">
+    <a href="/collections">Collection</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    <a href="/join">Join the House</a>
+  </nav>
+  <span class="drawer-footer">CALCATERRA</span>
+</div>
+
+<div id="account-overlay"></div>
+<div id="account-drawer">
+  <div id="accountContent" style="display:flex;flex-direction:column;flex:1;">
+    <div class="acct-out">
+      <span class="acct-out-eyebrow">Your Collection.</span>
+      <h2 class="acct-out-heading">Managed with <em>precision.</em></h2>
+      <p class="acct-out-body">Access your registered timepieces and ownership records.</p>
+      <a href="/signin" class="acct-out-btn acct-out-btn-primary">SIGN IN</a>
+      <a href="/register" class="acct-out-btn acct-out-btn-secondary">CREATE ACCOUNT</a>
+    </div>
+  </div>
+</div>
+
+<div id="cart-overlay" onclick="closeCartDrawer()"></div>
+<div id="cart-drawer">
+  <div class="cd-header">
+    <div class="cd-title-wrap">
+      <span class="cd-eyebrow">YOUR SELECTION</span>
+      <h2 class="cd-title">Cart <em>summary.</em></h2>
+    </div>
+    <button class="cd-close" onclick="closeCartDrawer()" aria-label="Close">&times;</button>
+  </div>
+  <div class="cd-items" id="cd-items"></div>
+  <div class="cd-empty" id="cd-empty" style="display:none;">
+    <h3 style="font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;margin-bottom:8px;">Nothing here.</h3>
+    <p style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.2em;color:rgba(26,24,20,0.4);">YOUR CART IS EMPTY.</p>
+  </div>
+  <div class="cd-footer" id="cd-footer">
+    <div class="cd-subtotal">
+      <span class="cd-subtotal-label">SUBTOTAL</span>
+      <span class="cd-subtotal-value" id="cd-subtotal-val">&euro;0</span>
+    </div>
+    <span class="cd-note">SHIPPING &amp; TAXES CALCULATED AT CHECKOUT</span>
+    <button class="cd-btn-checkout" onclick="window.location.href='/checkout'">PROCEED TO CHECKOUT</button>
+    <button class="cd-btn-cart" onclick="window.location.href='/cart'">VIEW FULL CART</button>
+  </div>
+</div>
+
+<div id="cal-search-overlay">
+  <div class="cal-search-wrap">
+    <div class="cal-search-input-row">
+      <svg class="cal-search-icon-svg" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+      <input type="text" id="cal-search-input" placeholder="Search timepieces..." autocomplete="off">
+      <button class="cal-search-close" id="cal-search-close">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="cal-search-results"></div>
+  <p class="cal-search-hint">ESC TO CLOSE</p>
+</div>
+
+<!-- HERO -->
+<section class="page-hero">
+  <span class="page-eyebrow fade">AN INVITATION</span>
+  <h1 class="page-title fade fade-d1">Join the <em>House.</em></h1>
+  <p class="page-intro fade fade-d2">A short note on what it means to be among the first.</p>
+</section>
+
+<div class="hairline-h"></div>
+
+<!-- STORY -->
+<section class="story-section">
+  <span class="story-label fade">A QUIET CORRESPONDENCE</span>
+  <h2 class="story-heading fade fade-d1">No club. No tier.<br><em>A short list.</em></h2>
+  <p class="story-body fade fade-d2">
+    Calcaterra began with a single conviction: that an object made deliberately can outlast the moment it was made in. There is nothing to subscribe to in the usual sense. No membership card. No fee. No marketing schedule.
+    <br><br>
+    But there is a list. A quiet correspondence with those who decided to be here early, before the rest of the world knew the house existed. Infrequent. Considered. Never sold to anyone.
+  </p>
+</section>
+
+<!-- BENEFITS -->
+<section class="benefits">
+  <div class="benefits-header fade">
+    <span class="benefits-eyebrow">Three good reasons</span>
+    <h2 class="benefits-title">What it <em>means.</em></h2>
+  </div>
+
+  <div class="benefit fade fade-d1">
+    <span class="benefit-num">I.</span>
+    <div class="benefit-content">
+      <h3>Early <em>access.</em></h3>
+      <p>References reach you before they reach the site. New colorways, new pieces, the first to know. By the time anyone else has heard, you have already decided.</p>
+    </div>
+  </div>
+
+  <div class="benefit fade fade-d2">
+    <span class="benefit-num">II.</span>
+    <div class="benefit-content">
+      <h3>The <em>correspondence.</em></h3>
+      <p>Atelier notes, editorial moments, and considered releases, sent only when there is something worth saying. No campaigns. No frequency targets. Nothing that fills your inbox.</p>
+    </div>
+  </div>
+
+  <div class="benefit fade fade-d3">
+    <span class="benefit-num">III.</span>
+    <div class="benefit-content">
+      <h3>A permanent <em>record.</em></h3>
+      <p>An account links your timepieces to your name in our records. Your warranty, your activation codes, your ownership, kept against the day they matter. Optional, recommended, never required.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA · two ways in -->
+<section class="cta-section">
+  <div class="cta-header">
+    <span class="cta-eyebrow">Two ways to stay close</span>
+    <h2 class="cta-title">Choose the one <em>that fits.</em></h2>
+  </div>
+  <div class="cta-cards">
+    <!-- Card 1 · newsletter only -->
+    <div class="cta-card">
+      <span class="cta-card-label">The list</span>
+      <h3 class="cta-card-title">Join the <em>correspondence.</em></h3>
+      <p class="cta-card-body">An email address is all we ask. We write infrequently, never sell the list, and you can leave at any time.</p>
+      <form class="cta-form" id="joinNewsletter" onsubmit="return joinSubscribe(event)">
+        <input type="email" name="email" placeholder="your@email.com" required autocomplete="email">
+        <button type="submit" aria-label="Subscribe">→</button>
+      </form>
+      <p class="cta-msg" id="joinMsg"></p>
+    </div>
+
+    <!-- Card 2 · full account -->
+    <div class="cta-card">
+      <span class="cta-card-label">The record</span>
+      <h3 class="cta-card-title">Open an <em>account.</em></h3>
+      <p class="cta-card-body">The full membership. Watch registration, warranty management, order history, and ownership records kept in your name, permanently.</p>
+      <a href="/register" class="cta-card-btn">CREATE ACCOUNT</a>
+      <p class="cta-card-note">Already with us? <a href="/signin" style="color:rgba(242,239,233,0.8);text-decoration:none;border-bottom:1px solid rgba(242,239,233,0.3);">Sign in.</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="closing">
+  <span class="closing-label fade">CALCATERRA</span>
+  <h2 class="closing-statement fade fade-d1">Decided <em>once.</em><br>Kept indefinitely.</h2>
+</section>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <img class="foot-logo" style="filter:invert(1) brightness(0.6);" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117" alt="Calcaterra"/>
+      <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
+      <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
+    </div>
+    <div class="foot-col"><h5>THE HOUSE</h5><a href="/about">Our Story</a><a href="/philosophy">Philosophy</a><a href="/join">Join the House</a></div>
+    <div class="foot-col"><h5>COLLECTIONS</h5><a href="/collections/roma">Roma</a></div>
+    <div class="foot-col"><h5>SUPPORT</h5><a href="/contact">Contact</a><a href="/warranty">Warranty</a><a href="/shipping">Shipping</a><a href="/returns">Returns</a></div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 CALCATERRA. ALL RIGHTS RESERVED.</span>
+    <div class="foot-legal">
+      <a href="/terms">Terms of Service</a>
+      <span class="foot-legal-sep">·</span>
+      <a href="/privacy">Privacy</a>
+      <span class="foot-legal-sep">·</span>
+      <a href="#" onclick="event.preventDefault();window.CalcaterraCookies&&window.CalcaterraCookies.openPreferences();">Cookie Preferences</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const { createClient } = supabase
+  const _supabase = createClient(
+    'https://tnjuxcdcwcxoipbsowih.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
+  )
+
+  async function initAuth() {
+    const { data: { session } } = await _supabase.auth.getSession()
+    if (!session) return
+    const { data: customer } = await _supabase.from('customers').select('first_name, last_name, id, role').eq('auth_user_id', session.user.id).single()
+    const firstName = customer?.first_name || session.user.user_metadata?.first_name || session.user.email?.split('@')[0] || 'Member'
+    const lastName = customer?.last_name || session.user.user_metadata?.last_name || ''
+    const name = `${firstName} ${lastName}`.trim()
+    const isAdmin = customer?.role === 'admin' || session.user.app_metadata?.role === 'admin'
+    document.getElementById('accountContent').innerHTML = `
+      <div class="acct-in">
+        <div class="acct-in-header">
+          <div class="acct-in-top"><span class="acct-in-label">CALCATERRA</span></div>
+          <span class="acct-in-name">${name}.</span>
+          <span class="acct-in-sub">Managed with precision.</span>
+        </div>
+        <nav class="acct-in-nav">
+          <a href="/dashboard?tab=orders" class="acct-in-item">ORDERS <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard?tab=register" class="acct-in-item">WATCH REGISTRATION <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard?tab=watches" class="acct-in-item">WARRANTY <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard?tab=addresses" class="acct-in-item">ADDRESSES <span class="acct-in-arrow">→</span></a>
+          <a href="/dashboard?tab=details" class="acct-in-item">ACCOUNT DETAILS <span class="acct-in-arrow">→</span></a>
+          ${isAdmin ? '<a href="/cal-ops" class="acct-in-item acct-in-admin">CAL OPS <span class="acct-in-arrow">→</span></a>' : ''}
+        </nav>
+        <div class="acct-in-footer">
+          <button id="signOutBtn" class="acct-in-signout">SIGN OUT</button>
+        </div>
+      </div>`
+    setTimeout(() => {
+      const btn = document.getElementById('signOutBtn')
+      if (btn) btn.addEventListener('click', async () => {
+        localStorage.removeItem('cal_cart')
+        await _supabase.auth.signOut()
+        window.location.reload()
+      })
+    }, 100)
+  }
+
+  function updateCartBadge() {
+    const cart = JSON.parse(localStorage.getItem('cal_cart') || '[]')
+    const total = cart.reduce((sum, item) => sum + item.quantity, 0)
+    const badge = document.getElementById('cartBadge')
+    if (badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none' }
+  }
+
+  function _anyDrawerOpen() {
+    return document.getElementById('menu-drawer').classList.contains('open') ||
+           document.getElementById('account-drawer').classList.contains('open') ||
+           document.getElementById('cart-drawer').classList.contains('open')
+  }
+
+  async function openCartDrawer() {
+    const { data: { session } } = await _supabase.auth.getSession()
+    if (!session) { openAccount(); return }
+    closeAccount()
+    document.getElementById('menu-drawer').classList.remove('open')
+    document.getElementById('menu-overlay').classList.remove('open')
+    document.getElementById('menuToggle').classList.remove('open')
+    document.getElementById('cart-drawer').classList.add('open')
+    document.getElementById('cart-overlay').classList.add('open')
+    document.body.style.overflow = 'hidden'
+  }
+  function closeCartDrawer() {
+    document.getElementById('cart-drawer').classList.remove('open')
+    document.getElementById('cart-overlay').classList.remove('open')
+    if (!_anyDrawerOpen()) document.body.style.overflow = ''
+  }
+  function toggleMenu() {
+    const toggle = document.getElementById('menuToggle')
+    const drawer = document.getElementById('menu-drawer')
+    const overlay = document.getElementById('menu-overlay')
+    const opening = !drawer.classList.contains('open')
+    if (opening) { closeAccount(); closeCartDrawer() }
+    toggle.classList.toggle('open')
+    drawer.classList.toggle('open')
+    overlay.classList.toggle('open')
+    if (opening) document.body.style.overflow = 'hidden'
+    else if (!_anyDrawerOpen()) document.body.style.overflow = ''
+  }
+  function openAccount() {
+    closeCartDrawer()
+    document.getElementById('menu-drawer').classList.remove('open')
+    document.getElementById('menu-overlay').classList.remove('open')
+    document.getElementById('menuToggle').classList.remove('open')
+    document.getElementById('account-drawer').classList.add('open')
+    document.getElementById('account-overlay').classList.add('open')
+    document.body.style.overflow = 'hidden'
+  }
+  function closeAccount() {
+    document.getElementById('account-drawer').classList.remove('open')
+    document.getElementById('account-overlay').classList.remove('open')
+    if (!_anyDrawerOpen()) document.body.style.overflow = ''
+  }
+  function openSearch() {
+    document.getElementById('cal-search-overlay').classList.add('open')
+    document.body.style.overflow = 'hidden'
+    setTimeout(() => document.getElementById('cal-search-input').focus(), 100)
+  }
+  function closeSearch() {
+    document.getElementById('cal-search-overlay').classList.remove('open')
+    document.body.style.overflow = ''
+    document.getElementById('cal-search-input').value = ''
+  }
+
+  // Newsletter subscribe (Join page)
+  async function joinSubscribe(e) {
+    e.preventDefault()
+    const form = e.target
+    const email = form.email.value.trim()
+    const msgEl = document.getElementById('joinMsg')
+    msgEl.className = 'cta-msg'
+    msgEl.textContent = ''
+    if (!email) return false
+    msgEl.textContent = 'SUBSCRIBING…'
+    try {
+      const res = await fetch('https://tnjuxcdcwcxoipbsowih.supabase.co/functions/v1/subscribe-newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'join_page' })
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok) {
+        msgEl.className = 'cta-msg ok'
+        msgEl.textContent = data.existing ? 'ALREADY ON THE LIST.' : 'WELCOME. CHECK YOUR INBOX.'
+        form.reset()
+      } else {
+        msgEl.className = 'cta-msg err'
+        msgEl.textContent = (data?.error || 'COULD NOT SUBSCRIBE. TRY AGAIN.').toUpperCase()
+      }
+    } catch (err) {
+      msgEl.className = 'cta-msg err'
+      msgEl.textContent = 'NETWORK ERROR. TRY AGAIN.'
+    }
+    return false
+  }
+
+  function reveal() {
+    document.querySelectorAll('.fade:not(.in)').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight - 80) el.classList.add('in')
+    })
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initAuth()
+    updateCartBadge()
+    document.getElementById('menuToggle').addEventListener('click', toggleMenu)
+    document.getElementById('menu-overlay').addEventListener('click', toggleMenu)
+    document.getElementById('accountToggle').addEventListener('click', e => {
+      e.stopPropagation()
+      document.getElementById('account-drawer').classList.contains('open') ? closeAccount() : openAccount()
+    })
+    document.getElementById('account-overlay').addEventListener('click', closeAccount)
+    document.getElementById('calSearchBtn').addEventListener('click', e => { e.stopPropagation(); openSearch() })
+    document.getElementById('cal-search-close').addEventListener('click', closeSearch)
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSearch(); closeCartDrawer() } })
+    setTimeout(reveal, 300)
+    window.addEventListener('scroll', reveal, { passive: true })
+  })
+</script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>
