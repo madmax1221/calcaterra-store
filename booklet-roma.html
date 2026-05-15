@@ -154,6 +154,10 @@ html,body{
 .dark .step-num{color:rgba(242,239,233,0.5);}
 .dark .step-text{color:rgba(242,239,233,0.78);}
 .dark .step-text em{color:#f2efe9;}
+/* Inline links in step text · subtle underline so the dashboard link is discoverable */
+.step-text a{color:inherit;text-decoration:none;border-bottom:1px solid rgba(242,239,233,0.4);padding-bottom:1px;transition:border-color .25s,color .25s;}
+.step-text a:hover{border-bottom-color:#f2efe9;color:#f2efe9;}
+.step-text a em{font-style:italic;color:#f2efe9;}
 
 .diagram{
   border:1px solid rgba(26,24,20,0.18);padding:8mm 6mm;margin:6mm 0;
@@ -336,6 +340,20 @@ html,body{
         const img = canvas.toDataURL('image/jpeg', 0.95)
         if (i > 0) pdf.addPage([W, H], 'portrait')
         pdf.addImage(img, 'JPEG', 0, 0, W, H, undefined, 'FAST')
+        // Overlay clickable link annotations for any <a href> inside this page
+        const pageRect = el.getBoundingClientRect()
+        const mmPerPx = W / pageRect.width
+        el.querySelectorAll('a[href]').forEach(a => {
+          const r = a.getBoundingClientRect()
+          if (!r.width || !r.height) return
+          pdf.link(
+            (r.left - pageRect.left) * mmPerPx,
+            (r.top - pageRect.top) * mmPerPx,
+            r.width * mmPerPx,
+            r.height * mmPerPx,
+            { url: a.href }
+          )
+        })
       }
       pdf.save('calcaterra-roma-owners-guide-a6.pdf')
     } finally {
@@ -677,8 +695,8 @@ html,body{
     Registration is optional but recommended. It links this timepiece permanently to your account. Useful for warranty claims, resale, and proof of ownership.
   </p>
   <ol class="step-list">
-    <li><span class="step-num">I.</span><span class="step-text">Sign in or create an account at calcaterra.co</span></li>
-    <li><span class="step-num">II.</span><span class="step-text">Open the dashboard, choose <em>Watch Registration.</em></span></li>
+    <li><span class="step-num">I.</span><span class="step-text">Sign in or create an account at <a href="https://calcaterra.co/signin" target="_blank">calcaterra.co</a></span></li>
+    <li><span class="step-num">II.</span><span class="step-text">Open the dashboard, choose <a href="https://calcaterra.co/dashboard?tab=register" target="_blank"><em>Watch Registration.</em></a></span></li>
     <li><span class="step-num">III.</span><span class="step-text">Enter the activation code printed on the card included in the box. The format is CALR-XXXX-XXXX.</span></li>
     <li><span class="step-num">IV.</span><span class="step-text">The watch will now appear under <em>Warranties</em> in your dashboard.</span></li>
   </ol>
