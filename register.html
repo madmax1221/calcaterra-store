@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Create Account — Calcaterra</title>
+<title>Create Account · Calcaterra</title>
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -98,7 +98,7 @@ footer{background:#141210;padding:80px 52px 48px;}
 .auth-benefit-num{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.32);min-width:20px;flex-shrink:0;}
 .auth-benefit-text{font-family:'Times New Roman',Times,serif;font-size:14.5px;color:rgba(26,24,20,0.72);line-height:1.75;letter-spacing:0.005em;}
 .auth-benefit-text em{font-style:italic;color:rgba(26,24,20,0.45);}
-/* Password strength meter — minimal, on-brand */
+/* Password strength meter, minimal, on-brand */
 .pw-strength{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
 .pw-strength-track{display:flex;gap:4px;}
 .pw-strength-seg{flex:1;height:2px;background:rgba(26,24,20,0.08);transition:background .35s ease;}
@@ -303,7 +303,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     if (session) window.location.href = '/'
   })
 
-  // Password strength scoring — 0 to 4 buckets:
+  // Password strength scoring, 0 to 4 buckets:
   // 0 empty | 1 too short / one class | 2 two classes | 3 three classes | 4 long + four classes
   function scorePassword(pw) {
     if (!pw) return 0
@@ -408,7 +408,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       }).catch(err => console.error('Welcome email failed:', err))
     }
 
-    // Switch to "check your inbox" success state — stay on the page
+    // Switch to "check your inbox" success state, stay on the page
     document.getElementById('register-form').style.display = 'none'
     document.getElementById('register-intro').style.display = 'none'
     document.getElementById('register-success-email').textContent = email

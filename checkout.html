@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Checkout — Calcaterra</title>
+<title>Checkout · Calcaterra</title>
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -72,7 +72,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 
 /* PAYFAST SECTION */
 /* ═══════════════════════════════════════════════════════════
-   PAYFAST INTEGRATION ZONE — REPLACE THIS ENTIRE BLOCK
+   PAYFAST INTEGRATION ZONE, REPLACE THIS ENTIRE BLOCK
    Steps to wire PayFast:
    1. Create a Supabase Edge Function that builds the PayFast
       signed payment URL with your merchant_id + merchant_key
@@ -160,9 +160,9 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
   </div>
   <div class="checkout-steps">
     <span class="step active" id="step-info">INFORMATION</span>
-    <span class="step-sep">—</span>
+    <span class="step-sep">·</span>
     <span class="step" id="step-shipping">SHIPPING</span>
-    <span class="step-sep">—</span>
+    <span class="step-sep">·</span>
     <span class="step" id="step-payment">PAYMENT</span>
   </div>
 </nav>
@@ -305,7 +305,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
       <span class="section-eyebrow">STEP 02</span>
       <h2 class="section-title">Shipping <em>Method.</em></h2>
       <div class="saved-info">
-        <div><span class="saved-info-label">DELIVERING TO</span><span class="saved-info-value" id="saved-addr-display">—</span></div>
+        <div><span class="saved-info-label">DELIVERING TO</span><span class="saved-info-value" id="saved-addr-display">·</span></div>
         <button class="saved-info-edit" onclick="goToStep('info')">EDIT</button>
       </div>
       <div class="shipping-options">
@@ -313,7 +313,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
           <input type="radio" name="shipping" value="standard" checked>
           <div style="flex:1;">
             <span class="shipping-option-label">STANDARD SHIPPING</span>
-            <span class="shipping-option-sub">7–14 Business Days</span>
+            <span class="shipping-option-sub">7-14 Business Days</span>
           </div>
           <span class="shipping-option-price">Complimentary</span>
         </div>
@@ -327,12 +327,12 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
       <span class="section-eyebrow">STEP 03</span>
       <h2 class="section-title">Payment <em>Details.</em></h2>
       <div class="saved-info">
-        <div><span class="saved-info-label">DELIVERING TO</span><span class="saved-info-value" id="saved-addr-display2">—</span></div>
+        <div><span class="saved-info-label">DELIVERING TO</span><span class="saved-info-value" id="saved-addr-display2">·</span></div>
         <button class="saved-info-edit" onclick="goToStep('info')">EDIT</button>
       </div>
 
       <!-- ═══════════════════════════════════════════════════════════
-           PAYFAST INTEGRATION ZONE — REPLACE THIS ENTIRE BLOCK
+           PAYFAST INTEGRATION ZONE, REPLACE THIS ENTIRE BLOCK
            Steps to wire PayFast:
            1. Create a Supabase Edge Function that builds the PayFast
               signed payment URL with merchant_id + merchant_key
@@ -360,13 +360,13 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
       <div class="confirmation-icon">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <span class="confirmation-order" id="conf-order-num">ORDER —</span>
+      <span class="confirmation-order" id="conf-order-num">ORDER ·</span>
       <h2 class="confirmation-title">Decision <em>made.</em></h2>
       <p class="confirmation-sub">Your order has been received. A confirmation will be sent to your email.</p>
-      <div class="confirmation-detail"><span class="confirmation-detail-label">EMAIL</span><span class="confirmation-detail-value" id="conf-email">—</span></div>
-      <div class="confirmation-detail"><span class="confirmation-detail-label">SHIPPING TO</span><span class="confirmation-detail-value" id="conf-addr">—</span></div>
+      <div class="confirmation-detail"><span class="confirmation-detail-label">EMAIL</span><span class="confirmation-detail-value" id="conf-email">·</span></div>
+      <div class="confirmation-detail"><span class="confirmation-detail-label">SHIPPING TO</span><span class="confirmation-detail-value" id="conf-addr">·</span></div>
       <div class="confirmation-detail"><span class="confirmation-detail-label">SHIPPING METHOD</span><span class="confirmation-detail-value">Standard · Complimentary</span></div>
-      <div class="confirmation-detail"><span class="confirmation-detail-label">ESTIMATED DELIVERY</span><span class="confirmation-detail-value">7–14 Business Days</span></div>
+      <div class="confirmation-detail"><span class="confirmation-detail-label">ESTIMATED DELIVERY</span><span class="confirmation-detail-value">7-14 Business Days</span></div>
       <a href="/" class="confirmation-cta">RETURN HOME</a>
     </div>
 
@@ -377,13 +377,13 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
     <span class="summary-header">YOUR ORDER</span>
     <div id="summaryItems"></div>
     <div class="summary-rows">
-      <div class="summary-row"><span class="summary-row-label">SUBTOTAL</span><span class="summary-row-value" id="summarySubtotal">—</span></div>
+      <div class="summary-row"><span class="summary-row-label">SUBTOTAL</span><span class="summary-row-value" id="summarySubtotal">·</span></div>
       <div class="summary-row"><span class="summary-row-label">SHIPPING</span><span class="summary-row-value">Complimentary</span></div>
       <div class="summary-row"><span class="summary-row-label">DUTIES & TAXES</span><span class="summary-row-value">Included</span></div>
     </div>
     <div class="summary-total">
       <span class="summary-total-label">Total <em>Due.</em></span>
-      <span class="summary-total-value" id="summaryTotal">—</span>
+      <span class="summary-total-value" id="summaryTotal">·</span>
     </div>
     <div class="summary-assurances">
       <div class="assurance-item"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="assurance-text">2 YEAR INTERNATIONAL WARRANTY</span></div>
@@ -601,7 +601,7 @@ btn.textContent = 'PROCESSING...'
       ;(variantData || []).forEach(v => { variantMap[v.name.toLowerCase().replace('roma ', '')] = v.id })
       const { data: productData } = await _supabase.from('products').select('id').eq('slug', 'roma').single()
 
-      // Use SECURITY DEFINER RPC — bypasses RLS for both guests and logged-in users
+      // Use SECURITY DEFINER RPC, bypasses RLS for both guests and logged-in users
       const items = cartItems.map(item => ({
         product_id: productData?.id || null,
         variant_id: variantMap[item.variantKey] || null,
@@ -618,7 +618,7 @@ btn.textContent = 'PROCESSING...'
       orderId = newOrderId
 
       // Auto-subscribe the buyer to the newsletter (soft opt-in under GDPR PECR
-      // Article 13 — same-product/similar-product communications are permitted
+      // Article 13, same-product/similar-product communications are permitted
       // for customers, and unsubscribe is one click from every email).
       if (email) {
         const firstName = currentCustomer?.first_name

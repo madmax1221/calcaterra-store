@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="robots" content="noindex,nofollow"/>
-<title>Unsubscribe — Calcaterra</title>
+<title>Unsubscribe · Calcaterra</title>
 <meta name="description" content="Manage your Calcaterra newsletter subscription.">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -45,7 +45,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 </style>
 </head>
 <body>
-<a href="/" class="un-brand" aria-label="Calcaterra — Home">
+<a href="/" class="un-brand" aria-label="Calcaterra · Home">
   <img class="un-brand-logo" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/>
   <span class="un-mark">CALCATERRA</span>
 </a>
@@ -134,7 +134,7 @@ async function doUnsubscribe() {
   if (result.ok) setState('done')
   else {
     setState('confirm')
-    showErr('confirm', 'Could not unsubscribe — please try again or contact support')
+    showErr('confirm', 'Could not unsubscribe, please try again or contact support')
   }
 }
 
@@ -146,7 +146,7 @@ async function manualUnsubscribe() {
   if (result.ok) setState('done')
   else {
     setState('ask')
-    showErr('ask', 'Could not unsubscribe — please try again or contact support')
+    showErr('ask', 'Could not unsubscribe, please try again or contact support')
   }
 }
 

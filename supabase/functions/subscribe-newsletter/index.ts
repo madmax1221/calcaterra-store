@@ -70,7 +70,7 @@ serve(async (req) => {
         headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           from, to: [email],
-          subject: existing ? 'You\'re already on the list — Calcaterra' : 'Welcome to Calcaterra',
+          subject: existing ? 'You\'re already on the list · Calcaterra' : 'Welcome to Calcaterra',
           html,
         }),
       })
@@ -79,7 +79,7 @@ serve(async (req) => {
         try {
           await admin.from('email_log').insert([{
             recipient: email,
-            subject: existing ? 'You\'re already on the list — Calcaterra' : 'Welcome to Calcaterra',
+            subject: existing ? 'You\'re already on the list · Calcaterra' : 'Welcome to Calcaterra',
             provider_id: rJson.id ?? null,
             meta: { kind: 'newsletter_welcome' },
           }])

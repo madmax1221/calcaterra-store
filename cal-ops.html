@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#141210"/>
 <link rel="manifest" href="/manifest.json"/>
 <link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117"/>
-<title>CAL·OPS — Calcaterra Operations</title>
+<title>CAL·OPS · Calcaterra Operations</title>
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -270,15 +270,15 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
           <button onclick="document.getElementById('notif-prompt').style.display='none'" style="background:none;border:none;color:rgba(242,239,233,0.3);cursor:pointer;font-size:14px;">×</button>
         </div>
         <div class="stats-grid">
-          <div class="stat-card"><span class="stat-card-label">TOTAL ORDERS</span><div class="stat-card-value" id="stat-total-orders">—</div><span class="stat-card-sub"><span id="stat-today-orders">—</span> TODAY</span></div>
-          <div class="stat-card urgent" id="stat-pending-card"><span class="stat-card-label">PENDING ORDERS</span><div class="stat-card-value" id="stat-pending">—</div><span class="stat-card-sub">NEEDS ATTENTION</span></div>
-          <div class="stat-card"><span class="stat-card-label">TOTAL REVENUE</span><div class="stat-card-value" id="stat-revenue">—</div><span class="stat-card-sub"><span id="stat-today-revenue">—</span> TODAY</span></div>
-          <div class="stat-card"><span class="stat-card-label">TOTAL CUSTOMERS</span><div class="stat-card-value" id="stat-customers">—</div><span class="stat-card-sub">REGISTERED ACCOUNTS</span></div>
+          <div class="stat-card"><span class="stat-card-label">TOTAL ORDERS</span><div class="stat-card-value" id="stat-total-orders">·</div><span class="stat-card-sub"><span id="stat-today-orders">·</span> TODAY</span></div>
+          <div class="stat-card urgent" id="stat-pending-card"><span class="stat-card-label">PENDING ORDERS</span><div class="stat-card-value" id="stat-pending">·</div><span class="stat-card-sub">NEEDS ATTENTION</span></div>
+          <div class="stat-card"><span class="stat-card-label">TOTAL REVENUE</span><div class="stat-card-value" id="stat-revenue">·</div><span class="stat-card-sub"><span id="stat-today-revenue">·</span> TODAY</span></div>
+          <div class="stat-card"><span class="stat-card-label">TOTAL CUSTOMERS</span><div class="stat-card-value" id="stat-customers">·</div><span class="stat-card-sub">REGISTERED ACCOUNTS</span></div>
         </div>
         <div class="stats-grid-2">
-          <div class="stat-card"><span class="stat-card-label">ACTIVE WARRANTIES</span><div class="stat-card-value" id="stat-warranties">—</div><span class="stat-card-sub">REGISTERED WATCHES</span></div>
-          <div class="stat-card"><span class="stat-card-label">AVAILABLE CODES</span><div class="stat-card-value" id="stat-codes">—</div><span class="stat-card-sub">UNASSIGNED IN STOCK</span></div>
-          <div class="stat-card"><span class="stat-card-label">UNACTIVATED CODES</span><div class="stat-card-value" id="stat-unactivated">—</div><span class="stat-card-sub">AWAITING REGISTRATION</span></div>
+          <div class="stat-card"><span class="stat-card-label">ACTIVE WARRANTIES</span><div class="stat-card-value" id="stat-warranties">·</div><span class="stat-card-sub">REGISTERED WATCHES</span></div>
+          <div class="stat-card"><span class="stat-card-label">AVAILABLE CODES</span><div class="stat-card-value" id="stat-codes">·</div><span class="stat-card-sub">UNASSIGNED IN STOCK</span></div>
+          <div class="stat-card"><span class="stat-card-label">UNACTIVATED CODES</span><div class="stat-card-value" id="stat-unactivated">·</div><span class="stat-card-sub">AWAITING REGISTRATION</span></div>
         </div>
         <div class="ops-section-header"><div><span class="ops-section-eyebrow">GEOGRAPHY</span><h2 class="ops-section-title">Orders by <em>Country.</em></h2></div></div>
         <div class="country-list" id="country-list"><div class="ops-loading">LOADING DATA...</div></div>
@@ -389,8 +389,8 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
           </div>
         </div>
         <div class="stats-grid-2" style="margin-bottom:32px;">
-          <div class="stat-card"><span class="stat-card-label">TOTAL SUBSCRIBERS</span><div class="stat-card-value" id="stat-subscribers">—</div><span class="stat-card-sub">ACTIVE LIST</span></div>
-          <div class="stat-card"><span class="stat-card-label">NEW THIS WEEK</span><div class="stat-card-value" id="stat-subscribers-week">—</div><span class="stat-card-sub">LAST 7 DAYS</span></div>
+          <div class="stat-card"><span class="stat-card-label">TOTAL SUBSCRIBERS</span><div class="stat-card-value" id="stat-subscribers">·</div><span class="stat-card-sub">ACTIVE LIST</span></div>
+          <div class="stat-card"><span class="stat-card-label">NEW THIS WEEK</span><div class="stat-card-value" id="stat-subscribers-week">·</div><span class="stat-card-sub">LAST 7 DAYS</span></div>
         </div>
         <!-- COMPOSE BROADCAST -->
         <div id="compose-box" style="display:none;background:#141210;border:1px solid rgba(242,239,233,0.08);padding:32px 40px;margin-bottom:32px;">
@@ -412,7 +412,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
                   <input type="text" id="compose-subject" class="ops-input" placeholder="A new chapter at Calcaterra" style="width:100%;">
                 </div>
                 <div>
-                  <label class="cmp-label">MESSAGE BODY <span style="opacity:.5;">— HTML SUPPORTED (&lt;p&gt;, &lt;strong&gt;, &lt;a href=&quot;&quot;&gt;, &lt;em&gt;, &lt;br&gt;)</span></label>
+                  <label class="cmp-label">MESSAGE BODY <span style="opacity:.5;">· HTML SUPPORTED (&lt;p&gt;, &lt;strong&gt;, &lt;a href=&quot;&quot;&gt;, &lt;em&gt;, &lt;br&gt;)</span></label>
                   <textarea id="compose-body" class="ops-input" rows="9" placeholder="Write your story. Each paragraph should be wrapped in <p>...</p> or separated by blank lines." style="width:100%;background:#0e0d0b;color:#f2efe9;border:1px solid rgba(242,239,233,0.1);padding:16px;font-family:'Montserrat',sans-serif;font-size:12px;resize:vertical;line-height:1.7;"></textarea>
                 </div>
               </div>
@@ -426,21 +426,21 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
               </div>
               <div style="display:flex;flex-direction:column;gap:14px;">
                 <div>
-                  <label class="cmp-label">PREVIEW TEXT <span style="opacity:.5;">— shown in inbox preview pane, max ~90 chars</span></label>
+                  <label class="cmp-label">PREVIEW TEXT <span style="opacity:.5;">· shown in inbox preview pane, max ~90 chars</span></label>
                   <input type="text" id="compose-preview" class="ops-input" placeholder="A short teaser to lure them in." style="width:100%;">
                 </div>
                 <div style="display:flex;gap:14px;flex-wrap:wrap;">
                   <div style="flex:1;min-width:200px;">
-                    <label class="cmp-label">EYEBROW <span style="opacity:.5;">— small label above headline</span></label>
+                    <label class="cmp-label">EYEBROW <span style="opacity:.5;">· small label above headline</span></label>
                     <input type="text" id="compose-eyebrow" class="ops-input" placeholder="A NEW CHAPTER" style="width:100%;">
                   </div>
                   <div style="flex:1;min-width:200px;">
-                    <label class="cmp-label">SIGN-OFF <span style="opacity:.5;">— italic line at end</span></label>
+                    <label class="cmp-label">SIGN-OFF <span style="opacity:.5;">· italic line at end</span></label>
                     <input type="text" id="compose-signoff" class="ops-input" placeholder="Designed once. Worn indefinitely." style="width:100%;">
                   </div>
                 </div>
                 <div>
-                  <label class="cmp-label">HEADLINE OVERRIDE <span style="opacity:.5;">— uses Subject if left blank. Use &lt;em&gt; for italic phrasing.</span></label>
+                  <label class="cmp-label">HEADLINE OVERRIDE <span style="opacity:.5;">· uses Subject if left blank. Use &lt;em&gt; for italic phrasing.</span></label>
                   <input type="text" id="compose-headline" class="ops-input" placeholder="The first chapter. <em>Complete.</em>" style="width:100%;">
                 </div>
               </div>
@@ -450,10 +450,10 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
             <div>
               <div style="display:flex;align-items:baseline;gap:12px;border-bottom:1px solid rgba(242,239,233,0.06);padding-bottom:10px;margin-bottom:18px;">
                 <span class="ops-section-eyebrow">HERO IMAGE</span>
-                <span style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.18em;color:rgba(242,239,233,0.25);">OPTIONAL — APPEARS BELOW HEADER</span>
+                <span style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.18em;color:rgba(242,239,233,0.25);">OPTIONAL, APPEARS BELOW HEADER</span>
               </div>
               <div>
-                <label class="cmp-label">IMAGE URL <span style="opacity:.5;">— full URL to a hosted image (calcaterra.co/images/... or Resend-friendly host)</span></label>
+                <label class="cmp-label">IMAGE URL <span style="opacity:.5;">· full URL to a hosted image (calcaterra.co/images/... or Resend-friendly host)</span></label>
                 <input type="url" id="compose-hero" class="ops-input" placeholder="https://calcaterra.co/images/roma-v1.jpg" style="width:100%;">
               </div>
             </div>
@@ -480,7 +480,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
             <div>
               <div style="display:flex;align-items:baseline;gap:12px;border-bottom:1px solid rgba(242,239,233,0.06);padding-bottom:10px;margin-bottom:18px;">
                 <span class="ops-section-eyebrow">PRODUCT FEATURE</span>
-                <span style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.18em;color:rgba(242,239,233,0.25);">OPTIONAL — APPEARS AFTER BODY</span>
+                <span style="font-family:'Montserrat',sans-serif;font-size:8px;letter-spacing:0.18em;color:rgba(242,239,233,0.25);">OPTIONAL, APPEARS AFTER BODY</span>
               </div>
               <div style="display:flex;flex-direction:column;gap:14px;">
                 <div>
@@ -529,7 +529,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
                 <input type="email" id="compose-test-to" class="ops-input" placeholder="Test send to (your email)" style="flex:1;min-width:200px;">
                 <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="sendBroadcastTest()">SEND TEST</button>
                 <span style="flex:1;"></span>
-                <button class="ops-btn ops-btn-primary" onclick="sendBroadcastAll()" id="broadcast-send-btn">SEND <span id="broadcast-count">—</span></button>
+                <button class="ops-btn ops-btn-primary" onclick="sendBroadcastAll()" id="broadcast-send-btn">SEND <span id="broadcast-count">·</span></button>
               </div>
               <div id="compose-status" style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.3em;color:rgba(242,239,233,0.5);margin-top:14px;"></div>
             </div>
@@ -565,7 +565,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
     <div class="ops-modal-header">
       <div>
         <span style="font-size:7px;letter-spacing:0.5em;color:rgba(242,239,233,0.3);display:block;margin-bottom:8px;">ORDER DETAIL</span>
-        <h2 class="ops-modal-title" id="modal-order-num">Order <em>#—</em></h2>
+        <h2 class="ops-modal-title" id="modal-order-num">Order <em>#·</em></h2>
       </div>
       <button class="ops-modal-close" onclick="closeModal()">×</button>
     </div>
@@ -573,29 +573,29 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
       <div class="ops-modal-section">
         <span class="ops-modal-section-label">CUSTOMER DETAILS</span>
         <div class="ops-detail-grid">
-          <div><span class="ops-detail-item-label">NAME</span><span class="ops-detail-item-value" id="modal-customer-name">—</span></div>
-          <div><span class="ops-detail-item-label">EMAIL</span><span class="ops-detail-item-value" id="modal-customer-email">—</span></div>
+          <div><span class="ops-detail-item-label">NAME</span><span class="ops-detail-item-value" id="modal-customer-name">·</span></div>
+          <div><span class="ops-detail-item-label">EMAIL</span><span class="ops-detail-item-value" id="modal-customer-email">·</span></div>
         </div>
       </div>
       <div class="ops-modal-section">
         <span class="ops-modal-section-label">SHIPPING ADDRESS</span>
         <div class="ops-detail-grid">
-          <div><span class="ops-detail-item-label">ADDRESS</span><span class="ops-detail-item-value" id="modal-addr-line">—</span></div>
-          <div><span class="ops-detail-item-label">CITY</span><span class="ops-detail-item-value" id="modal-addr-city">—</span></div>
-          <div><span class="ops-detail-item-label">PROVINCE / STATE</span><span class="ops-detail-item-value" id="modal-addr-province">—</span></div>
-          <div><span class="ops-detail-item-label">COUNTRY</span><span class="ops-detail-item-value" id="modal-addr-country">—</span></div>
-          <div><span class="ops-detail-item-label">POSTAL CODE</span><span class="ops-detail-item-value" id="modal-addr-postal">—</span></div>
+          <div><span class="ops-detail-item-label">ADDRESS</span><span class="ops-detail-item-value" id="modal-addr-line">·</span></div>
+          <div><span class="ops-detail-item-label">CITY</span><span class="ops-detail-item-value" id="modal-addr-city">·</span></div>
+          <div><span class="ops-detail-item-label">PROVINCE / STATE</span><span class="ops-detail-item-value" id="modal-addr-province">·</span></div>
+          <div><span class="ops-detail-item-label">COUNTRY</span><span class="ops-detail-item-value" id="modal-addr-country">·</span></div>
+          <div><span class="ops-detail-item-label">POSTAL CODE</span><span class="ops-detail-item-value" id="modal-addr-postal">·</span></div>
         </div>
       </div>
       <div class="ops-modal-section"><span class="ops-modal-section-label">ORDER ITEMS</span><div id="modal-items"></div></div>
       <div class="ops-modal-section">
         <span class="ops-modal-section-label">ORDER INFO</span>
         <div class="ops-detail-grid">
-          <div><span class="ops-detail-item-label">ORDER TOTAL</span><span class="ops-detail-item-value" id="modal-total">—</span></div>
-          <div><span class="ops-detail-item-label">PAYMENT STATUS</span><span class="ops-detail-item-value" id="modal-payment">—</span></div>
-          <div><span class="ops-detail-item-label">ORDER STATUS</span><span class="ops-detail-item-value" id="modal-status">—</span></div>
-          <div><span class="ops-detail-item-label">ORDER DATE</span><span class="ops-detail-item-value" id="modal-date">—</span></div>
-          <div><span class="ops-detail-item-label">NOTES</span><span class="ops-detail-item-value" id="modal-notes">—</span></div>
+          <div><span class="ops-detail-item-label">ORDER TOTAL</span><span class="ops-detail-item-value" id="modal-total">·</span></div>
+          <div><span class="ops-detail-item-label">PAYMENT STATUS</span><span class="ops-detail-item-value" id="modal-payment">·</span></div>
+          <div><span class="ops-detail-item-label">ORDER STATUS</span><span class="ops-detail-item-value" id="modal-status">·</span></div>
+          <div><span class="ops-detail-item-label">ORDER DATE</span><span class="ops-detail-item-value" id="modal-date">·</span></div>
+          <div><span class="ops-detail-item-label">NOTES</span><span class="ops-detail-item-value" id="modal-notes">·</span></div>
         </div>
       </div>
       <div class="ops-modal-section" id="modal-code-section" style="display:none;">
@@ -610,7 +610,7 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
         </div>
         <div id="modal-tracking-display" style="margin-top:12px;display:none;">
           <span style="font-size:7px;letter-spacing:0.4em;color:rgba(242,239,233,0.3);">TRACKING: </span>
-          <span style="font-size:13px;font-weight:400;color:#a78bfa;" id="modal-tracking-value">—</span>
+          <span style="font-size:13px;font-weight:400;color:#a78bfa;" id="modal-tracking-value">·</span>
         </div>
       </div>
     </div>
@@ -802,8 +802,8 @@ async function loadDashboard() {
   document.getElementById('recent-orders-body').innerHTML = recent.length ? recent.map(o => `
     <tr onclick="openOrder('${o.id}')">
       <td style="font-family:'Times New Roman',serif;font-size:13px;">CAL-${o.id.slice(0,8).toUpperCase()}</td>
-      <td>${o.customer_id ? '—' : 'Guest'}</td>
-      <td><span class="variant-tag">—</span></td>
+      <td>${o.customer_id ? '·' : 'Guest'}</td>
+      <td><span class="variant-tag">·</span></td>
       <td>€${parseFloat(o.total).toFixed(0)}</td>
       <td><span class="status-pill status-${o.status}">${o.status.toUpperCase()}</span></td>
       <td>${new Date(o.created_at).toLocaleDateString('en-ZA')}</td>
@@ -863,8 +863,8 @@ function startRealtimeOrders() {
   orderChannel = _supabase.channel('new-orders-' + Date.now())
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'orders' }, payload => {
       playCashRegister()
-      sendLocalNotification('New Order!', `CAL-${payload.new.id.slice(0,8).toUpperCase()} — €${parseFloat(payload.new.total).toFixed(0)}`, 'new-order')
-      toast('NEW ORDER — CAL-' + payload.new.id.slice(0,8).toUpperCase())
+      sendLocalNotification('New Order!', `CAL-${payload.new.id.slice(0,8).toUpperCase()}, €${parseFloat(payload.new.total).toFixed(0)}`, 'new-order')
+      toast('NEW ORDER, CAL-' + payload.new.id.slice(0,8).toUpperCase())
       loadDashboard()
       loadOrders()
       const badge = document.getElementById('pending-badge')
@@ -885,7 +885,7 @@ function renderOrders(orders) {
       ? `${o.customer_first_name || ''} ${o.customer_last_name || ''}`.trim() : 'Guest'
     return `<tr onclick="openOrder('${o.id}')">
       <td style="font-family:'Times New Roman',serif;font-size:13px;">CAL-${o.id.slice(0,8).toUpperCase()}</td>
-      <td>${name}</td><td style="font-size:10px;">${o.customer_email || '—'}</td>
+      <td>${name}</td><td style="font-size:10px;">${o.customer_email || '·'}</td>
       <td><span class="variant-tag">ROMA WATCH</span></td>
       <td>€${parseFloat(o.total).toFixed(0)}</td>
       <td><span class="status-pill status-${o.status}">${o.status.toUpperCase()}</span></td>
@@ -915,15 +915,15 @@ async function openOrder(id) {
   const customer = order.customers
   document.getElementById('modal-order-num').innerHTML = `Order <em>#CAL-${id.slice(0,8).toUpperCase()}</em>`
   document.getElementById('modal-customer-name').textContent = customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Guest'
-  document.getElementById('modal-customer-email').textContent = customer?.email || '—'
-  document.getElementById('modal-addr-line').textContent = addr.line1 || '—'
-  document.getElementById('modal-addr-city').textContent = addr.city || '—'
-  document.getElementById('modal-addr-province').textContent = addr.province || '—'
-  document.getElementById('modal-addr-country').textContent = addr.country || '—'
-  document.getElementById('modal-addr-postal').textContent = addr.postal_code || '—'
+  document.getElementById('modal-customer-email').textContent = customer?.email || '·'
+  document.getElementById('modal-addr-line').textContent = addr.line1 || '·'
+  document.getElementById('modal-addr-city').textContent = addr.city || '·'
+  document.getElementById('modal-addr-province').textContent = addr.province || '·'
+  document.getElementById('modal-addr-country').textContent = addr.country || '·'
+  document.getElementById('modal-addr-postal').textContent = addr.postal_code || '·'
   document.getElementById('modal-total').textContent = '€' + parseFloat(order.total).toFixed(2)
   document.getElementById('modal-payment').innerHTML = order.payment_verified_at
-    ? `<span style="color:#4ade80;">✓ VERIFIED</span> <span style="font-size:9px;letter-spacing:0.18em;color:rgba(242,239,233,0.5);display:block;margin-top:4px;">${esc(order.payment_method || 'unknown')} · ${esc(order.payment_reference || '—')}</span>`
+    ? `<span style="color:#4ade80;">✓ VERIFIED</span> <span style="font-size:9px;letter-spacing:0.18em;color:rgba(242,239,233,0.5);display:block;margin-top:4px;">${esc(order.payment_method || 'unknown')} · ${esc(order.payment_reference || '·')}</span>`
     : `<span style="color:#fbbf24;">⚠ AWAITING VERIFICATION</span>`
   document.getElementById('modal-status').innerHTML = `<span class="status-pill status-${order.status}">${order.status.toUpperCase()}</span>`
   document.getElementById('modal-date').textContent = new Date(order.created_at).toLocaleString('en-ZA')
@@ -977,7 +977,7 @@ async function openOrder(id) {
         </div>
         <div style="display:flex;gap:0;">
           <select class="ops-input ops-select item-code-select" data-item-id="${item.id}" style="flex:1;" onchange="onCodeSelectChange(this)">
-            <option value="">— SELECT ${variant.toUpperCase()} CODE —</option>
+            <option value="">· SELECT ${variant.toUpperCase()} CODE ·</option>
             ${matchingCodes.map(c => `<option value="${c.id}">${c.activation_code}</option>`).join('')}
           </select>
           <button class="ops-btn ops-btn-confirm ops-btn-sm" onclick="assignItemCode(this, '${item.id}', '${id}')">ASSIGN</button>
@@ -1036,7 +1036,7 @@ async function assignItemCode(btn, itemId, orderId) {
   await _supabase.from('warranties').update({ status: 'unactivated', order_id: orderId }).eq('id', codeId)
   document.querySelectorAll('.item-code-select').forEach(sel => { Array.from(sel.options).forEach(opt => { if (opt.value === codeId) opt.remove() }) })
   row.innerHTML = `<div style="padding:16px 0;border-bottom:1px solid rgba(242,239,233,0.05);"><span style="font-size:9px;letter-spacing:0.3em;color:#4ade80;">✓ ASSIGNED: ${codeData.activation_code}</span></div>`
-  toast('Code assigned — ' + codeData.activation_code)
+  toast('Code assigned, ' + codeData.activation_code)
   loadOrders()
 }
 
@@ -1045,7 +1045,7 @@ function closeModal() {
   currentOrder = null
 }
 
-// Confirm-order dialog — manual payment verification before flipping the order
+// Confirm-order dialog, manual payment verification before flipping the order
 // to 'confirmed' and firing the customer email. When a real gateway (Stripe)
 // is wired later, the webhook will fill these fields automatically and skip
 // this dialog.
@@ -1157,7 +1157,7 @@ async function markShipped(id) {
   const { error } = await _supabase.from('orders').update(updates).eq('id', id)
   if (error) { toast('Error', 'error'); return }
   if (tracking) await sendShippingEmail(id, tracking)
-  toast('Marked as shipped — customer notified')
+  toast('Marked as shipped, customer notified')
   closeModal()
   loadOrders()
   loadDashboard()
@@ -1195,7 +1195,7 @@ async function generateCodes() {
   const { error } = await _supabase.from('warranties').insert(newCodes)
   if (error) { toast('Error: ' + error.message, 'error'); return }
   document.getElementById('generated-codes-preview').style.display = 'block'
-  document.getElementById('gen-preview-label').textContent = `${qty} CODES GENERATED — ${collection.toUpperCase()} / ${variant.toUpperCase()}`
+  document.getElementById('gen-preview-label').textContent = `${qty} CODES GENERATED, ${collection.toUpperCase()} / ${variant.toUpperCase()}`
   const dotClass = { black: 'dot-black', navy: 'dot-navy', silver: 'dot-silver' }
   document.getElementById('codes-preview-list').innerHTML = newCodes.map(c => `<div class="code-preview-item"><span>${c.activation_code}</span><div class="variant-dot ${dotClass[variant]}"></div></div>`).join('')
   toast(`${qty} codes generated`)
@@ -1223,11 +1223,11 @@ function renderCodes(codes) {
     <tr>
       <td style="font-family:monospace;font-size:12px;letter-spacing:0.08em;">${c.activation_code}</td>
       <td><span class="variant-tag" style="background:rgba(242,239,233,0.06);">${(c.collection || 'roma').toUpperCase()}</span></td>
-      <td><span class="variant-tag">${(c.variant || '—').toUpperCase()}</span></td>
+      <td><span class="variant-tag">${(c.variant || '·').toUpperCase()}</span></td>
       <td><span class="status-pill status-${c.status}">${c.status.toUpperCase()}</span></td>
-      <td style="font-size:10px;">${c.order_id ? 'CAL-' + c.order_id.slice(0,8).toUpperCase() : '—'}</td>
+      <td style="font-size:10px;">${c.order_id ? 'CAL-' + c.order_id.slice(0,8).toUpperCase() : '·'}</td>
       <td>${new Date(c.created_at).toLocaleDateString('en-ZA')}</td>
-      <td>${c.activated_at ? new Date(c.activated_at).toLocaleDateString('en-ZA') : '—'}</td>
+      <td>${c.activated_at ? new Date(c.activated_at).toLocaleDateString('en-ZA') : '·'}</td>
     </tr>`).join('') : '<tr><td colspan="7" class="ops-table-empty">NO CODES YET</td></tr>'
 }
 
@@ -1242,11 +1242,11 @@ async function loadWarranties() {
     const customer = w.customers
     const name = customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Guest'
     return `<tr>
-      <td><div style="font-size:13px;color:rgba(242,239,233,0.8);">${name}</div><div style="font-size:9px;letter-spacing:0.1em;color:rgba(242,239,233,0.3);margin-top:3px;">${customer?.email || '—'}</div></td>
-      <td><span class="variant-tag">${(w.variant || '—').toUpperCase()}</span></td>
-      <td style="font-family:monospace;font-size:11px;">${w.activation_code || '—'}</td>
-      <td>${w.activated_at ? new Date(w.activated_at).toLocaleDateString('en-ZA') : '—'}</td>
-      <td>${w.warranty_end ? new Date(w.warranty_end).toLocaleDateString('en-ZA') : '—'}</td>
+      <td><div style="font-size:13px;color:rgba(242,239,233,0.8);">${name}</div><div style="font-size:9px;letter-spacing:0.1em;color:rgba(242,239,233,0.3);margin-top:3px;">${customer?.email || '·'}</div></td>
+      <td><span class="variant-tag">${(w.variant || '·').toUpperCase()}</span></td>
+      <td style="font-family:monospace;font-size:11px;">${w.activation_code || '·'}</td>
+      <td>${w.activated_at ? new Date(w.activated_at).toLocaleDateString('en-ZA') : '·'}</td>
+      <td>${w.warranty_end ? new Date(w.warranty_end).toLocaleDateString('en-ZA') : '·'}</td>
       <td><span class="status-pill status-${w.status}">${w.status.toUpperCase()}</span></td>
       <td>${w.status === 'unactivated' ? `<button class="ops-btn ops-btn-confirm ops-btn-sm" onclick="manualActivate('${w.id}')">ACTIVATE</button>` : ''}</td>
     </tr>`
@@ -1285,13 +1285,13 @@ async function loadCustomers() {
           const v = w.variant || 'black'
           return `<span class="watch-variant-badge"><span class="watch-variant-dot ${v}"></span>${variantLabels[v] || v.toUpperCase()}</span>`
         }).join('')
-      : '<span style="font-size:10px;color:rgba(242,239,233,0.2);letter-spacing:0.05em;">—</span>'
+      : '<span style="font-size:10px;color:rgba(242,239,233,0.2);letter-spacing:0.05em;">·</span>'
     const expandBtn = cWatches.length
       ? `<button class="customer-expand-btn" onclick="toggleCustomerWatches('${c.id}',this)">VIEW ${cWatches.length} WATCH${cWatches.length>1?'ES':''}</button>`
       : ''
     html += `<tr>
       <td>${c.first_name || ''} ${c.last_name || ''}</td>
-      <td style="font-size:10px;">${c.email || '—'}</td>
+      <td style="font-size:10px;">${c.email || '·'}</td>
       <td>${badgesHtml}</td>
       <td>${new Date(c.created_at).toLocaleDateString('en-ZA')}</td>
       <td>${expandBtn}</td>
@@ -1303,11 +1303,11 @@ async function loadCustomers() {
             <thead><tr><th>VARIANT</th><th>ACTIVATION CODE</th><th>PURCHASE DATE</th><th>REGISTERED</th></tr></thead>
             <tbody>${cWatches.map(w => {
               const v = w.variant || 'black'
-              const regDate = w.activated_at ? (() => { const d = new Date(w.activated_at); return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear() })() : '—'
-              const purDate = w.purchase_date ? (() => { const d = new Date(w.purchase_date); return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear() })() : '—'
+              const regDate = w.activated_at ? (() => { const d = new Date(w.activated_at); return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear() })() : '·'
+              const purDate = w.purchase_date ? (() => { const d = new Date(w.purchase_date); return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear() })() : '·'
               return `<tr>
                 <td><span class="watch-variant-badge"><span class="watch-variant-dot ${v}"></span>${variantLabels[v]||v.toUpperCase()} ROMA</span></td>
-                <td style="font-family:monospace;letter-spacing:0.1em;">${w.activation_code || '—'}</td>
+                <td style="font-family:monospace;letter-spacing:0.1em;">${w.activation_code || '·'}</td>
                 <td>${purDate}</td>
                 <td>${regDate}</td>
               </tr>`
@@ -1362,11 +1362,11 @@ function renderContacts(list) {
     const statusPill = isReplied
       ? '<span class="ops-pill ops-pill-success">REPLIED</span>'
       : '<span class="ops-pill ops-pill-warn">NEW</span>'
-    const when = c.created_at ? new Date(c.created_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'
+    const when = c.created_at ? new Date(c.created_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '·'
     return `<tr>
-      <td>${esc(c.name || '—')}</td>
-      <td>${esc(c.email || '—')}</td>
-      <td>${esc(c.subject || '—')}</td>
+      <td>${esc(c.name || '·')}</td>
+      <td>${esc(c.email || '·')}</td>
+      <td>${esc(c.subject || '·')}</td>
       <td>${statusPill}</td>
       <td style="font-size:9px;color:rgba(242,239,233,0.5);">${when}</td>
       <td style="text-align:right;"><button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="openContactDetail('${c.id}')">VIEW</button></td>
@@ -1378,10 +1378,10 @@ function openContactDetail(id) {
   const c = allContacts.find(x => x.id === id)
   if (!c) return
   const modal = document.getElementById('contact-modal') || buildContactModal()
-  modal.querySelector('[data-cm-name]').textContent = c.name || '—'
-  modal.querySelector('[data-cm-email]').textContent = c.email || '—'
-  modal.querySelector('[data-cm-subject]').textContent = c.subject || '—'
-  modal.querySelector('[data-cm-message]').textContent = c.message || '—'
+  modal.querySelector('[data-cm-name]').textContent = c.name || '·'
+  modal.querySelector('[data-cm-email]').textContent = c.email || '·'
+  modal.querySelector('[data-cm-subject]').textContent = c.subject || '·'
+  modal.querySelector('[data-cm-message]').textContent = c.message || '·'
   modal.querySelector('[data-cm-reply]').value = ''
   modal.querySelector('[data-cm-send]').onclick = () => sendContactReply(c)
   modal.querySelector('[data-cm-mark]').onclick = () => markContactReplied(c.id)
@@ -1453,7 +1453,7 @@ async function sendContactReply(contact) {
     toast('Reply sent')
     modal.classList.remove('open')
   } else {
-    toast('Email failed — check send-email function', 'error')
+    toast('Email failed, check send-email function', 'error')
   }
   sendBtn.disabled = false
   sendBtn.textContent = 'SEND REPLY'
@@ -1482,7 +1482,7 @@ async function loadNewsletter() {
     .order('subscribed_at', { ascending: false })
   if (error) {
     console.error('Newsletter load error:', error)
-    document.getElementById('newsletter-body').innerHTML = `<tr><td colspan="4" class="ops-table-empty">ERROR — ${esc(error.message)}</td></tr>`
+    document.getElementById('newsletter-body').innerHTML = `<tr><td colspan="4" class="ops-table-empty">ERROR, ${esc(error.message)}</td></tr>`
     return
   }
   allSubscribers = data || []
@@ -1491,8 +1491,8 @@ async function loadNewsletter() {
   const recent = allSubscribers.filter(s => new Date(s.subscribed_at).getTime() > weekAgo).length
   document.getElementById('stat-subscribers-week').textContent = recent
 
-  // Compute buyer/non-buyer split — fetch customers who have any order
-  // (pending, confirmed, shipped, delivered — excludes cancelled),
+  // Compute buyer/non-buyer split, fetch customers who have any order
+  // (pending, confirmed, shipped, delivered, excludes cancelled),
   // intersect with subscriber emails. Best-effort; falls through if it errors.
   try {
     const { data: paidOrders } = await _supabase
@@ -1521,10 +1521,10 @@ async function loadNewsletter() {
     return
   }
   document.getElementById('newsletter-body').innerHTML = allSubscribers.map(s => {
-    const when = s.subscribed_at ? new Date(s.subscribed_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'
-    const name = s.first_name || '—'
+    const when = s.subscribed_at ? new Date(s.subscribed_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '·'
+    const name = s.first_name || '·'
     return `<tr>
-      <td>${esc(s.email || '—')}</td>
+      <td>${esc(s.email || '·')}</td>
       <td style="font-size:9px;color:rgba(242,239,233,0.5);">${esc(name)}</td>
       <td style="font-size:9px;color:rgba(242,239,233,0.5);">${when}</td>
       <td style="text-align:right;"><button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="deleteSubscriber('${s.id}')">REMOVE</button></td>
@@ -1649,7 +1649,7 @@ function buildBroadcastHtml(opts) {
   const preview  = (o.preview || body.replace(/<[^>]+>/g, '').trim()).slice(0, 130)
   const eyebrow  = o.eyebrow || ''
   const headline = o.headline || subject
-  const signoff  = o.signoff || '— Calcaterra'
+  const signoff  = o.signoff || '· Calcaterra'
 
   // Normalise body: if user typed plain paragraphs without <p> tags, wrap them
   let bodyHtml = body
@@ -1733,7 +1733,7 @@ function buildBroadcastHtml(opts) {
       <tr><td style="padding:0 56px;">
         <div style="height:1px;background:rgba(26,24,20,0.08);"></div>
       </td></tr>
-      <!-- FOOTER — tonal cream with logo stamp -->
+      <!-- FOOTER, tonal cream with logo stamp -->
       <tr><td style="padding:36px 56px 56px;text-align:center;">
         <img src="https://calcaterra.co/images/calcaterra-logo.png" alt="Calcaterra" width="56" style="display:block;margin:0 auto 18px;height:auto;width:56px;max-width:56px;border:0;outline:none;text-decoration:none;"/>
         <div style="font-family:Georgia,'Times New Roman',serif;font-size:13px;letter-spacing:0.55em;color:rgba(26,24,20,0.6);margin-bottom:6px;">CALCATERRA</div>
@@ -1764,7 +1764,7 @@ async function sendBroadcastTest() {
   const html = buildBroadcastHtml(fields)
   const result = await invokeFn('send-broadcast', { subject: fields.subject, html, test_to: testTo })
   if (!result.ok) {
-    status.textContent = 'TEST FAILED — ' + result.message
+    status.textContent = 'TEST FAILED, ' + result.message
     toast('Test send failed', 'error')
     return
   }
@@ -1795,7 +1795,7 @@ async function sendBroadcastAll() {
   btn.disabled = false
   btn.innerHTML = original
   if (!result.ok) {
-    status.textContent = 'BROADCAST FAILED — ' + result.message
+    status.textContent = 'BROADCAST FAILED, ' + result.message
     toast('Broadcast failed', 'error')
     return
   }
@@ -1852,7 +1852,7 @@ async function loadEmailLog() {
     .order('sent_at', { ascending: false })
     .limit(200)
   if (error) {
-    document.getElementById('emaillog-body').innerHTML = '<tr><td colspan="4" class="ops-table-empty">EMAIL LOG NOT YET CREATED — RUN MIGRATION</td></tr>'
+    document.getElementById('emaillog-body').innerHTML = '<tr><td colspan="4" class="ops-table-empty">EMAIL LOG NOT YET CREATED, RUN MIGRATION</td></tr>'
     return
   }
   if (!data?.length) {
@@ -1860,11 +1860,11 @@ async function loadEmailLog() {
     return
   }
   document.getElementById('emaillog-body').innerHTML = data.map(e => {
-    const when = e.sent_at ? new Date(e.sent_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'
+    const when = e.sent_at ? new Date(e.sent_at).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '·'
     return `<tr>
-      <td>${esc(e.recipient || '—')}</td>
-      <td>${esc(e.subject || '—')}</td>
-      <td style="font-size:9px;font-family:monospace;color:rgba(242,239,233,0.4);">${esc(e.provider_id || '—')}</td>
+      <td>${esc(e.recipient || '·')}</td>
+      <td>${esc(e.subject || '·')}</td>
+      <td style="font-size:9px;font-family:monospace;color:rgba(242,239,233,0.4);">${esc(e.provider_id || '·')}</td>
       <td style="font-size:9px;color:rgba(242,239,233,0.5);">${when}</td>
     </tr>`
   }).join('')
@@ -1903,7 +1903,7 @@ function exportOrdersCsv() {
   downloadCsv(`calcaterra-orders-${new Date().toISOString().slice(0,10)}.csv`, rows)
 }
 
-// Replaces the old prompt() — opens a richer modal so the admin can record
+// Replaces the old prompt(), opens a richer modal so the admin can record
 // a cancellation reason AND, if the customer was already charged, the refund
 // reference. Triggers a cancellation email to the customer.
 async function cancelOrder(id) {
@@ -1911,7 +1911,7 @@ async function cancelOrder(id) {
 }
 
 async function openCancelDialog(orderId) {
-  // Decide if a refund is needed — based on whether payment was ever verified.
+  // Decide if a refund is needed, based on whether payment was ever verified.
   const { data: ord } = await _supabase.from('orders').select('payment_verified_at, payment_method, payment_reference, total').eq('id', orderId).maybeSingle()
   const paymentReceived = !!ord?.payment_verified_at
 
@@ -1928,7 +1928,7 @@ async function openCancelDialog(orderId) {
       </div>
       <div style="margin-bottom:24px;">
         <p style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:300;line-height:1.2;color:#f2efe9;margin-bottom:12px;">Cancel this <em style="font-style:italic;color:rgba(242,239,233,0.4);">order.</em></p>
-        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.04em;line-height:1.7;color:rgba(242,239,233,0.55);">The customer will receive a cancellation email. ${paymentReceived ? '<strong style="color:#fbbf24;">Payment was received — process a refund in your payment gateway, then enter the refund reference below.</strong>' : 'No payment was received, so no refund is required.'}</p>
+        <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.04em;line-height:1.7;color:rgba(242,239,233,0.55);">The customer will receive a cancellation email. ${paymentReceived ? '<strong style="color:#fbbf24;">Payment was received, process a refund in your payment gateway, then enter the refund reference below.</strong>' : 'No payment was received, so no refund is required.'}</p>
       </div>
       <div style="margin-bottom:18px;">
         <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">REASON</span>
@@ -2016,7 +2016,7 @@ function exportCustomersCsv() {
 function esc(s) {
   return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
 }
-// For values that go inside attributes — strip line breaks too
+// For values that go inside attributes, strip line breaks too
 function escAttr(s) {
   return esc(s).replace(/\s+/g, ' ')
 }
@@ -2034,7 +2034,7 @@ async function sendEmail(to, subject, html, reply_to, from) {
 }
 
 async function sendOrderConfirmationEmail(orderId) {
-  // Fetch fresh — allOrders is loaded via an RPC that returns flat fields,
+  // Fetch fresh, allOrders is loaded via an RPC that returns flat fields,
   // not the nested customers object we need here.
   const { data: order, error } = await _supabase.from('orders').select(`
     id, shipping_address, customers(first_name, last_name, email)
@@ -2082,7 +2082,7 @@ async function sendOrderConfirmationEmail(orderId) {
 }
 
 async function sendShippingEmail(orderId, tracking) {
-  // Fetch fresh — same flat-vs-nested mismatch as the confirmation email.
+  // Fetch fresh, same flat-vs-nested mismatch as the confirmation email.
   const { data: order, error } = await _supabase.from('orders').select(`
     id, customers(first_name, last_name, email)
   `).eq('id', orderId).maybeSingle()
@@ -2125,7 +2125,7 @@ async function sendShippingEmail(orderId, tracking) {
   await sendEmail(order.customers.email, `Your Calcaterra is on its way (${orderNum})`, html, null, 'Calcaterra Orders <orders@calcaterra.co>')
 }
 
-// Mark-as-delivered dialog — captures proof of delivery for chargeback evidence.
+// Mark-as-delivered dialog, captures proof of delivery for chargeback evidence.
 // All fields optional except the confirmation itself.
 async function openDeliveredDialog(orderId) {
   let dialog = document.getElementById('delivered-dialog')

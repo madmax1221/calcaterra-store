@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Collections — Calcaterra</title>
+<title>Collections · Calcaterra</title>
 <meta name="description" content="Explore the Calcaterra collection. Precision timepieces designed to last a second decade of ownership.">
-<meta property="og:title" content="Collections — Calcaterra">
+<meta property="og:title" content="Collections · Calcaterra">
 <meta property="og:description" content="Explore the Calcaterra collection. Precision timepieces designed to last a second decade of ownership.">
 <meta property="og:image" content="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117">
 <meta property="og:url" content="https://calcaterra.co/collections">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Calcaterra">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Collections — Calcaterra">
+<meta name="twitter:title" content="Collections · Calcaterra">
 <meta name="twitter:description" content="Explore the Calcaterra collection. Precision timepieces designed to last a second decade of ownership.">
 <meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117">
 <link rel="canonical" href="https://calcaterra.co/collections">
@@ -571,7 +571,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     })
   }
 
-  // Coming-soon "notify me" — captures email into newsletter_subscribers
+  // Coming-soon "notify me", captures email into newsletter_subscribers
   // with source='coming_soon' so it can later be segmented in cal-ops.
   async function notifyComingSoon(form) {
     const input = form.querySelector('input')
@@ -582,7 +582,7 @@ footer{background:#141210;padding:80px 52px 48px;}
         body: { email, source: 'coming_soon' }
       })
     } catch (e) {
-      // Fallback if function unavailable — direct table upsert
+      // Fallback if function unavailable, direct table upsert
       try {
         await _supabase.from('newsletter_subscribers').upsert(
           { email, source: 'coming_soon' },

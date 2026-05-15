@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="format-detection" content="telephone=no, address=no, email=no"/>
-<title>My Account — Calcaterra</title>
+<title>My Account · Calcaterra</title>
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -104,7 +104,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .order-empty-text em{font-style:italic;color:rgba(26,24,20,0.35);}
 .order-empty-sub{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.3);margin-bottom:40px;}
 
-/* Welcome stat strip — at top of Orders tab */
+/* Welcome stat strip, at top of Orders tab */
 .dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:56px;border-top:1px solid rgba(26,24,20,0.08);border-bottom:1px solid rgba(26,24,20,0.08);}
 .dash-stat{padding:28px 24px;border-right:1px solid rgba(26,24,20,0.06);text-align:center;}
 .dash-stat:last-child{border-right:none;}
@@ -117,7 +117,7 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
   .dash-stat:last-child{border-bottom:none;}
 }
 
-/* Edit / address form inputs — extracted from inline styles for maintainability */
+/* Edit / address form inputs, extracted from inline styles for maintainability */
 .dash-form{display:flex;flex-direction:column;gap:24px;}
 .dash-form-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
 .dash-form-field{display:flex;flex-direction:column;gap:10px;}
@@ -250,7 +250,7 @@ footer{background:#141210;padding:80px 52px 48px;}
 <div class="dashboard">
   <aside class="dash-sidebar">
     <span class="dash-welcome-label">WELCOME BACK</span>
-    <div class="dash-welcome-name" id="sidebarName">—</div>
+    <div class="dash-welcome-name" id="sidebarName">·</div>
     <nav class="dash-nav">
       <a class="dash-nav-item active" onclick="showSection('orders'); return false;" href="#">MY ORDERS <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
       <a class="dash-nav-item" onclick="showSection('watches'); return false;" href="#">MY WARRANTIES <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
@@ -270,15 +270,15 @@ footer{background:#141210;padding:80px 52px 48px;}
       <div class="dash-stats">
         <div class="dash-stat">
           <span class="dash-stat-label">Orders placed</span>
-          <span class="dash-stat-value" id="stat-orders">—</span>
+          <span class="dash-stat-value" id="stat-orders">·</span>
         </div>
         <div class="dash-stat">
           <span class="dash-stat-label">Watches owned</span>
-          <span class="dash-stat-value" id="stat-watches">—</span>
+          <span class="dash-stat-value" id="stat-watches">·</span>
         </div>
         <div class="dash-stat">
           <span class="dash-stat-label">Member since</span>
-          <span class="dash-stat-value" id="stat-since">—</span>
+          <span class="dash-stat-value" id="stat-since">·</span>
         </div>
       </div>
       <div id="orders-content">
@@ -339,19 +339,19 @@ footer{background:#141210;padding:80px 52px 48px;}
     <div class="dash-section" id="section-details">
       <span class="dash-section-eyebrow">YOUR PROFILE</span>
       <h2 class="dash-section-title">Account <em>Details.</em></h2>
-      <div id="verified-banner" class="verified-banner">EMAIL ADDRESS VERIFIED — YOUR NEW EMAIL IS NOW ACTIVE.</div>
+      <div id="verified-banner" class="verified-banner">EMAIL ADDRESS VERIFIED, YOUR NEW EMAIL IS NOW ACTIVE.</div>
       <div class="details-grid">
         <div class="details-field">
           <span class="details-label">FIRST NAME</span>
-          <span class="details-value" id="disp-first">—</span>
+          <span class="details-value" id="disp-first">·</span>
         </div>
         <div class="details-field">
           <span class="details-label">LAST NAME</span>
-          <span class="details-value" id="disp-last">—</span>
+          <span class="details-value" id="disp-last">·</span>
         </div>
         <div class="details-field" style="grid-column:1/-1;">
           <span class="details-label">EMAIL ADDRESS</span>
-          <span class="details-value" id="disp-email">—</span>
+          <span class="details-value" id="disp-email">·</span>
         </div>
         <div class="details-field" style="grid-column:1/-1;">
           <span class="details-label">PASSWORD</span>
@@ -671,10 +671,10 @@ footer{background:#141210;padding:80px 52px 48px;}
   })
 
   function updateDisplay(firstName, lastName, email) {
-    document.getElementById('sidebarName').innerHTML = firstName + (lastName ? ' <em>' + lastName + '.</em>' : (firstName ? '.' : '—'))
-    document.getElementById('disp-first').textContent = firstName || '—'
-    document.getElementById('disp-last').textContent = lastName || '—'
-    document.getElementById('disp-email').textContent = email || '—'
+    document.getElementById('sidebarName').innerHTML = firstName + (lastName ? ' <em>' + lastName + '.</em>' : (firstName ? '.' : '·'))
+    document.getElementById('disp-first').textContent = firstName || '·'
+    document.getElementById('disp-last').textContent = lastName || '·'
+    document.getElementById('disp-email').textContent = email || '·'
     document.getElementById('edit-first').value = firstName
     document.getElementById('edit-last').value = lastName
     document.getElementById('edit-email').value = email
@@ -696,7 +696,7 @@ footer{background:#141210;padding:80px 52px 48px;}
         </div>
         <div class="order-meta">
           <div><span class="order-meta-label">DATE</span><span class="order-meta-value">${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}</span></div>
-          <div><span class="order-meta-label">TOTAL</span><span class="order-meta-value">€${o.total||'—'}</span></div>
+          <div><span class="order-meta-label">TOTAL</span><span class="order-meta-value">€${o.total||'·'}</span></div>
         </div>
       </div>`
     })
@@ -757,7 +757,7 @@ footer{background:#141210;padding:80px 52px 48px;}
         <div>
           <span class="watch-card-ref">CALCATERRA ROMA</span>
           <div class="watch-card-name">Roma <em>${variantLabel}.</em></div>
-          <span class="watch-card-serial">CODE · ${r.activation_code||'—'}</span>
+          <span class="watch-card-serial">CODE · ${r.activation_code||'·'}</span>
           <span class="watch-warranty-badge active"><span class="watch-warranty-dot active"></span>WARRANTY ACTIVE · ${warrantyExpiry}</span>
         </div>
         <span class="watch-reg-date">REGISTERED<br>${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}</span>
@@ -853,7 +853,7 @@ footer{background:#141210;padding:80px 52px 48px;}
       document.getElementById('reg-form').style.display = 'none'
       document.getElementById('reg-thanks').style.display = 'block'
       loadWatches(currentCustomer?.id)
-      // Fire registration confirmation email (best-effort — the registration
+      // Fire registration confirmation email (best-effort, the registration
       // itself has already succeeded, so we don't surface email failures here).
       ;(async () => {
         try {
@@ -911,7 +911,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     const items = document.querySelectorAll('.dash-nav-item')
     if (map[id] !== undefined && items[map[id]]) items[map[id]].classList.add('active')
     window.history.replaceState({}, '', '/dashboard?tab=' + id)
-    // Reset each tab's internal state when navigated to — so users can always
+    // Reset each tab's internal state when navigated to, so users can always
     // hit a tab and land at its default view.
     if (id === 'register') resetRegisterTab()
     if (id === 'details')  resetDetailsTab()
