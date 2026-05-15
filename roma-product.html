@@ -182,10 +182,6 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .atc-btn:hover{background:#0e0d0b;letter-spacing:0.45em;}
 .atc-meta{font-family:'Montserrat',sans-serif;font-size:7.5px;font-weight:300;letter-spacing:0.18em;color:rgba(26,24,20,0.45);text-align:center;display:block;margin-top:14px;margin-bottom:48px;}
 .product-description{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.05em;line-height:2;color:rgba(26,24,20,0.65);margin-bottom:48px;border-top:1px solid rgba(26,24,20,0.07);padding-top:32px;}
-.product-specs{border-top:1px solid rgba(26,24,20,0.07);}
-.spec-row{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px solid rgba(26,24,20,0.06);}
-.spec-key{font-family:'Montserrat',sans-serif;font-size:7px;font-weight:300;letter-spacing:0.25em;color:rgba(26,24,20,0.5);}
-.spec-val{font-family:'Montserrat',sans-serif;font-size:10.5px;font-weight:300;letter-spacing:0.08em;color:#1a1814;text-align:right;}
 .product-detail-section{display:grid;grid-template-columns:1fr 1fr;gap:2px;max-width:1200px;margin:0 auto;padding:0 52px 120px;}
 .detail-img{aspect-ratio:4/5;background:#1a1814;overflow:hidden;}
 .detail-img img{width:100%;height:100%;object-fit:cover;filter:brightness(0.85) saturate(0.8);transition:transform 8s ease;}
@@ -471,15 +467,6 @@ footer{background:#141210;padding:80px 52px 48px;}
     <button class="atc-btn" onclick="addToCart()">MAKE IT MINE</button>
     <span class="atc-meta">2 year warranty &nbsp;&middot;&nbsp; Complimentary worldwide shipping &nbsp;&middot;&nbsp; 30 day returns</span>
     <p class="product-description" id="productDescription">The Roma Black is the founding reference of Calcaterra. A sunburst-textured black dial set within a brushed and polished stainless steel case. Understated by design. Precise by conviction. Worn by those who have already decided.</p>
-    <div class="product-specs">
-      <div class="spec-row"><span class="spec-key">CASE</span><span class="spec-val">316L Stainless Steel, 40mm</span></div>
-      <div class="spec-row"><span class="spec-key">DIAL</span><span class="spec-val" id="specDial">Sunburst Textured Black</span></div>
-      <div class="spec-row"><span class="spec-key">CRYSTAL</span><span class="spec-val">Sapphire</span></div>
-      <div class="spec-row"><span class="spec-key">MOVEMENT</span><span class="spec-val">Japanese Quartz</span></div>
-      <div class="spec-row"><span class="spec-key">BRACELET</span><span class="spec-val">Integrated Steel, Butterfly Clasp</span></div>
-      <div class="spec-row"><span class="spec-key">WATER</span><span class="spec-val">5 ATM</span></div>
-      <div class="spec-row"><span class="spec-key">WARRANTY</span><span class="spec-val">2 Years International</span></div>
-    </div>
   </div>
 </div>
 
@@ -802,7 +789,6 @@ footer{background:#141210;padding:80px 52px 48px;}
     document.getElementById('productVariantName').textContent = v.name + '.'
     document.getElementById('productRef').innerHTML = v.ref
     document.getElementById('productDescription').textContent = v.description
-    document.getElementById('specDial').textContent = v.dial
     const deepDial = document.getElementById('deepDial'); if (deepDial) deepDial.textContent = v.dial
     document.getElementById('breadcrumb-current').textContent = v.name
     document.title = 'Roma ' + v.name + ' — Calcaterra'
