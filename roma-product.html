@@ -196,8 +196,29 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .detail-heading em{font-style:italic;color:rgba(242,239,233,0.4);}
 .detail-body{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.05em;line-height:2;color:rgba(242,239,233,0.58);}
 
+/* ── KEY SPECS — three-pillar callout above the full grid ─────── */
+.key-specs{max-width:1100px;margin:0 auto;padding:120px 52px 40px;}
+.key-specs-header{text-align:center;margin-bottom:64px;}
+.key-specs-eyebrow{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);display:block;margin-bottom:20px;text-transform:uppercase;}
+.key-specs-title{font-size:clamp(28px,3.4vw,46px);font-weight:300;line-height:1.15;letter-spacing:0.025em;color:#1a1814;}
+.key-specs-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.key-specs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);}
+.key-spec{padding:56px 36px;text-align:center;border-right:1px solid rgba(26,24,20,0.07);display:flex;flex-direction:column;align-items:center;gap:18px;}
+.key-spec:last-child{border-right:none;}
+.key-spec-num{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:22px;color:rgba(26,24,20,0.3);letter-spacing:0.05em;}
+.key-spec-value{font-family:'Times New Roman',Times,serif;font-size:clamp(22px,2.4vw,30px);font-weight:300;letter-spacing:0.02em;color:#1a1814;line-height:1.2;}
+.key-spec-value em{font-style:italic;color:rgba(26,24,20,0.4);}
+.key-spec-label{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.45);text-transform:uppercase;}
+.key-spec-note{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:13.5px;color:rgba(26,24,20,0.5);line-height:1.6;max-width:200px;}
+@media(max-width:760px){
+  .key-specs{padding:80px 24px 24px;}
+  .key-specs-grid{grid-template-columns:1fr;}
+  .key-spec{border-right:none;border-bottom:1px solid rgba(26,24,20,0.07);padding:40px 24px;}
+  .key-spec:last-child{border-bottom:none;}
+}
+
 /* ── DETAILED SPECIFICATIONS ───────────────────────────────────── */
-.specs-deep{max-width:1100px;margin:0 auto;padding:120px 52px;}
+.specs-deep{max-width:1100px;margin:0 auto;padding:60px 52px 120px;}
 .specs-deep-header{text-align:center;margin-bottom:80px;}
 .specs-deep-eyebrow{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);display:block;margin-bottom:20px;text-transform:uppercase;}
 .specs-deep-title{font-size:clamp(34px,4vw,56px);font-weight:300;line-height:1.1;letter-spacing:0.025em;color:#1a1814;}
@@ -472,6 +493,34 @@ footer{background:#141210;padding:80px 52px 48px;}
     <p class="detail-body" id="detailBody">The Roma Black does not ask to be noticed. It simply endures. Every proportion considered. Every finish chosen. The result is a watch that belongs to no era in particular — and therefore belongs to all of them.<br><br>This is not a product. It is a decision made permanent.</p>
   </div>
 </div>
+
+<!-- KEY SPECS — three-pillar callout -->
+<section class="key-specs">
+  <div class="key-specs-header fade">
+    <span class="key-specs-eyebrow">The essentials</span>
+    <h2 class="key-specs-title">Three things <em>worth knowing.</em></h2>
+  </div>
+  <div class="key-specs-grid">
+    <div class="key-spec fade">
+      <span class="key-spec-num">I.</span>
+      <span class="key-spec-label">Crystal</span>
+      <span class="key-spec-value">Sapphire.</span>
+      <span class="key-spec-note">Scratch resistance built in. Clarity that does not fade.</span>
+    </div>
+    <div class="key-spec fade fade-d1">
+      <span class="key-spec-num">II.</span>
+      <span class="key-spec-label">Case &amp; bracelet</span>
+      <span class="key-spec-value">316L <em>stainless steel.</em></span>
+      <span class="key-spec-note">Marine-grade. Corrosion-resistant. The standard for serious watchmaking.</span>
+    </div>
+    <div class="key-spec fade fade-d2">
+      <span class="key-spec-num">III.</span>
+      <span class="key-spec-label">Water resistance</span>
+      <span class="key-spec-value">5 <em>ATM.</em></span>
+      <span class="key-spec-note">Rain and hand-washing. Not for swimming or showering.</span>
+    </div>
+  </div>
+</section>
 
 <!-- DETAILED SPECIFICATIONS -->
 <section class="specs-deep">
