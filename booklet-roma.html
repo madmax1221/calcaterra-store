@@ -226,7 +226,7 @@ html,body{
 .reader-nav.next{right:18px;}
 .reader-nav:disabled{opacity:0.25;cursor:not-allowed;}
 .reader-counter{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.42em;color:rgba(242,239,233,0.5);z-index:210;}
-.reader-close{position:fixed;top:14px;right:18px;background:none;border:1px solid rgba(242,239,233,0.2);color:rgba(242,239,233,0.7);font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.4em;padding:9px 16px;cursor:pointer;z-index:210;}
+.reader-close{background:none;border:1px solid rgba(242,239,233,0.2);color:rgba(242,239,233,0.7);font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.4em;padding:9px 16px;cursor:pointer;}
 .reader-close:hover{color:#f2efe9;border-color:rgba(242,239,233,0.6);}
 .reader-zoom{position:fixed;top:14px;left:18px;display:flex;gap:6px;z-index:210;}
 .reader-zoom button{width:30px;height:30px;background:none;border:1px solid rgba(242,239,233,0.2);color:rgba(242,239,233,0.7);font-family:'Times New Roman',Times,serif;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .25s,color .25s;}
@@ -260,7 +260,10 @@ html,body{
     <button onclick="readerZoom(0.15)" aria-label="Zoom in">+</button>
     <button onclick="readerZoomReset()" aria-label="Reset zoom" style="font-size:9px;letter-spacing:0.2em;padding:0 8px;width:auto;">FIT</button>
   </div>
-  <button class="reader-close" onclick="closeReader()">CLOSE</button>
+  <div style="position:fixed;top:14px;right:18px;display:flex;gap:8px;z-index:210;">
+    <button class="reader-close" id="readerDownload" onclick="downloadBooklet(this)">DOWNLOAD</button>
+    <button class="reader-close" onclick="closeReader()">CLOSE</button>
+  </div>
   <button class="reader-nav prev" id="readerPrev" onclick="readerStep(-1)" aria-label="Previous">‹</button>
   <div class="reader-stage" id="readerStage"></div>
   <button class="reader-nav next" id="readerNext" onclick="readerStep(1)" aria-label="Next">›</button>
@@ -404,6 +407,11 @@ html,body{
   function closeReader() {
     document.getElementById('readerOverlay').classList.remove('open')
     document.body.style.overflow = ''
+    // If we were auto-opened in reader mode (?read=1), return to the previous tab
+    // (typically the dashboard) instead of just dismissing the overlay.
+    if (new URLSearchParams(location.search).get('read') === '1' && window.history.length > 1) {
+      window.history.back()
+    }
   }
   function readerStep(delta) {
     const pages = document.querySelectorAll('#readerStage > .page')
@@ -438,6 +446,14 @@ html,body{
   })
   window.addEventListener('resize', () => {
     if (document.getElementById('readerOverlay').classList.contains('open')) applyReaderScale()
+  })
+
+  // Auto-open reader when arriving with ?read=1 (used by the dashboard Owner's Guide link).
+  // Without the param the page behaves normally (scroll preview + DOWNLOAD button in toolbar).
+  document.addEventListener('DOMContentLoaded', () => {
+    if (new URLSearchParams(location.search).get('read') === '1') {
+      setTimeout(openReader, 120)
+    }
   })
 </script>
 
