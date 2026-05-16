@@ -21,7 +21,9 @@
     { "source": "/cal-ops", "destination": "/cal-ops.html" },
     { "source": "/philosophy", "destination": "/philosophy.html" },
     { "source": "/unsubscribe", "destination": "/unsubscribe.html" },
-    { "source": "/join", "destination": "/join.html" }
+    { "source": "/join", "destination": "/join.html" },
+    { "source": "/booklet-roma", "destination": "/booklet-roma.html" },
+    { "source": "/booklet-roma-a7", "destination": "/booklet-roma-a7.html" }
   ],
   "headers": [
     {
@@ -52,6 +54,8 @@
     { "source": "/register.html", "destination": "/register", "permanent": true },
     { "source": "/forgot-password.html", "destination": "/forgot-password", "permanent": true },
     { "source": "/unsubscribe.html", "destination": "/unsubscribe", "permanent": true },
-    { "source": "/join.html", "destination": "/join", "permanent": true }
+    { "source": "/join.html", "destination": "/join", "permanent": true },
+    { "source": "/booklet-roma.html", "destination": "/booklet-roma", "permanent": true },
+    { "source": "/booklet-roma-a7.html", "destination": "/booklet-roma-a7", "permanent": true }
   ]
 }

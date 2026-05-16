@@ -156,6 +156,10 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
 .watch-warranty-badge.active{color:#1a1814;border-color:rgba(26,24,20,0.25);}
 .watch-warranty-dot{width:6px;height:6px;border-radius:50%;background:rgba(26,24,20,0.2);flex-shrink:0;}
 .watch-warranty-dot.active{background:#1a1814;}
+.watch-card-actions{margin-top:18px;display:flex;gap:22px;align-items:center;flex-wrap:wrap;}
+.watch-card-link{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.42em;color:rgba(26,24,20,0.5);text-decoration:none;border-bottom:1px solid rgba(26,24,20,0.15);padding-bottom:4px;transition:color .25s,border-color .25s,letter-spacing .25s;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;}
+.watch-card-link:hover{color:#1a1814;border-bottom-color:#1a1814;letter-spacing:0.5em;}
+.watch-card-link-arrow{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:13px;letter-spacing:0;line-height:1;color:inherit;}
 .watch-reg-date{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.35em;color:rgba(26,24,20,0.55);text-align:right;white-space:nowrap;}
 .reg-form{display:flex;flex-direction:column;gap:28px;max-width:520px;}
 .reg-form .form-group{display:flex;flex-direction:column;gap:10px;}
@@ -764,6 +768,9 @@ footer{background:#141210;padding:80px 52px 48px;}
           <div class="watch-card-name">Roma <em>${variantLabel}.</em></div>
           <span class="watch-card-serial">CODE · ${r.activation_code||'·'}</span>
           <span class="watch-warranty-badge active"><span class="watch-warranty-dot active"></span>WARRANTY ACTIVE · ${warrantyExpiry}</span>
+          <div class="watch-card-actions">
+            <a href="/booklet-roma" target="_blank" rel="noopener" class="watch-card-link" title="Open the Roma owner's guide and warranty booklet">Owner's Guide <span class="watch-card-link-arrow">→</span></a>
+          </div>
         </div>
         <span class="watch-reg-date">REGISTERED<br>${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}</span>
       </div>`
