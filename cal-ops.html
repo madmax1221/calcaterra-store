@@ -1939,9 +1939,22 @@ async function openCancelDialog(orderId) {
         <p style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.04em;line-height:1.7;color:rgba(242,239,233,0.55);">The customer will receive a cancellation email. ${paymentReceived ? '<strong style="color:#fbbf24;">Payment was received, process a refund in your payment gateway, then enter the refund reference below.</strong>' : 'No payment was received, so no refund is required.'}</p>
       </div>
       <div style="margin-bottom:18px;">
-        <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">REASON</span>
-        <textarea id="canc-reason" class="ops-input" rows="3" placeholder="Why is this order being cancelled?" style="width:100%;resize:vertical;background:#0e0d0b;color:#f2efe9;border:1px solid rgba(242,239,233,0.1);padding:12px;font-family:'Montserrat',sans-serif;font-size:12px;"></textarea>
+        <span class="ops-section-eyebrow" style="display:block;margin-bottom:10px;">REASON</span>
+        <div id="canc-categories" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+          <label class="canc-cat-opt" data-value="Customer requested"><input type="radio" name="canc-category" value="Customer requested"><span>Customer requested</span></label>
+          <label class="canc-cat-opt" data-value="Payment timeout"><input type="radio" name="canc-category" value="Payment timeout"><span>Payment timeout</span></label>
+          <label class="canc-cat-opt" data-value="Suspicious / fraud risk"><input type="radio" name="canc-category" value="Suspicious / fraud risk"><span>Suspicious order</span></label>
+          <label class="canc-cat-opt" data-value="Other"><input type="radio" name="canc-category" value="Other"><span>Other</span></label>
+        </div>
+        <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;font-size:7px;">NOTES <span style="color:rgba(242,239,233,0.3);letter-spacing:0.05em;text-transform:none;font-size:10px;font-family:Georgia,serif;font-style:italic;letter-spacing:0;">— optional, used in the customer email if filled</span></span>
+        <textarea id="canc-notes" class="ops-input" rows="2" placeholder="e.g. 7 days without payment confirmation" style="width:100%;resize:vertical;background:#0e0d0b;color:#f2efe9;border:1px solid rgba(242,239,233,0.1);padding:12px;font-family:'Montserrat',sans-serif;font-size:12px;"></textarea>
       </div>
+      <style>
+        .canc-cat-opt{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid rgba(242,239,233,0.12);background:#0e0d0b;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.18em;color:rgba(242,239,233,0.65);text-transform:uppercase;transition:border-color .2s,background .2s,color .2s;}
+        .canc-cat-opt:hover{border-color:rgba(242,239,233,0.3);color:#f2efe9;}
+        .canc-cat-opt input{accent-color:#f2efe9;cursor:pointer;}
+        .canc-cat-opt.selected{border-color:#f2efe9;background:rgba(242,239,233,0.05);color:#f2efe9;}
+      </style>
       ${paymentReceived ? `
       <div style="margin-bottom:18px;border-top:1px solid rgba(242,239,233,0.08);padding-top:18px;">
         <label style="display:flex;align-items:center;gap:10px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.3em;color:rgba(242,239,233,0.7);text-transform:uppercase;cursor:pointer;margin-bottom:14px;">
@@ -1961,12 +1974,24 @@ async function openCancelDialog(orderId) {
   document.body.appendChild(dialog)
   dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.classList.remove('open') })
 
+  // Selection highlight on the category pills
+  dialog.querySelectorAll('.canc-cat-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      dialog.querySelectorAll('.canc-cat-opt').forEach(o => o.classList.remove('selected'))
+      opt.classList.add('selected')
+      opt.querySelector('input').checked = true
+    })
+  })
+
   dialog.querySelector('#canc-submit').onclick = async () => {
     const errEl = dialog.querySelector('#canc-error')
     errEl.style.display = 'none'
-    const reason = dialog.querySelector('#canc-reason').value.trim()
-    if (!reason) { errEl.textContent = 'Reason is required'; errEl.style.display = 'block'; return }
-    const updates = { status: 'cancelled', cancelled_at: new Date().toISOString(), cancellation_reason: reason }
+    const category = dialog.querySelector('input[name="canc-category"]:checked')?.value
+    const notes = dialog.querySelector('#canc-notes').value.trim()
+    if (!category) { errEl.textContent = 'Select a reason'; errEl.style.display = 'block'; return }
+    if (category === 'Other' && !notes) { errEl.textContent = 'Notes required when reason is Other'; errEl.style.display = 'block'; return }
+    const reason = notes ? `${category} · ${notes}` : category
+    const updates = { status: 'cancelled', cancelled_at: new Date().toISOString(), cancellation_reason: reason, cancellation_category: category }
     if (paymentReceived) {
       const done = dialog.querySelector('#canc-refund-done').checked
       const ref = dialog.querySelector('#canc-refund-ref').value.trim()
