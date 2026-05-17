@@ -1959,7 +1959,7 @@ async function openCancelDialog(orderId) {
       <div style="margin-bottom:18px;border-top:1px solid rgba(242,239,233,0.08);padding-top:18px;">
         <label style="display:flex;align-items:center;gap:10px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.3em;color:rgba(242,239,233,0.7);text-transform:uppercase;cursor:pointer;margin-bottom:14px;">
           <input type="checkbox" id="canc-refund-done" style="width:14px;height:14px;cursor:pointer;">
-          I have processed the refund in ${esc(ord?.payment_method || 'the payment gateway')}
+          I have processed the refund${(() => { const pm = (ord?.payment_method || '').trim(); return pm && !['other','manual','unknown'].includes(pm.toLowerCase()) ? ` in ${esc(pm)}` : ''; })()}
         </label>
         <span class="ops-section-eyebrow" style="display:block;margin-bottom:8px;">REFUND REFERENCE</span>
         <input type="text" id="canc-refund-ref" class="ops-input" placeholder="Refund transaction ID" style="width:100%;">
@@ -1990,8 +1990,12 @@ async function openCancelDialog(orderId) {
     const notes = dialog.querySelector('#canc-notes').value.trim()
     if (!category) { errEl.textContent = 'Select a reason'; errEl.style.display = 'block'; return }
     if (category === 'Other' && !notes) { errEl.textContent = 'Notes required when reason is Other'; errEl.style.display = 'block'; return }
+    // Category prefix is encoded into the reason string so it survives
+    // even if the optional cancellation_category column hasn't been added
+    // to the orders table yet. (To add it later · ALTER TABLE orders ADD
+    // COLUMN cancellation_category text; then re-include it below.)
     const reason = notes ? `${category} · ${notes}` : category
-    const updates = { status: 'cancelled', cancelled_at: new Date().toISOString(), cancellation_reason: reason, cancellation_category: category }
+    const updates = { status: 'cancelled', cancelled_at: new Date().toISOString(), cancellation_reason: reason }
     if (paymentReceived) {
       const done = dialog.querySelector('#canc-refund-done').checked
       const ref = dialog.querySelector('#canc-refund-ref').value.trim()
