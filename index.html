@@ -3,6 +3,20 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script>
+  // If Supabase auth ever redirects to the homepage with a recovery / magic-link
+  // / email-change hash, forward to the dedicated reset page so the user actually
+  // sees the "set new password" form instead of the landing page. Runs before
+  // any other JS so there's no flash of the homepage.
+  (function () {
+    try {
+      var h = window.location.hash || '';
+      if (h.indexOf('type=recovery') !== -1 || h.indexOf('access_token=') !== -1) {
+        window.location.replace('/forgot-password' + h);
+      }
+    } catch (e) {}
+  })();
+</script>
 <title>Calcaterra · Built for those who decide.</title>
 <meta name="description" content="Precision timepieces built on conviction. Designed once, worn indefinitely. Explore the Calcaterra collection.">
 <meta property="og:title" content="Calcaterra · Built for those who decide.">
