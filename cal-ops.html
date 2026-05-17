@@ -1199,7 +1199,11 @@ async function generateCodes() {
   const { data: existingCodes } = await _supabase.from('warranties').select('activation_code')
   const existingSet = new Set((existingCodes || []).map(c => c.activation_code))
   const newCodes = []
-  for (let i = 0; i < qty; i++) { const code = generateUniqueCode(existingSet, collection); existingSet.add(code); newCodes.push({ activation_code: code, status: 'inactive', variant, collection }) }
+  // Warranty starts the day the code is assigned to a watch (i.e. now). Stamped
+  // into warranty_end at insert time so activation later does NOT reset the clock.
+  const warrantyEnd = new Date(); warrantyEnd.setFullYear(warrantyEnd.getFullYear() + 2)
+  const warrantyEndIso = warrantyEnd.toISOString()
+  for (let i = 0; i < qty; i++) { const code = generateUniqueCode(existingSet, collection); existingSet.add(code); newCodes.push({ activation_code: code, status: 'inactive', variant, collection, warranty_end: warrantyEndIso }) }
   const { error } = await _supabase.from('warranties').insert(newCodes)
   if (error) { toast('Error: ' + error.message, 'error'); return }
   document.getElementById('generated-codes-preview').style.display = 'block'
@@ -1262,8 +1266,16 @@ async function loadWarranties() {
 }
 
 async function manualActivate(id) {
-  const now = new Date(); const end = new Date(now); end.setFullYear(end.getFullYear() + 2)
-  const { error } = await _supabase.from('warranties').update({ status: 'active', activated_at: now.toISOString(), warranty_end: end.toISOString() }).eq('id', id)
+  // Activation does not reset the warranty clock · warranty_end was stamped
+  // at code generation. For legacy rows where warranty_end is null we fill it
+  // in here as a one-time backfill, but never overwrite an existing value.
+  const { data: row } = await _supabase.from('warranties').select('warranty_end').eq('id', id).maybeSingle()
+  const updates = { status: 'active', activated_at: new Date().toISOString() }
+  if (!row?.warranty_end) {
+    const end = new Date(); end.setFullYear(end.getFullYear() + 2)
+    updates.warranty_end = end.toISOString()
+  }
+  const { error } = await _supabase.from('warranties').update(updates).eq('id', id)
   if (error) { toast('Error', 'error'); return }
   toast('Warranty activated')
   loadWarranties()
