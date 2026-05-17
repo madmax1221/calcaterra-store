@@ -2228,6 +2228,23 @@ async function openDeliveredDialog(orderId) {
   dialog.classList.add('open')
 }
 
+// Translate the internal cancellation_reason ('Category · notes') into a
+// short customer-facing sentence. Suspicious/fraud is intentionally
+// suppressed · returns null so the caller skips the reason line entirely.
+function customerCancellationCopy(reason) {
+  if (!reason) return null
+  const [rawCat, ...rest] = reason.split('·')
+  const cat = rawCat.trim().toLowerCase()
+  const notes = rest.join('·').trim()
+  if (cat.startsWith('suspicious')) return null
+  if (cat.startsWith('payment timeout')) return 'We were unable to confirm payment for this order in time. You are welcome to place a new order whenever you are ready.'
+  if (cat.startsWith('customer requested')) return 'This order was cancelled at your request.'
+  if (cat.startsWith('other') && notes) return notes
+  // Pre-category free-form reason · show as-is unless it looks like suspicious wording
+  if (!['customer requested','payment timeout','other'].includes(cat) && !/suspic|fraud/i.test(reason)) return reason
+  return null
+}
+
 async function sendCancellationEmail(orderId) {
   const { data: order } = await _supabase.from('orders').select(`
     id, total, cancellation_reason, refund_reference, refund_processed_at,
@@ -2239,6 +2256,10 @@ async function sendCancellationEmail(orderId) {
   }
   const name = order.customers.first_name || 'Valued Customer'
   const orderNum = 'CAL-' + orderId.slice(0,8).toUpperCase()
+  const reasonCopy = customerCancellationCopy(order.cancellation_reason)
+  const reasonLine = reasonCopy
+    ? `<p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;font-style:italic;">${esc(reasonCopy)}</p>`
+    : ''
   const refundLine = order.refund_processed_at
     ? `<p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">A refund has been processed in full. Depending on your bank, you may see it return in 3 to 10 business days.</p>
        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid rgba(26,24,20,0.1);border-bottom:1px solid rgba(26,24,20,0.1);margin:18px 0;">
@@ -2251,6 +2272,7 @@ async function sendCancellationEmail(orderId) {
   const content = `
       <tr><td style="padding:0 56px 24px;">
         <p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">Dear ${esc(name)}, your order ${esc(orderNum)} has been cancelled.</p>
+        ${reasonLine}
         ${refundLine}
         <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:15px;color:rgba(26,24,20,0.65);line-height:1.85;">If you have any questions, simply reply to this message and we will be in touch.</p>
       </td></tr>

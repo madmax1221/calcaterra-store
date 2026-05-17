@@ -815,9 +815,25 @@ footer{background:#141210;padding:80px 52px 48px;}
     // Update header with the actual order ref
     titleEl.innerHTML = isCancelled ? 'Order <em>cancelled.</em>' : 'Order <em>summary.</em>'
 
+    // Customer-friendly cancellation copy · suspicious-flagged orders deliberately get no reason text
+    const cancelReasonCopy = (() => {
+      const raw = order.cancellation_reason
+      if (!raw) return null
+      const [rawCat, ...rest] = raw.split('·')
+      const cat = rawCat.trim().toLowerCase()
+      const notes = rest.join('·').trim()
+      if (cat.startsWith('suspicious')) return null
+      if (cat.startsWith('payment timeout')) return 'We were unable to confirm payment for this order in time. You are welcome to place a new order whenever you are ready.'
+      if (cat.startsWith('customer requested')) return 'This order was cancelled at your request.'
+      if (cat.startsWith('other') && notes) return notes
+      if (!['customer requested','payment timeout','other'].includes(cat) && !/suspic|fraud/i.test(raw)) return raw
+      return null
+    })()
+    const cancelledDate = fmtDate(order.cancelled_at || order.created_at)
+
     // Timeline (skip if cancelled · show simple state)
     const timelineHtml = isCancelled
-      ? `<div style="text-align:center;padding:14px 0;font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:14px;">This order was cancelled on ${fmtDate(order.created_at)}.</div>`
+      ? `<div style="text-align:center;padding:14px 0;font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:14px;">This order was cancelled on ${cancelledDate}.${cancelReasonCopy ? `<br><span style="font-size:13px;color:rgba(26,24,20,0.5);display:block;margin-top:10px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7;">${cancelReasonCopy.replace(/[<>]/g,'')}</span>` : ''}</div>`
       : `<div class="order-timeline">
           <div class="order-timeline-step ${stepReached('pending') ? 'done' : ''}"><span class="order-timeline-name">PLACED</span><span class="order-timeline-date">${fmtDate(order.created_at) || ''}</span></div>
           <div class="order-timeline-step ${stepReached('confirmed') ? 'done' : ''}"><span class="order-timeline-name">CONFIRMED</span><span class="order-timeline-date">${fmtDate(order.confirmed_at || order.payment_verified_at) || (stepReached('confirmed') ? 'Yes' : '—')}</span></div>
