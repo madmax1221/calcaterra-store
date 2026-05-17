@@ -452,11 +452,10 @@ footer{background:#141210;padding:80px 52px 48px;}
               <input type="email" id="edit-email" class="dash-form-input" placeholder="your@email.com" required>
             </div>
             <div class="dash-form-section">
-              <span class="dash-form-section-label">CHANGE PASSWORD<span class="optional">OPTIONAL</span></span>
-              <div class="dash-form-field">
-                <label class="details-label">NEW PASSWORD</label>
-                <input type="password" id="edit-pass-new" class="dash-form-input" placeholder="Min. 8 characters" minlength="8">
-              </div>
+              <span class="dash-form-section-label">PASSWORD</span>
+              <p style="font-family:'Times New Roman',Times,serif;font-style:italic;font-size:14px;color:rgba(26,24,20,0.55);line-height:1.7;margin-bottom:18px;">For your security, password changes are confirmed by email. We'll send a reset link to your inbox.</p>
+              <button type="button" id="pwd-reset-btn" onclick="requestPasswordReset(this)" class="dash-form-cancel" style="display:inline-block;width:auto;padding:14px 26px;">SEND RESET LINK</button>
+              <p id="pwd-reset-msg" style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.4em;color:rgba(26,24,20,0.55);text-transform:uppercase;margin-top:14px;min-height:14px;"></p>
             </div>
             <div class="dash-form-actions">
               <button type="submit" id="save-btn" class="reg-submit">SAVE CHANGES</button>
@@ -1025,7 +1024,6 @@ footer{background:#141210;padding:80px 52px 48px;}
     const firstName = document.getElementById('edit-first').value.trim()
     const lastName = document.getElementById('edit-last').value.trim()
     const email = document.getElementById('edit-email').value.trim()
-    const newPass = document.getElementById('edit-pass-new').value
     const btn = document.getElementById('save-btn')
     const msg = document.getElementById('edit-msg')
     btn.disabled = true; btn.textContent = 'SAVING...'
@@ -1042,9 +1040,9 @@ footer{background:#141210;padding:80px 52px 48px;}
       if (currentCustomer) { currentCustomer.first_name = firstName; currentCustomer.last_name = lastName }
       updateDisplay(firstName, lastName, originalEmail)
 
+      // Password is handled by a separate reset-email flow (see requestPasswordReset)
       const authUpdate = { data: { first_name: firstName, last_name: lastName } }
       if (emailChanged) authUpdate.email = email
-      if (newPass && newPass.length >= 8) authUpdate.password = newPass
       const { error: authError } = await _supabase.auth.updateUser(
         authUpdate,
         emailChanged ? { emailRedirectTo: window.location.origin + '/dashboard' } : undefined
@@ -1064,6 +1062,34 @@ footer{background:#141210;padding:80px 52px 48px;}
       msg.className = 'msg-box error show'; msg.style.display = 'block'
     }
     btn.disabled = false; btn.textContent = 'SAVE CHANGES'
+  }
+
+  // Send a Supabase password-reset email to the currently signed-in user.
+  // They click the link in the inbox, land on /forgot-password in recovery
+  // mode, and set a new password there. Avoids re-typing passwords in the
+  // dashboard and gives the same email-verified flow as a forgot-password.
+  async function requestPasswordReset(btn) {
+    const msg = document.getElementById('pwd-reset-msg')
+    const email = currentSession?.user?.email
+    if (!email) { msg.textContent = 'NOT SIGNED IN.'; return }
+    const original = btn.textContent
+    btn.disabled = true; btn.textContent = 'SENDING…'
+    msg.style.color = 'rgba(26,24,20,0.55)'
+    msg.textContent = ''
+    try {
+      const { error } = await _supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/forgot-password'
+      })
+      if (error) throw error
+      btn.textContent = 'LINK SENT'
+      msg.textContent = 'CHECK YOUR INBOX. THE LINK EXPIRES IN ONE HOUR.'
+      // Keep button disabled to prevent spam-click; re-enable after 30s
+      setTimeout(() => { btn.disabled = false; btn.textContent = original }, 30000)
+    } catch (err) {
+      btn.disabled = false; btn.textContent = original
+      msg.style.color = '#d9534f'
+      msg.textContent = (err.message || 'COULD NOT SEND RESET LINK.').toUpperCase()
+    }
   }
 
   async function handleWatchReg(e) {
