@@ -2231,13 +2231,18 @@ async function openDeliveredDialog(orderId) {
 // Translate the internal cancellation_reason ('Category · notes') into a
 // short customer-facing sentence. Suspicious/fraud is intentionally
 // suppressed · returns null so the caller skips the reason line entirely.
-function customerCancellationCopy(reason) {
+// If paymentVerified is true, the 'Payment timeout' copy is suppressed too
+// so the email can't say 'we did not receive payment' next to a refund line.
+function customerCancellationCopy(reason, paymentVerified = false) {
   if (!reason) return null
   const [rawCat, ...rest] = reason.split('·')
   const cat = rawCat.trim().toLowerCase()
   const notes = rest.join('·').trim()
   if (cat.startsWith('suspicious')) return null
-  if (cat.startsWith('payment timeout')) return 'We were unable to confirm payment for this order in time. You are welcome to place a new order whenever you are ready.'
+  if (cat.startsWith('payment timeout')) {
+    if (paymentVerified) return null
+    return 'We were unable to confirm payment for this order in time. You are welcome to place a new order whenever you are ready.'
+  }
   if (cat.startsWith('customer requested')) return 'This order was cancelled at your request.'
   if (cat.startsWith('other') && notes) return notes
   // Pre-category free-form reason · show as-is unless it looks like suspicious wording
@@ -2248,6 +2253,7 @@ function customerCancellationCopy(reason) {
 async function sendCancellationEmail(orderId) {
   const { data: order } = await _supabase.from('orders').select(`
     id, total, cancellation_reason, refund_reference, refund_processed_at,
+    payment_verified_at,
     customers(first_name, email)
   `).eq('id', orderId).maybeSingle()
   if (!order || !order.customers?.email) {
@@ -2256,7 +2262,7 @@ async function sendCancellationEmail(orderId) {
   }
   const name = order.customers.first_name || 'Valued Customer'
   const orderNum = 'CAL-' + orderId.slice(0,8).toUpperCase()
-  const reasonCopy = customerCancellationCopy(order.cancellation_reason)
+  const reasonCopy = customerCancellationCopy(order.cancellation_reason, !!order.payment_verified_at)
   const reasonLine = reasonCopy
     ? `<p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;font-style:italic;">${esc(reasonCopy)}</p>`
     : ''

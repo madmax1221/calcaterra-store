@@ -815,7 +815,9 @@ footer{background:#141210;padding:80px 52px 48px;}
     // Update header with the actual order ref
     titleEl.innerHTML = isCancelled ? 'Order <em>cancelled.</em>' : 'Order <em>summary.</em>'
 
-    // Customer-friendly cancellation copy · suspicious-flagged orders deliberately get no reason text
+    // Customer-friendly cancellation copy · suspicious-flagged orders deliberately get no reason text.
+    // If payment was actually verified, the 'Payment timeout' copy is suppressed so it can't
+    // contradict a PAID/REFUNDED status in the payment section below.
     const cancelReasonCopy = (() => {
       const raw = order.cancellation_reason
       if (!raw) return null
@@ -823,7 +825,10 @@ footer{background:#141210;padding:80px 52px 48px;}
       const cat = rawCat.trim().toLowerCase()
       const notes = rest.join('·').trim()
       if (cat.startsWith('suspicious')) return null
-      if (cat.startsWith('payment timeout')) return 'We were unable to confirm payment for this order in time. You are welcome to place a new order whenever you are ready.'
+      if (cat.startsWith('payment timeout')) {
+        if (order.payment_verified_at) return null   // payment was actually received · don't tell customer the opposite
+        return 'We were unable to confirm payment for this order in time. You are welcome to place a new order whenever you are ready.'
+      }
       if (cat.startsWith('customer requested')) return 'This order was cancelled at your request.'
       if (cat.startsWith('other') && notes) return notes
       if (!['customer requested','payment timeout','other'].includes(cat) && !/suspic|fraud/i.test(raw)) return raw
@@ -867,10 +872,24 @@ footer{background:#141210;padding:80px 52px 48px;}
         ${addr.country || ''}
       </p>` : '<p style="color:rgba(26,24,20,0.4);font-style:italic;">No shipping address on file.</p>'
 
-    // Payment status + tracking
-    const paymentLine = order.payment_verified_at
-      ? `<p><strong style="font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.32em;color:#1a1814;font-weight:400;">PAID</strong><br><span style="font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:13px;">Confirmed ${fmtDate(order.payment_verified_at)}</span></p>`
-      : `<p style="font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:14px;">Awaiting payment confirmation.</p>`
+    // Payment status · accounts for cancelled / refunded states so the line
+    // never contradicts the cancellation message above.
+    const labelBold = (txt) => `<strong style="font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.32em;color:#1a1814;font-weight:400;">${txt}</strong>`
+    const italicNote = (txt) => `<span style="font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:13px;">${txt}</span>`
+    let paymentLine
+    if (isCancelled) {
+      if (order.refund_processed_at) {
+        paymentLine = `<p>${labelBold('REFUNDED')}<br>${italicNote(`Issued ${fmtDate(order.refund_processed_at)}`)}</p>`
+      } else if (order.payment_verified_at) {
+        paymentLine = `<p>${labelBold('PAID')}<br>${italicNote('Refund pending. We will be in touch.')}</p>`
+      } else {
+        paymentLine = `<p style="font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:14px;">No payment was charged.</p>`
+      }
+    } else if (order.payment_verified_at) {
+      paymentLine = `<p>${labelBold('PAID')}<br>${italicNote(`Confirmed ${fmtDate(order.payment_verified_at)}`)}</p>`
+    } else {
+      paymentLine = `<p style="font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:14px;">Awaiting payment confirmation.</p>`
+    }
 
     const trackingHtml = order.tracking_number
       ? `<div style="margin-top:14px;"><span class="order-tracking">TRACKING · ${esc(order.tracking_number)} <span class="order-tracking-arrow">→</span></span></div>`
