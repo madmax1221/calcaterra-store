@@ -134,8 +134,74 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
   .dash-form-row{grid-template-columns:1fr;}
   .dash-form-actions{grid-template-columns:1fr;}
 }
-.order-card{border:1px solid rgba(26,24,20,0.07);padding:32px;margin-bottom:16px;transition:border-color .2s;}
-.order-card:hover{border-color:rgba(26,24,20,0.2);}
+.order-card{border:1px solid rgba(26,24,20,0.07);padding:32px;margin-bottom:16px;transition:border-color .2s,background .2s;cursor:pointer;position:relative;}
+.order-card:hover{border-color:rgba(26,24,20,0.25);background:rgba(26,24,20,0.015);}
+.order-card-arrow{position:absolute;top:32px;right:32px;font-family:'Times New Roman',Times,serif;font-style:italic;font-size:18px;color:rgba(26,24,20,0.25);transition:transform .25s,color .25s;}
+.order-card:hover .order-card-arrow{transform:translateX(4px);color:rgba(26,24,20,0.55);}
+
+/* ── Order detail modal · luxury restraint, fullscreen on mobile ── */
+.order-modal-overlay{position:fixed;inset:0;z-index:600;background:rgba(20,18,16,0);pointer-events:none;transition:background .4s ease;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:80px 24px;}
+.order-modal-overlay.open{background:rgba(20,18,16,0.5);pointer-events:all;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.order-modal{width:100%;max-width:720px;background:#f2efe9;padding:0;transform:translateY(40px);transition:transform .5s cubic-bezier(.25,.46,.45,.94);opacity:0;}
+.order-modal-overlay.open .order-modal{transform:translateY(0);opacity:1;}
+.order-modal-header{padding:36px 44px 28px;border-bottom:1px solid rgba(26,24,20,0.07);display:flex;justify-content:space-between;align-items:flex-start;}
+.order-modal-eyebrow{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.45);text-transform:uppercase;display:block;margin-bottom:8px;}
+.order-modal-title{font-family:'Times New Roman',Times,serif;font-size:30px;font-weight:300;letter-spacing:0.02em;color:#1a1814;line-height:1.1;}
+.order-modal-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.order-modal-close{background:none;border:none;cursor:pointer;font-family:'Times New Roman',Times,serif;font-size:24px;color:rgba(26,24,20,0.35);transition:color .25s;padding:4px 6px;margin-top:-4px;line-height:1;}
+.order-modal-close:hover{color:#1a1814;}
+.order-modal-body{padding:36px 44px;}
+.order-modal-section{padding:0 0 32px;margin-bottom:32px;border-bottom:1px solid rgba(26,24,20,0.07);}
+.order-modal-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.order-modal-label{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.45);text-transform:uppercase;display:block;margin-bottom:18px;}
+
+/* Timeline */
+.order-timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;}
+.order-timeline-step{text-align:center;position:relative;padding-top:24px;}
+.order-timeline-step::before{content:'';position:absolute;top:6px;left:50%;width:8px;height:8px;border-radius:50%;background:rgba(26,24,20,0.12);transform:translateX(-50%);transition:background .3s;}
+.order-timeline-step.done::before{background:#1a1814;}
+.order-timeline-step::after{content:'';position:absolute;top:9px;left:50%;width:100%;height:1px;background:rgba(26,24,20,0.08);}
+.order-timeline-step:last-child::after{display:none;}
+.order-timeline-step.done::after{background:rgba(26,24,20,0.35);}
+.order-timeline-name{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.38em;color:rgba(26,24,20,0.4);text-transform:uppercase;display:block;margin-bottom:4px;}
+.order-timeline-step.done .order-timeline-name{color:#1a1814;}
+.order-timeline-date{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:11px;color:rgba(26,24,20,0.4);}
+
+/* Line items */
+.order-item{display:grid;grid-template-columns:72px 1fr auto;gap:20px;padding:18px 0;border-bottom:1px solid rgba(26,24,20,0.06);align-items:center;}
+.order-item:last-child{border-bottom:none;}
+.order-item-img{background:#e9e5de;aspect-ratio:1;overflow:hidden;}
+.order-item-img img{width:100%;height:100%;object-fit:contain;background:#f2efe9;filter:brightness(0.95);}
+.order-item-name{font-family:'Times New Roman',Times,serif;font-size:17px;font-weight:300;letter-spacing:0.02em;color:#1a1814;display:block;line-height:1.2;margin-bottom:4px;}
+.order-item-name em{font-style:italic;color:rgba(26,24,20,0.5);}
+.order-item-meta{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.3em;color:rgba(26,24,20,0.5);text-transform:uppercase;}
+.order-item-price{font-family:'Times New Roman',Times,serif;font-size:16px;color:#1a1814;letter-spacing:0.02em;}
+
+/* Two-column for address + payment */
+.order-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;}
+.order-modal-grid > div h4{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.45);text-transform:uppercase;margin-bottom:14px;}
+.order-modal-grid p{font-family:'Times New Roman',Times,serif;font-size:14px;line-height:1.7;color:rgba(26,24,20,0.78);}
+
+/* Totals */
+.order-totals{display:flex;justify-content:space-between;align-items:baseline;padding-top:18px;border-top:1px solid rgba(26,24,20,0.12);}
+.order-totals-label{font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.55em;color:rgba(26,24,20,0.55);text-transform:uppercase;}
+.order-totals-value{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;color:#1a1814;}
+
+/* Tracking pill */
+.order-tracking{display:inline-flex;align-items:center;gap:10px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:0.25em;color:#1a1814;border:1px solid rgba(26,24,20,0.2);padding:10px 16px;text-decoration:none;transition:border-color .25s,background .25s;}
+.order-tracking:hover{border-color:#1a1814;background:rgba(26,24,20,0.04);}
+.order-tracking-arrow{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:14px;}
+
+@media(max-width:640px){
+  .order-modal-overlay{padding:0;}
+  .order-modal{max-width:100%;min-height:100vh;}
+  .order-modal-header{padding:24px 24px 20px;}
+  .order-modal-body{padding:24px;}
+  .order-modal-title{font-size:24px;}
+  .order-modal-grid{grid-template-columns:1fr;gap:24px;}
+  .order-timeline{grid-template-columns:1fr 1fr;gap:16px 0;}
+  .order-timeline-step::after{display:none;}
+}
 .order-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(26,24,20,0.06);}
 .order-number{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.5em;color:rgba(26,24,20,0.55);display:block;margin-bottom:8px;}
 .order-product{font-size:22px;font-weight:300;letter-spacing:0.03em;color:#1a1814;}
@@ -698,7 +764,8 @@ footer{background:#141210;padding:80px 52px 48px;}
     let html = ''
     orders.forEach(o => {
       const d = new Date(o.created_at)
-      html += `<div class="order-card">
+      html += `<div class="order-card" onclick="openOrderDetail('${o.id}')">
+        <span class="order-card-arrow">→</span>
         <div class="order-card-header">
           <div><span class="order-number">ORDER #${o.id.slice(0,8).toUpperCase()}</span><div class="order-product">Calcaterra <em>Roma.</em></div></div>
           <span class="order-status">${(o.status||'PENDING').toUpperCase()}</span>
@@ -711,6 +778,121 @@ footer{background:#141210;padding:80px 52px 48px;}
     })
     document.getElementById('orders-content').innerHTML = html
   }
+
+  // ── Order detail modal ─────────────────────────────────────
+  async function openOrderDetail(id) {
+    const overlay = document.getElementById('orderModalOverlay')
+    const body = document.getElementById('orderModalBody')
+    const titleEl = document.getElementById('orderModalTitle')
+    const eyebrowEl = document.getElementById('orderModalEyebrow')
+    body.innerHTML = '<p style="text-align:center;padding:60px 0;font-family:\'Montserrat\',sans-serif;font-size:10px;letter-spacing:0.4em;color:rgba(26,24,20,0.4);">LOADING…</p>'
+    eyebrowEl.textContent = `ORDER #${id.slice(0,8).toUpperCase()}`
+    titleEl.innerHTML = 'Order <em>details.</em>'
+    overlay.classList.add('open')
+    document.body.style.overflow = 'hidden'
+
+    const { data: order, error } = await _supabase
+      .from('orders')
+      .select('id, status, total, created_at, shipping_address, payment_verified_at, tracking_number, delivered_at, shipped_at, confirmed_at, order_items(id, quantity, unit_price, variant_id, product_variants(name, attributes))')
+      .eq('id', id)
+      .single()
+
+    if (error || !order) {
+      body.innerHTML = '<p style="text-align:center;padding:60px 0;font-family:\'Montserrat\',sans-serif;font-size:11px;letter-spacing:0.2em;color:rgba(26,24,20,0.5);">Could not load this order. Please try again.</p>'
+      return
+    }
+
+    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+    const fmtDate = (iso) => { if (!iso) return null; const d = new Date(iso); return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}` }
+    const status = (order.status || 'pending').toLowerCase()
+    const isCancelled = status === 'cancelled'
+    const stepReached = (s) => {
+      const order_ = ['pending','confirmed','shipped','delivered']
+      return order_.indexOf(status) >= order_.indexOf(s)
+    }
+
+    // Update header with the actual order ref
+    titleEl.innerHTML = isCancelled ? 'Order <em>cancelled.</em>' : 'Order <em>summary.</em>'
+
+    // Timeline (skip if cancelled · show simple state)
+    const timelineHtml = isCancelled
+      ? `<div style="text-align:center;padding:14px 0;font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:14px;">This order was cancelled on ${fmtDate(order.created_at)}.</div>`
+      : `<div class="order-timeline">
+          <div class="order-timeline-step ${stepReached('pending') ? 'done' : ''}"><span class="order-timeline-name">PLACED</span><span class="order-timeline-date">${fmtDate(order.created_at) || ''}</span></div>
+          <div class="order-timeline-step ${stepReached('confirmed') ? 'done' : ''}"><span class="order-timeline-name">CONFIRMED</span><span class="order-timeline-date">${fmtDate(order.confirmed_at) || (stepReached('confirmed') ? 'Yes' : '—')}</span></div>
+          <div class="order-timeline-step ${stepReached('shipped') ? 'done' : ''}"><span class="order-timeline-name">SHIPPED</span><span class="order-timeline-date">${fmtDate(order.shipped_at) || (stepReached('shipped') ? 'Yes' : '—')}</span></div>
+          <div class="order-timeline-step ${stepReached('delivered') ? 'done' : ''}"><span class="order-timeline-name">DELIVERED</span><span class="order-timeline-date">${fmtDate(order.delivered_at) || (stepReached('delivered') ? 'Yes' : '—')}</span></div>
+        </div>`
+
+    // Items
+    const items = order.order_items || []
+    const itemsHtml = items.length === 0 ? '<p style="font-family:\'Montserrat\',sans-serif;font-size:11px;letter-spacing:0.15em;color:rgba(26,24,20,0.45);">No line items recorded.</p>' : items.map(it => {
+      const name = it.product_variants?.name || 'Roma'
+      const variantSlug = (it.product_variants?.attributes?.slug || it.product_variants?.attributes?.variant || (name.toLowerCase().includes('navy') ? 'navy' : name.toLowerCase().includes('silver') ? 'silver' : 'black'))
+      const img = variantCartImages[variantSlug] || variantCartImages.black
+      return `<div class="order-item">
+        <div class="order-item-img"><img src="${img}" alt="${name}"></div>
+        <div>
+          <span class="order-item-name">Roma <em>${name.replace(/^Roma\s+/i,'')}.</em></span>
+          <span class="order-item-meta">QTY · ${it.quantity || 1} &nbsp;·&nbsp; €${parseFloat(it.unit_price || 0).toFixed(0)} each</span>
+        </div>
+        <span class="order-item-price">€${(parseFloat(it.unit_price || 0) * (it.quantity || 1)).toFixed(0)}</span>
+      </div>`
+    }).join('')
+
+    // Address
+    const addr = order.shipping_address || {}
+    const addrHtml = (addr.line1 || addr.city || addr.country) ? `
+      <p>
+        ${addr.first_name || ''} ${addr.last_name || ''}<br>
+        ${addr.line1 || ''}${addr.line2 ? '<br>' + addr.line2 : ''}<br>
+        ${addr.city || ''}${addr.province ? ', ' + addr.province : ''}${addr.postal_code ? ' ' + addr.postal_code : ''}<br>
+        ${addr.country || ''}
+      </p>` : '<p style="color:rgba(26,24,20,0.4);font-style:italic;">No shipping address on file.</p>'
+
+    // Payment status + tracking
+    const paymentLine = order.payment_verified_at
+      ? `<p><strong style="font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.32em;color:#1a1814;font-weight:400;">PAID</strong><br><span style="font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:13px;">Confirmed ${fmtDate(order.payment_verified_at)}</span></p>`
+      : `<p style="font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:14px;">Awaiting payment confirmation.</p>`
+
+    const trackingHtml = order.tracking_number
+      ? `<div style="margin-top:14px;"><span class="order-tracking">TRACKING · ${esc(order.tracking_number)} <span class="order-tracking-arrow">→</span></span></div>`
+      : ''
+
+    body.innerHTML = `
+      ${!isCancelled ? `<div class="order-modal-section"><span class="order-modal-label">Status</span>${timelineHtml}</div>` : `<div class="order-modal-section">${timelineHtml}</div>`}
+      <div class="order-modal-section">
+        <span class="order-modal-label">Items</span>
+        ${itemsHtml}
+      </div>
+      <div class="order-modal-section">
+        <div class="order-modal-grid">
+          <div>
+            <h4>Shipping to</h4>
+            ${addrHtml}
+            ${trackingHtml}
+          </div>
+          <div>
+            <h4>Payment</h4>
+            ${paymentLine}
+          </div>
+        </div>
+      </div>
+      <div class="order-modal-section">
+        <div class="order-totals">
+          <span class="order-totals-label">Total</span>
+          <span class="order-totals-value">€${parseFloat(order.total || 0).toFixed(0)}</span>
+        </div>
+      </div>
+    `
+  }
+
+  function closeOrderDetail() {
+    document.getElementById('orderModalOverlay').classList.remove('open')
+    document.body.style.overflow = ''
+  }
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
 
   // ── Stat strip helpers ──────────────────────────────────────
   function updateOrderStat(n) {
@@ -1075,7 +1257,32 @@ footer{background:#141210;padding:80px 52px 48px;}
     document.getElementById('menu-drawer').classList.toggle('open')
     document.getElementById('menu-overlay').classList.toggle('open')
   }
+
+  // Close order modal on backdrop click or ESC
+  document.addEventListener('click', (e) => {
+    const overlay = document.getElementById('orderModalOverlay')
+    if (overlay && e.target === overlay) closeOrderDetail()
+  })
+  document.addEventListener('keydown', (e) => {
+    const overlay = document.getElementById('orderModalOverlay')
+    if (overlay && overlay.classList.contains('open') && e.key === 'Escape') closeOrderDetail()
+  })
 </script>
+
+<!-- Order detail modal -->
+<div class="order-modal-overlay" id="orderModalOverlay" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle">
+  <div class="order-modal">
+    <div class="order-modal-header">
+      <div>
+        <span class="order-modal-eyebrow" id="orderModalEyebrow">ORDER</span>
+        <h2 class="order-modal-title" id="orderModalTitle">Order <em>details.</em></h2>
+      </div>
+      <button class="order-modal-close" onclick="closeOrderDetail()" aria-label="Close">&times;</button>
+    </div>
+    <div class="order-modal-body" id="orderModalBody"></div>
+  </div>
+</div>
+
 <script src="/cookies.js" defer></script>
 </body>
 </html>
