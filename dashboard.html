@@ -891,8 +891,10 @@ footer{background:#141210;padding:80px 52px 48px;}
       paymentLine = `<p style="font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:14px;">Awaiting payment confirmation.</p>`
     }
 
+    // Tracking opens 17track.net (carrier-agnostic global tracker) with the
+    // number pre-filled in the URL hash · works for most international couriers.
     const trackingHtml = order.tracking_number
-      ? `<div style="margin-top:14px;"><span class="order-tracking">TRACKING · ${esc(order.tracking_number)} <span class="order-tracking-arrow">→</span></span></div>`
+      ? `<div style="margin-top:14px;"><a href="https://t.17track.net/en#nums=${encodeURIComponent(order.tracking_number)}" target="_blank" rel="noopener" class="order-tracking" title="Track on 17track.net">TRACKING · ${esc(order.tracking_number)} <span class="order-tracking-arrow">→</span></a></div>`
       : ''
 
     body.innerHTML = `
