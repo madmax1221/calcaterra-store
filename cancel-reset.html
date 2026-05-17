@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cancel Password Reset · Calcaterra</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:96px;}
+body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;overflow-x:hidden;min-height:100vh;}
+::-webkit-scrollbar{width:1px;}
+::-webkit-scrollbar-thumb{background:rgba(26,24,20,0.15);}
+#nav{position:fixed;top:0;left:0;right:0;z-index:500;height:96px;display:flex;justify-content:space-between;align-items:center;padding:18px 52px;background:rgba(242,239,233,0.97);border-bottom:1px solid rgba(26,24,20,0.07);backdrop-filter:blur(14px);}
+.nav-l,.nav-r{display:flex;gap:28px;align-items:center;}
+.nav-center{position:absolute;left:50%;transform:translateX(-50%);}
+.nav-logo-img{height:58px;width:auto;display:block;filter:invert(1);margin-top:4px;}
+.nav-hamburger{display:flex;flex-direction:column;justify-content:center;gap:5px;width:28px;height:28px;background:none;border:none;cursor:pointer;padding:0;}
+.nav-hamburger span{display:block;width:22px;height:1.5px;background:rgba(26,24,20,0.85);transition:transform .35s,opacity .3s;transform-origin:center;}
+.nav-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+.nav-icon-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .25s;text-decoration:none;}
+.nav-icon-btn:hover{opacity:1;}
+.nav-icon-btn svg{width:18px;height:18px;stroke:rgba(26,24,20,0.85);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+#menu-overlay{position:fixed;inset:0;z-index:480;background:rgba(26,24,20,0);pointer-events:none;transition:background .5s;}
+#menu-overlay.open{background:rgba(26,24,20,0.4);pointer-events:all;}
+#menu-drawer{position:fixed;top:0;left:0;bottom:0;width:300px;background:#f2efe9;z-index:490;transform:translateX(-100%);transition:transform .5s cubic-bezier(.77,0,.18,1);display:flex;flex-direction:column;padding:120px 48px 60px;}
+#menu-drawer.open{transform:translateX(0);}
+.drawer-nav{display:flex;flex-direction:column;flex:1;}
+.drawer-nav a{font-family:'Times New Roman',Times,serif;font-size:28px;font-weight:300;letter-spacing:0.03em;color:#1a1814;text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(26,24,20,0.07);}
+.drawer-nav a:hover{color:rgba(26,24,20,0.4);}
+.drawer-footer{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.45em;color:rgba(26,24,20,0.55);}
+footer{background:#141210;padding:80px 52px 48px;}
+.foot-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid rgba(242,239,233,0.06);}
+.foot-logo{height:62px;width:auto;display:block;margin-bottom:20px;margin-left:62px;}
+.foot-copy{font-family:'Times New Roman',Times,serif;font-size:13px;letter-spacing:0.04em;color:rgba(242,239,233,0.2);line-height:1.9;max-width:250px;}
+.foot-col h5{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.42em;color:rgba(242,239,233,0.55);margin-bottom:20px;}
+.foot-col a{display:block;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;letter-spacing:0.08em;color:rgba(242,239,233,0.3);text-decoration:none;margin-bottom:12px;transition:color .25s;}
+.foot-col a:hover{color:rgba(242,239,233,0.72);}
+.foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;gap:24px;flex-wrap:wrap;}
+.foot-legal{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.foot-legal a{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:300;letter-spacing:0.32em;color:rgba(242,239,233,0.45);text-decoration:none;transition:color .25s;text-transform:uppercase;}
+.foot-legal a:hover{color:rgba(242,239,233,0.85);}
+.foot-legal-sep{font-family:'Times New Roman',Times,serif;color:rgba(242,239,233,0.25);font-size:11px;}
+.foot-bottom span{font-family:'Montserrat',sans-serif;font-size:8px;font-weight:300;letter-spacing:0.35em;color:rgba(242,239,233,0.2);}
+@media(max-width:560px){.foot-bottom{flex-direction:column-reverse;align-items:flex-start;gap:16px;}}
+
+.cancel-page{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;}
+.cancel-image{position:relative;overflow:hidden;min-height:100vh;}
+.cancel-image img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.65) saturate(0.7);}
+.cancel-image-overlay{position:absolute;inset:0;background:linear-gradient(to right, rgba(26,24,20,0.4), transparent);}
+.cancel-image-text{position:absolute;bottom:64px;left:52px;right:52px;}
+.cancel-image-heading{font-size:clamp(28px,3vw,42px);font-weight:300;line-height:1.15;letter-spacing:0.03em;color:rgba(242,239,233,0.5);}
+.cancel-image-heading em{font-style:italic;color:#f2efe9;}
+.cancel-form-side{display:flex;flex-direction:column;justify-content:center;padding:140px 80px 80px;}
+.cancel-eyebrow{font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:300;letter-spacing:0.6em;color:rgba(26,24,20,0.55);display:block;margin-bottom:20px;}
+.cancel-title{font-size:clamp(36px,4vw,56px);font-weight:300;line-height:1.08;letter-spacing:0.03em;color:#1a1814;margin-bottom:8px;}
+.cancel-title em{font-style:italic;color:rgba(26,24,20,0.4);}
+.cancel-subtitle{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;letter-spacing:0.08em;line-height:1.9;color:rgba(26,24,20,0.7);margin-bottom:32px;}
+.cancel-body{font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:300;line-height:1.9;color:rgba(26,24,20,0.78);margin-bottom:32px;}
+.cancel-cta{display:inline-block;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.6em;color:#f2efe9;background:#1a1814;border:none;cursor:pointer;padding:22px 36px;text-align:center;transition:background .3s;text-decoration:none;text-transform:uppercase;}
+.cancel-cta:hover{background:#2a2620;}
+.cancel-cta.ghost{background:none;color:#1a1814;border:1px solid rgba(26,24,20,0.25);padding:21px 35px;}
+.cancel-cta.ghost:hover{background:none;border-color:#1a1814;}
+.cancel-actions{display:flex;gap:14px;flex-wrap:wrap;}
+.spinner{display:inline-block;width:14px;height:14px;border:1.5px solid rgba(26,24,20,0.18);border-top-color:#1a1814;border-radius:50%;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media(max-width:860px){
+  #nav{padding:0 24px;}
+  .cancel-page{grid-template-columns:1fr;}
+  .cancel-image{display:none;}
+  .cancel-form-side{padding:140px 32px 80px;}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-l">
+    <button class="nav-hamburger" id="menuToggle" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-center">
+    <a href="/">
+      <img class="nav-logo-img" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117" alt="Calcaterra"/>
+    </a>
+  </div>
+  <div class="nav-r">
+    <a href="#" class="nav-icon-btn" aria-label="Search">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/></svg>
+    </a>
+    <a href="/signin" class="nav-icon-btn" aria-label="Account">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    </a>
+    <div class="cart-wrap">
+      <a href="/cart" class="nav-icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div id="menu-overlay" onclick="toggleMenu()"></div>
+<div id="menu-drawer">
+  <nav class="drawer-nav">
+    <a href="/collections">Collection</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    <a href="#">Notify Me</a>
+    <a href="#">Stockists</a>
+  </nav>
+  <span class="drawer-footer">CALCATERRA</span>
+</div>
+
+<div class="cancel-page">
+  <div class="cancel-image">
+    <img src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Gemini_Generated_Image_sfx3xvsfx3xvsfx3.png?v=1773595865" alt="Calcaterra Roma">
+    <div class="cancel-image-overlay"></div>
+    <div class="cancel-image-text">
+      <h2 class="cancel-image-heading">Account <em>security.</em></h2>
+    </div>
+  </div>
+
+  <div class="cancel-form-side">
+
+    <!-- STATE 1: Working -->
+    <div id="state-working">
+      <span class="cancel-eyebrow">CANCELLING REQUEST</span>
+      <h1 class="cancel-title">One moment, <em>please.</em></h1>
+      <p class="cancel-subtitle">We are invalidating the password reset link that was sent to your inbox.</p>
+      <p class="cancel-body"><span class="spinner"></span>This usually takes a few seconds.</p>
+    </div>
+
+    <!-- STATE 2: Done -->
+    <div id="state-done" style="display:none;">
+      <span class="cancel-eyebrow">REQUEST CANCELLED</span>
+      <h1 class="cancel-title">Your account is <em>safe.</em></h1>
+      <p class="cancel-body">
+        The password reset link sent to your inbox has been invalidated and can no longer be used. Your password has not changed. For added safety, any active sessions on this account have been signed out.
+      </p>
+      <p class="cancel-body" style="font-style:italic;color:rgba(26,24,20,0.55);">
+        If you keep receiving reset emails you did not request, please contact <a href="mailto:support@calcaterra.co" style="color:#1a1814;">support@calcaterra.co</a>.
+      </p>
+      <div class="cancel-actions">
+        <a href="/signin" class="cancel-cta">SIGN IN</a>
+        <a href="/" class="cancel-cta ghost">RETURN HOME</a>
+      </div>
+    </div>
+
+    <!-- STATE 3: Bad link / no token -->
+    <div id="state-error" style="display:none;">
+      <span class="cancel-eyebrow">LINK UNRECOGNIZED</span>
+      <h1 class="cancel-title">We can't read <em>this link.</em></h1>
+      <p class="cancel-body">
+        This cancel link appears incomplete or has already been used. If you received a password reset email you did not request, you can safely ignore it. Your password will not change unless the reset link itself is opened.
+      </p>
+      <div class="cancel-actions">
+        <a href="/" class="cancel-cta">RETURN HOME</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <img class="foot-logo" style="filter:invert(1) brightness(0.6);" src="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design-2_34f672e4-1bf2-4955-a64b-25af3090d31a.png?v=1773510117" alt="Calcaterra"/>
+      <p style="font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:400;letter-spacing:0.58em;color:rgba(242,239,233,0.45);margin-bottom:20px;">CALCATERRA</p>
+      <p class="foot-copy">Built on conviction. Precision over excess. Designed once. Worn indefinitely.</p>
+    </div>
+    <div class="foot-col"><h5>THE HOUSE</h5><a href="/about">Our Story</a><a href="/philosophy">Philosophy</a><a href="/join">Join the House</a></div>
+    <div class="foot-col"><h5>COLLECTIONS</h5><a href="/collections/roma">Roma</a></div>
+    <div class="foot-col"><h5>SUPPORT</h5><a href="/contact">Contact</a><a href="/warranty">Warranty</a><a href="/shipping">Shipping</a><a href="/returns">Returns</a></div>
+  </div>
+  <div class="foot-bottom"><span>&copy; 2026 CALCATERRA. ALL RIGHTS RESERVED.</span><div class="foot-legal"><a href="/terms">Terms of Service</a><span class="foot-legal-sep">&middot;</span><a href="/privacy">Privacy</a><span class="foot-legal-sep">&middot;</span><a href="#" onclick="event.preventDefault();window.CalcaterraCookies&&window.CalcaterraCookies.openPreferences();">Cookie Preferences</a></div></div>
+</footer>
+
+<script>
+  const SUPABASE_URL = 'https://tnjuxcdcwcxoipbsowih.supabase.co'
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
+
+  function showState(id) {
+    ['state-working','state-done','state-error'].forEach(s => {
+      document.getElementById(s).style.display = s === id ? 'block' : 'none'
+    })
+  }
+
+  function toggleMenu() {
+    document.getElementById('menuToggle').classList.toggle('open')
+    document.getElementById('menu-drawer').classList.toggle('open')
+    document.getElementById('menu-overlay').classList.toggle('open')
+  }
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    const params = new URLSearchParams(window.location.search)
+    const e = params.get('e')
+    if (!e) {
+      showState('state-error')
+      return
+    }
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/auth-cancel-recovery`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ e }),
+      })
+      // The function always responds 200 success:true to avoid leaking which
+      // emails are registered. We just transition the UI accordingly.
+      if (res.ok) {
+        showState('state-done')
+      } else {
+        showState('state-error')
+      }
+    } catch (err) {
+      showState('state-error')
+    }
+    // Clean the URL so a refresh doesn't re-POST the cancel intent.
+    history.replaceState(null, '', window.location.pathname)
+  })
+</script>
+<script src="/cookies.js" defer></script>
+</body>
+</html>
