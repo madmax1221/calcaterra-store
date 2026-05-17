@@ -1041,7 +1041,16 @@ async function assignItemCode(btn, itemId, orderId) {
   if (!codeData) { toast('Code not found', 'error'); return }
   const { error: itemErr } = await _supabase.from('order_items').update({ serial_number: codeData.activation_code }).eq('id', itemId)
   if (itemErr) { toast('Error assigning code', 'error'); return }
-  await _supabase.from('warranties').update({ status: 'unactivated', order_id: orderId }).eq('id', codeId)
+  // Warranty clock starts NOW · this is the moment the code is bound to a
+  // specific watch/order. warranty_end is stamped once and never overwritten
+  // (customer activation later only records who/when, not the end date).
+  const warrantyEnd = new Date(); warrantyEnd.setFullYear(warrantyEnd.getFullYear() + 2)
+  await _supabase.from('warranties').update({
+    status: 'unactivated',
+    order_id: orderId,
+    assigned_at: new Date().toISOString(),
+    warranty_end: warrantyEnd.toISOString()
+  }).eq('id', codeId)
   document.querySelectorAll('.item-code-select').forEach(sel => { Array.from(sel.options).forEach(opt => { if (opt.value === codeId) opt.remove() }) })
   row.innerHTML = `<div style="padding:16px 0;border-bottom:1px solid rgba(242,239,233,0.05);"><span style="font-size:9px;letter-spacing:0.3em;color:#4ade80;">✓ ASSIGNED: ${codeData.activation_code}</span></div>`
   toast('Code assigned, ' + codeData.activation_code)
@@ -1199,11 +1208,10 @@ async function generateCodes() {
   const { data: existingCodes } = await _supabase.from('warranties').select('activation_code')
   const existingSet = new Set((existingCodes || []).map(c => c.activation_code))
   const newCodes = []
-  // Warranty starts the day the code is assigned to a watch (i.e. now). Stamped
-  // into warranty_end at insert time so activation later does NOT reset the clock.
-  const warrantyEnd = new Date(); warrantyEnd.setFullYear(warrantyEnd.getFullYear() + 2)
-  const warrantyEndIso = warrantyEnd.toISOString()
-  for (let i = 0; i < qty; i++) { const code = generateUniqueCode(existingSet, collection); existingSet.add(code); newCodes.push({ activation_code: code, status: 'inactive', variant, collection, warranty_end: warrantyEndIso }) }
+  // Warranty clock does NOT start here. A freshly generated code can sit in
+  // inventory unassigned for weeks. The 2-year countdown starts when the code
+  // is assigned to a specific order/watch in assignItemCode() below.
+  for (let i = 0; i < qty; i++) { const code = generateUniqueCode(existingSet, collection); existingSet.add(code); newCodes.push({ activation_code: code, status: 'inactive', variant, collection }) }
   const { error } = await _supabase.from('warranties').insert(newCodes)
   if (error) { toast('Error: ' + error.message, 'error'); return }
   document.getElementById('generated-codes-preview').style.display = 'block'
