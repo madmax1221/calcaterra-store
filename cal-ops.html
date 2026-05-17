@@ -1013,7 +1013,7 @@ async function openOrder(id) {
   let btns = ''
   if (order.status === 'pending') {
     btns += `<button class="ops-btn ops-btn-confirm" onclick="openConfirmDialog('${id}')">✓ CONFIRM ORDER</button>`
-    btns += `<button class="ops-btn ops-btn-danger ops-btn-sm" onclick="updateOrderStatus('${id}', 'cancelled')">CANCEL</button>`
+    btns += `<button class="ops-btn ops-btn-danger ops-btn-sm" onclick="cancelOrder('${id}')">CANCEL ORDER</button>`
   }
   if (order.status === 'confirmed') {
     btns += `<button class="ops-btn ops-btn-ship" onclick="markShipped('${id}')">MARK AS SHIPPED</button>`
