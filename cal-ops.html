@@ -802,7 +802,7 @@ async function loadDashboard() {
   const maxCount = sorted[0]?.[1] || 1
   document.getElementById('country-list').innerHTML = sorted.length ? sorted.map(([country, count]) => `
     <div class="country-row">
-      <span class="country-name">${country}</span>
+      <span class="country-name">${esc(country)}</span>
       <div class="country-bar-wrap"><div class="country-bar" style="width:${(count/maxCount*100)}%"></div></div>
       <span class="country-count">${count}</span>
     </div>`).join('') : '<div class="ops-loading">NO DATA YET</div>'
@@ -893,7 +893,7 @@ function renderOrders(orders) {
       ? `${o.customer_first_name || ''} ${o.customer_last_name || ''}`.trim() : 'Guest'
     return `<tr onclick="openOrder('${o.id}')">
       <td style="font-family:'Times New Roman',serif;font-size:13px;">CAL-${o.id.slice(0,8).toUpperCase()}</td>
-      <td>${name}</td><td style="font-size:10px;">${o.customer_email || '·'}</td>
+      <td>${esc(name)}</td><td style="font-size:10px;">${esc(o.customer_email || '·')}</td>
       <td><span class="variant-tag">ROMA WATCH</span></td>
       <td>€${parseFloat(o.total).toFixed(0)}</td>
       <td><span class="status-pill status-${o.status}">${o.status.toUpperCase()}</span></td>
@@ -978,7 +978,7 @@ async function openOrder(id) {
       return `<div style="padding:16px 0;border-bottom:1px solid rgba(242,239,233,0.05);">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
           <div>
-            <span style="font-size:11px;font-weight:300;color:rgba(242,239,233,0.7);">${item.product_variants?.name || 'Roma Watch'}${instanceLabel}</span>
+            <span style="font-size:11px;font-weight:300;color:rgba(242,239,233,0.7);">${esc(item.product_variants?.name || 'Roma Watch')}${esc(instanceLabel)}</span>
             <span style="display:block;font-size:7px;letter-spacing:0.4em;color:rgba(242,239,233,0.3);margin-top:2px;">${tagText}</span>
           </div>
           <span style="font-size:7px;letter-spacing:0.3em;color:rgba(242,239,233,0.25);">${matchingCodes.length} AVAILABLE</span>
@@ -1262,7 +1262,7 @@ async function loadWarranties() {
     const customer = w.customers
     const name = customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Guest'
     return `<tr>
-      <td><div style="font-size:13px;color:rgba(242,239,233,0.8);">${name}</div><div style="font-size:9px;letter-spacing:0.1em;color:rgba(242,239,233,0.3);margin-top:3px;">${customer?.email || '·'}</div></td>
+      <td><div style="font-size:13px;color:rgba(242,239,233,0.8);">${esc(name)}</div><div style="font-size:9px;letter-spacing:0.1em;color:rgba(242,239,233,0.3);margin-top:3px;">${esc(customer?.email || '·')}</div></td>
       <td><span class="variant-tag">${(w.variant || '·').toUpperCase()}</span></td>
       <td style="font-family:monospace;font-size:11px;">${w.activation_code || '·'}</td>
       <td>${w.activated_at ? new Date(w.activated_at).toLocaleDateString('en-ZA') : '·'}</td>
@@ -1318,8 +1318,8 @@ async function loadCustomers() {
       ? `<button class="customer-expand-btn" onclick="toggleCustomerWatches('${c.id}',this)">VIEW ${cWatches.length} WATCH${cWatches.length>1?'ES':''}</button>`
       : ''
     html += `<tr>
-      <td>${c.first_name || ''} ${c.last_name || ''}</td>
-      <td style="font-size:10px;">${c.email || '·'}</td>
+      <td>${esc(c.first_name || '')} ${esc(c.last_name || '')}</td>
+      <td style="font-size:10px;">${esc(c.email || '·')}</td>
       <td>${badgesHtml}</td>
       <td>${new Date(c.created_at).toLocaleDateString('en-ZA')}</td>
       <td>${expandBtn}</td>
