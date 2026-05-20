@@ -159,7 +159,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     <h1 class="register-title">Welcome <em>back.</em></h1>
     <p class="register-subtitle">Sign in to access your orders, warranty, and watch registration.</p>
 
-    <form class="register-form" onsubmit="handleSignIn(event)">
+    <form class="register-form" onsubmit="handleSignIn(event)" id="passwordForm">
       <div class="form-group">
         <label class="form-label">EMAIL ADDRESS</label>
         <input type="email" id="email" class="form-input" placeholder="your@email.com" required>
@@ -174,6 +174,20 @@ footer{background:#141210;padding:80px 52px 48px;}
       <button type="submit" class="register-submit" id="submitBtn">SIGN IN</button>
       <p class="register-discretion">Your details are handled with discretion.</p>
       <p class="register-signin">New to Calcaterra? <a href="/register">CREATE AN ACCOUNT</a></p>
+    </form>
+
+    <!-- MFA challenge step — only shown after password sign-in when the user has a verified TOTP factor -->
+    <form class="register-form" id="mfaForm" style="display:none;" onsubmit="handleMfaChallenge(event)">
+      <span class="register-eyebrow" style="margin-bottom:14px;">VERIFICATION</span>
+      <h2 style="font-family:'Times New Roman',serif;font-size:32px;font-weight:300;color:#1a1814;margin-bottom:6px;">Second <em style="font-style:italic;color:rgba(26,24,20,0.4);">factor.</em></h2>
+      <p class="register-subtitle" style="margin-bottom:28px;">Enter the 6-digit code from your authenticator app to finish signing in.</p>
+      <div class="form-group">
+        <label class="form-label">6-DIGIT CODE</label>
+        <input type="text" id="mfaCode" class="form-input" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" placeholder="000000" style="font-size:24px;letter-spacing:0.3em;text-align:center;" required>
+      </div>
+      <div class="error-msg" id="mfaErrorMsg"></div>
+      <button type="submit" class="register-submit" id="mfaSubmitBtn">VERIFY</button>
+      <p class="register-signin"><a href="#" onclick="event.preventDefault();cancelMfa()">USE A DIFFERENT ACCOUNT</a></p>
     </form>
 
     <div class="auth-benefits">
@@ -261,12 +275,33 @@ footer{background:#141210;padding:80px 52px 48px;}
       return
     }
 
+    // If the user has a verified TOTP factor, the session is still aal1 here.
+    // Bounce them into the MFA challenge step before completing the sign-in flow.
+    try {
+      const { data: aal } = await _supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+      if (aal?.currentLevel === 'aal1' && aal?.nextLevel === 'aal2') {
+        // Show challenge UI; defer cart-merge + redirect until verify succeeds.
+        document.getElementById('passwordForm').style.display = 'none'
+        document.getElementById('mfaForm').style.display = 'flex'
+        document.getElementById('mfaCode').focus()
+        return
+      }
+    } catch (e) {
+      console.warn('MFA AAL check failed:', e)
+      // Fall through — better to sign in than block on a transient error.
+    }
+
+    await completeSignIn(data.user.id)
+  }
+
+  async function completeSignIn(userId) {
+    const successMsg = document.getElementById('successMsg')
     successMsg.textContent = 'WELCOME BACK.'
     successMsg.classList.add('show')
 
     // Restore cart saved before sign out, merge with any guest items
     try {
-      const { data: cust } = await _supabase.from('customers').select('id').eq('auth_user_id', data.user.id).single()
+      const { data: cust } = await _supabase.from('customers').select('id').eq('auth_user_id', userId).single()
       if (cust?.id) {
         const savedCart = JSON.parse(localStorage.getItem('cal_cart_' + cust.id) || '[]')
         const guestCart = JSON.parse(localStorage.getItem('cal_cart') || '[]')
@@ -281,11 +316,53 @@ footer{background:#141210;padding:80px 52px 48px;}
       }
     } catch(e) {}
 
-    // If they were sent here mid-flow (e.g. /signin?redirect=/cart) honour that;
-    // otherwise default to the homepage so they continue browsing.
     const params = new URLSearchParams(window.location.search)
     const redirect = params.get('redirect') || '/'
     setTimeout(() => { window.location.href = redirect }, 800)
+  }
+
+  async function handleMfaChallenge(e) {
+    e.preventDefault()
+    const code = (document.getElementById('mfaCode').value || '').trim()
+    const btn = document.getElementById('mfaSubmitBtn')
+    const err = document.getElementById('mfaErrorMsg')
+    err.classList.remove('show')
+    if (!/^\d{6}$/.test(code)) {
+      err.textContent = 'ENTER THE 6-DIGIT CODE.'
+      err.classList.add('show')
+      return
+    }
+    btn.disabled = true; btn.textContent = 'VERIFYING…'
+    try {
+      const { data: factors, error: fErr } = await _supabase.auth.mfa.listFactors()
+      if (fErr) throw fErr
+      const factor = (factors?.all || []).find(f => f.factor_type === 'totp' && f.status === 'verified')
+      if (!factor) throw new Error('No verified MFA factor on this account.')
+      const { data: ch, error: chErr } = await _supabase.auth.mfa.challenge({ factorId: factor.id })
+      if (chErr) throw chErr
+      const { data: verifyData, error: vErr } = await _supabase.auth.mfa.verify({
+        factorId: factor.id,
+        challengeId: ch.id,
+        code,
+      })
+      if (vErr) throw vErr
+      await completeSignIn(verifyData.user.id)
+    } catch (e) {
+      err.textContent = (e.message || 'CODE INCORRECT').toUpperCase()
+      err.classList.add('show')
+      btn.disabled = false; btn.textContent = 'VERIFY'
+    }
+  }
+
+  async function cancelMfa() {
+    // Sign out the partial AAL1 session and reset the form to password step.
+    try { await _supabase.auth.signOut() } catch (_) {}
+    document.getElementById('mfaForm').style.display = 'none'
+    document.getElementById('passwordForm').style.display = 'flex'
+    document.getElementById('password').value = ''
+    document.getElementById('submitBtn').disabled = false
+    document.getElementById('submitBtn').textContent = 'SIGN IN'
+    document.getElementById('errorMsg').classList.remove('show')
   }
 
   function toggleMenu() {

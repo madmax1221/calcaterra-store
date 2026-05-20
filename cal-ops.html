@@ -635,6 +635,56 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
 </div>
 <div class="ops-toast" id="toast"></div>
 
+<!-- MFA ENROLLMENT MODAL — auto-shown for admins without a TOTP factor enrolled -->
+<div class="ops-modal-backdrop" id="mfaEnrollModal">
+  <div class="ops-modal" style="max-width:520px;">
+    <div class="ops-modal-header">
+      <div>
+        <span style="font-size:7px;letter-spacing:0.5em;color:rgba(242,239,233,0.3);display:block;margin-bottom:8px;">ACCOUNT SECURITY</span>
+        <h2 class="ops-modal-title">Two-factor <em>authentication.</em></h2>
+      </div>
+      <button class="ops-modal-close" onclick="dismissMfaEnroll()" id="mfaSkipBtn">×</button>
+    </div>
+    <div class="ops-modal-body" id="mfaEnrollBody">
+      <div id="mfaEnrollStart">
+        <p style="font-family:'Times New Roman',serif;font-size:15px;font-style:italic;color:rgba(242,239,233,0.7);line-height:1.7;margin-bottom:22px;">
+          Cal·Ops will soon require a second factor at sign-in. Set this up once now while it's optional; enforcement turns on next.
+        </p>
+        <p style="font-family:'Times New Roman',serif;font-size:14px;color:rgba(242,239,233,0.55);line-height:1.7;margin-bottom:28px;">
+          You'll need an authenticator app on your phone or computer: <em>1Password</em>, <em>Apple Passwords</em>, <em>Google Authenticator</em>, <em>Authy</em>, or similar.
+        </p>
+        <button class="ops-btn ops-btn-ship" onclick="startMfaEnrollment()" id="mfaStartBtn">BEGIN ENROLLMENT</button>
+      </div>
+      <div id="mfaEnrollQr" style="display:none;text-align:center;">
+        <p style="font-family:'Times New Roman',serif;font-size:14px;font-style:italic;color:rgba(242,239,233,0.65);line-height:1.7;margin-bottom:20px;">
+          Scan this with your authenticator app, or copy the key manually.
+        </p>
+        <div style="background:#f2efe9;padding:18px;display:inline-block;margin-bottom:20px;">
+          <img id="mfaQrImage" alt="MFA QR code" style="display:block;width:200px;height:200px;"/>
+        </div>
+        <div style="margin-bottom:24px;">
+          <span style="font-size:7px;letter-spacing:0.5em;color:rgba(242,239,233,0.3);display:block;margin-bottom:8px;">MANUAL ENTRY KEY</span>
+          <code id="mfaSecret" style="display:inline-block;font-family:'SF Mono','Monaco',monospace;font-size:12px;letter-spacing:0.1em;color:rgba(242,239,233,0.85);background:#0e0d0b;padding:8px 14px;border:1px solid rgba(242,239,233,0.1);user-select:all;cursor:text;"></code>
+        </div>
+        <div style="margin-bottom:18px;">
+          <span style="font-size:7px;letter-spacing:0.5em;color:rgba(242,239,233,0.4);display:block;margin-bottom:10px;">ENTER THE 6-DIGIT CODE FROM YOUR APP</span>
+          <input class="ops-input" type="text" id="mfaCodeInput" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" placeholder="000000" style="width:200px;font-size:20px;text-align:center;letter-spacing:0.3em;"/>
+        </div>
+        <div id="mfaEnrollError" style="display:none;color:#f87171;font-size:11px;letter-spacing:0.2em;margin-bottom:14px;text-transform:uppercase;"></div>
+        <button class="ops-btn ops-btn-ship" onclick="verifyMfaEnrollment()" id="mfaVerifyBtn">VERIFY AND ACTIVATE</button>
+      </div>
+      <div id="mfaEnrollDone" style="display:none;text-align:center;">
+        <div style="font-size:48px;color:#4ade80;margin-bottom:18px;">✓</div>
+        <h3 style="font-family:'Times New Roman',serif;font-size:24px;font-weight:300;color:rgba(242,239,233,0.95);margin-bottom:14px;">Two-factor active.</h3>
+        <p style="font-family:'Times New Roman',serif;font-size:14px;font-style:italic;color:rgba(242,239,233,0.55);line-height:1.7;margin-bottom:28px;">
+          Future sign-ins to cal·ops will request a code from your authenticator. Consider enrolling a second device (e.g. your phone <em>and</em> a password manager) as backup.
+        </p>
+        <button class="ops-btn ops-btn-ship" onclick="dismissMfaEnroll()">DONE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const { createClient } = supabase
 const _supabase = createClient(
@@ -668,6 +718,9 @@ async function initAdmin() {
   if (!session) { window.location.href = '/signin.html'; return }
   const { data: customer } = await _supabase.from('customers').select('role, first_name').eq('auth_user_id', session.user.id).single()
   if (!customer || customer.role !== 'admin') { window.location.href = '/index.html'; return }
+  // Prompt the admin to set up TOTP MFA once. Non-blocking for now — Phase 2
+  // will flip cal-ops into AAL2-required mode once you've enrolled.
+  checkMfaEnrollment().catch(err => console.warn('MFA check failed:', err))
   loadDashboard()
   loadOrders()
   loadCodes()
@@ -689,6 +742,89 @@ async function initAdmin() {
     window.Capacitor.Plugins.App?.addListener('appStateChange', ({ isActive }) => {
       if (isActive) { orderChannel = null; startRealtimeOrders(); loadDashboard(); loadOrders() }
     })
+  }
+}
+
+// ── MFA / 2FA enrollment ──────────────────────────────────────────────────
+// Phase 1: show the enrollment modal once for any admin who has no verified
+// TOTP factor. Skippable for now. Phase 2 will require AAL2 to access cal-ops.
+let _mfaFactorId = null
+let _mfaChallengeId = null
+
+async function checkMfaEnrollment() {
+  const { data, error } = await _supabase.auth.mfa.listFactors()
+  if (error) { console.warn('listFactors error:', error); return }
+  const verified = (data?.all || []).find(f => f.factor_type === 'totp' && f.status === 'verified')
+  // Dismissable: if the admin already dismissed this session, don't nag again.
+  if (verified || sessionStorage.getItem('mfa-enroll-dismissed') === '1') return
+  document.getElementById('mfaEnrollModal').classList.add('open')
+}
+
+function dismissMfaEnroll() {
+  document.getElementById('mfaEnrollModal').classList.remove('open')
+  sessionStorage.setItem('mfa-enroll-dismissed', '1')
+  // Reset internal state so a future open starts from scratch
+  document.getElementById('mfaEnrollStart').style.display = 'block'
+  document.getElementById('mfaEnrollQr').style.display = 'none'
+  document.getElementById('mfaEnrollDone').style.display = 'none'
+}
+
+async function startMfaEnrollment() {
+  const btn = document.getElementById('mfaStartBtn')
+  btn.disabled = true; btn.textContent = 'PREPARING…'
+  try {
+    // If an unverified factor already exists from a prior abandoned attempt,
+    // remove it so we don't pile up duplicates.
+    const { data: existing } = await _supabase.auth.mfa.listFactors()
+    for (const f of (existing?.all || [])) {
+      if (f.factor_type === 'totp' && f.status !== 'verified') {
+        await _supabase.auth.mfa.unenroll({ factorId: f.id })
+      }
+    }
+    const { data, error } = await _supabase.auth.mfa.enroll({
+      factorType: 'totp',
+      friendlyName: 'cal-ops-' + new Date().toISOString().slice(0, 10),
+    })
+    if (error) throw error
+    _mfaFactorId = data.id
+    document.getElementById('mfaQrImage').src = data.totp.qr_code
+    document.getElementById('mfaSecret').textContent = data.totp.secret
+    document.getElementById('mfaEnrollStart').style.display = 'none'
+    document.getElementById('mfaEnrollQr').style.display = 'block'
+    document.getElementById('mfaCodeInput').focus()
+  } catch (err) {
+    toast('Could not start enrollment: ' + (err.message || 'error'), 'error')
+    btn.disabled = false; btn.textContent = 'BEGIN ENROLLMENT'
+  }
+}
+
+async function verifyMfaEnrollment() {
+  const code = (document.getElementById('mfaCodeInput').value || '').trim()
+  const err = document.getElementById('mfaEnrollError')
+  err.style.display = 'none'
+  if (!/^\d{6}$/.test(code)) {
+    err.textContent = 'ENTER THE 6-DIGIT CODE'
+    err.style.display = 'block'
+    return
+  }
+  const btn = document.getElementById('mfaVerifyBtn')
+  btn.disabled = true; btn.textContent = 'VERIFYING…'
+  try {
+    // Create a challenge against the new factor, then verify
+    const { data: ch, error: chErr } = await _supabase.auth.mfa.challenge({ factorId: _mfaFactorId })
+    if (chErr) throw chErr
+    const { error: vErr } = await _supabase.auth.mfa.verify({
+      factorId: _mfaFactorId,
+      challengeId: ch.id,
+      code,
+    })
+    if (vErr) throw vErr
+    document.getElementById('mfaEnrollQr').style.display = 'none'
+    document.getElementById('mfaEnrollDone').style.display = 'block'
+  } catch (e) {
+    err.textContent = (e.message || 'CODE INCORRECT').toUpperCase()
+    err.style.display = 'block'
+    btn.disabled = false; btn.textContent = 'VERIFY AND ACTIVATE'
   }
 }
 
