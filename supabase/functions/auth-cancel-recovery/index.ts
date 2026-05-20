@@ -58,6 +58,16 @@ serve(async (req) => {
       auth: { autoRefreshToken: false, persistSession: false },
     })
 
+    // 0) Rate limit. Without this, an attacker who knows the target email can
+    //    loop this endpoint to globally sign the victim out and email-bomb them.
+    //    Allow at most MAX_PER_WINDOW cancellations per email per WINDOW_MS.
+    //    The table stores SHA-256 hashes only, never the email itself.
+    if (await isRateLimited(admin, email)) {
+      // Silently succeed so attackers can't tell whether they hit the limit
+      // versus whether the email is registered at all.
+      return json({ success: true })
+    }
+
     // 1) Rotate the recovery token. generateLink updates auth.users.recovery_token,
     //    so the link in the suspicious email stops working. We never send the new link.
     //    If the email isn't registered, generateLink returns an error — we swallow it.
@@ -129,6 +139,59 @@ function json(body: unknown, status = 200) {
     status,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   })
+}
+
+const RATE_WINDOW_MS = 60 * 60 * 1000   // 1 hour
+const RATE_MAX = 3                       // max cancel attempts per email per window
+
+async function sha256Hex(input: string): Promise<string> {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input))
+  return Array.from(new Uint8Array(buf))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
+}
+
+// Returns true if the email has exceeded the rate limit and the caller should
+// silently no-op. Side effects: upserts / increments the counter row.
+async function isRateLimited(admin: ReturnType<typeof createClient>, email: string): Promise<boolean> {
+  try {
+    const hash = await sha256Hex(email)
+    const now = new Date()
+    const { data: row } = await admin
+      .from('recovery_cancel_attempts')
+      .select('count, window_start')
+      .eq('email_hash', hash)
+      .maybeSingle()
+
+    if (!row) {
+      await admin.from('recovery_cancel_attempts').insert({
+        email_hash: hash, count: 1, window_start: now.toISOString(),
+      })
+      return false
+    }
+
+    const windowStart = new Date(row.window_start as string)
+    const withinWindow = now.getTime() - windowStart.getTime() < RATE_WINDOW_MS
+
+    if (!withinWindow) {
+      // Window expired — reset counter
+      await admin.from('recovery_cancel_attempts')
+        .update({ count: 1, window_start: now.toISOString() })
+        .eq('email_hash', hash)
+      return false
+    }
+
+    if ((row.count as number) >= RATE_MAX) return true
+
+    await admin.from('recovery_cancel_attempts')
+      .update({ count: (row.count as number) + 1 })
+      .eq('email_hash', hash)
+    return false
+  } catch (_) {
+    // Fail open if the rate limit infra is broken — don't break the cancel
+    // flow because the counter table is misbehaving.
+    return false
+  }
 }
 
 function cancelledNotificationHtml() {
