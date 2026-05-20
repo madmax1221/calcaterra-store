@@ -243,6 +243,10 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
         <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="14" y2="17"/></svg>
         EMAIL LOG
       </a>
+      <a class="ops-nav-item" onclick="openMfaEnrollment(); return false;" href="#" title="Set up or re-open two-factor authentication">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        SECURITY · 2FA
+      </a>
       <a class="ops-nav-item" href="/booklet-roma" target="_blank" rel="noopener" title="Open the printable A6 owner's guide and warranty booklet">
         <svg viewBox="0 0 24 24"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/></svg>
         BOOKLET · A6
@@ -778,6 +782,20 @@ async function checkMfaEnrollment() {
   const verified = (data?.all || []).find(f => f.factor_type === 'totp' && f.status === 'verified')
   // Dismissable: if the admin already dismissed this session, don't nag again.
   if (verified || sessionStorage.getItem('mfa-enroll-dismissed') === '1') return
+  document.getElementById('mfaEnrollModal').classList.add('open')
+}
+
+// Sidebar entry — explicit re-open of the MFA enrollment modal.
+// Clears the dismissed flag so the auto-check works again, and force-opens
+// the modal in the start state even if a verified factor already exists
+// (useful for adding the same secret to another device's authenticator app).
+function openMfaEnrollment() {
+  sessionStorage.removeItem('mfa-enroll-dismissed')
+  document.getElementById('mfaEnrollStart').style.display = 'block'
+  document.getElementById('mfaEnrollQr').style.display = 'none'
+  document.getElementById('mfaEnrollDone').style.display = 'none'
+  const startBtn = document.getElementById('mfaStartBtn')
+  if (startBtn) { startBtn.disabled = false; startBtn.textContent = 'BEGIN ENROLLMENT' }
   document.getElementById('mfaEnrollModal').classList.add('open')
 }
 
