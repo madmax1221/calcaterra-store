@@ -22,12 +22,15 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://calcaterra.co',
+  'Vary': 'Origin',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const TOKEN_RE = /^[A-Za-z0-9_-]{20,256}$/
+const TOKEN_MAX_AGE_MS = 60 * 60 * 1000  // 1 hour
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
@@ -35,37 +38,63 @@ serve(async (req) => {
 
   try {
     const body = await req.json().catch(() => ({}))
-    const e = typeof body?.e === 'string' ? body.e.trim() : ''
-    if (!e) return json({ success: true }) // silent no-op, don't leak
-
-    // Accept raw email first (what {{ .Email }} renders to), fall back to base64url
-    // for future-proofing if we ever switch the email template to encode it.
-    let email = ''
-    if (EMAIL_RE.test(e)) {
-      email = e.toLowerCase()
-    } else {
-      try {
-        const padded = e.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((e.length + 3) % 4)
-        const decoded = atob(padded).trim().toLowerCase()
-        if (EMAIL_RE.test(decoded)) email = decoded
-      } catch (_) { /* noop */ }
-    }
-    if (!email) return json({ success: true })
-
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     const admin = createClient(supabaseUrl, serviceKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     })
 
-    // 0) Rate limit. Without this, an attacker who knows the target email can
-    //    loop this endpoint to globally sign the victim out and email-bomb them.
-    //    Allow at most MAX_PER_WINDOW cancellations per email per WINDOW_MS.
-    //    The table stores SHA-256 hashes only, never the email itself.
-    if (await isRateLimited(admin, email)) {
-      // Silently succeed so attackers can't tell whether they hit the limit
-      // versus whether the email is registered at all.
-      return json({ success: true })
+    // ── Preferred path: single-use token from password_reset_attempts ────────
+    // The cancel link in the email contains a 32-byte random token bound to
+    // exactly one reset request. We look it up, verify it's not already
+    // cancelled and not expired, then mark it cancelled. No email leaks.
+    const t = typeof body?.t === 'string' ? body.t.trim() : ''
+    let email = ''
+    if (t) {
+      if (!TOKEN_RE.test(t)) return json({ success: true })
+      try {
+        const { data: row } = await admin
+          .from('password_reset_attempts')
+          .select('email, created_at, cancelled_at')
+          .eq('token', t)
+          .maybeSingle()
+        if (!row) return json({ success: true })                 // unknown token
+        if (row.cancelled_at) return json({ success: true })     // already used
+        const ageMs = Date.now() - new Date(row.created_at as string).getTime()
+        if (ageMs > TOKEN_MAX_AGE_MS) return json({ success: true })  // expired
+        email = (row.email as string).toLowerCase()
+        // Mark cancelled now so a concurrent click can't replay.
+        await admin.from('password_reset_attempts')
+          .update({ cancelled_at: new Date().toISOString() })
+          .eq('token', t)
+      } catch (_) {
+        return json({ success: true })
+      }
+    } else {
+      // ── Legacy path: email in URL (?e=...) ─────────────────────────────────
+      // Kept for any old emails still in inboxes that predate the token-based
+      // flow. Rate-limited per email hash so it cannot be abused as a
+      // griefing primitive. Once all pre-token reset emails have expired,
+      // this branch can be removed.
+      const e = typeof body?.e === 'string' ? body.e.trim() : ''
+      if (!e) return json({ success: true })
+
+      if (EMAIL_RE.test(e)) {
+        email = e.toLowerCase()
+      } else {
+        try {
+          const padded = e.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((e.length + 3) % 4)
+          const decoded = atob(padded).trim().toLowerCase()
+          if (EMAIL_RE.test(decoded)) email = decoded
+        } catch (_) { /* noop */ }
+      }
+      if (!email) return json({ success: true })
+
+      // Rate limit the legacy path (token path is single-use so it's
+      // self-limiting).
+      if (await isRateLimited(admin, email)) {
+        return json({ success: true })
+      }
     }
 
     // 1) Rotate the recovery token. generateLink updates auth.users.recovery_token,

@@ -649,10 +649,9 @@ footer{background:#141210;padding:80px 52px 48px;}
 
 <script>
   const { createClient } = supabase
-  const _supabase = createClient(
-    'https://tnjuxcdcwcxoipbsowih.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
-  )
+  const SUPABASE_URL = 'https://tnjuxcdcwcxoipbsowih.supabase.co'
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
+  const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
   let currentCustomer = null
   let currentSession = null
@@ -1190,10 +1189,19 @@ footer{background:#141210;padding:80px 52px 48px;}
     msg.style.color = 'rgba(26,24,20,0.55)'
     msg.textContent = ''
     try {
-      const { error } = await _supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/forgot-password'
+      // Custom send-password-reset edge function so the email contains a
+      // single-use cancel token (not the raw email). See
+      // supabase/functions/send-password-reset/index.ts.
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/send-password-reset`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ email, redirect_to: window.location.origin + '/forgot-password' }),
       })
-      if (error) throw error
+      if (!res.ok) throw new Error('Request failed')
       btn.textContent = 'LINK SENT'
       msg.textContent = 'CHECK YOUR INBOX. THE LINK EXPIRES IN ONE HOUR.'
       // Keep button disabled to prevent spam-click; re-enable after 30s

@@ -198,8 +198,13 @@ footer{background:#141210;padding:80px 52px 48px;}
 
   window.addEventListener('DOMContentLoaded', async () => {
     const params = new URLSearchParams(window.location.search)
+    // Prefer the new single-use token (?t=). Fall back to the legacy email
+    // form (?e=) for any old emails still in inboxes that predate the
+    // token-based flow.
+    const t = params.get('t')
     const e = params.get('e')
-    if (!e) {
+    const payload = t ? { t } : (e ? { e } : null)
+    if (!payload) {
       showState('state-error')
       return
     }
@@ -211,7 +216,7 @@ footer{background:#141210;padding:80px 52px 48px;}
           'apikey': SUPABASE_ANON_KEY,
           'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         },
-        body: JSON.stringify({ e }),
+        body: JSON.stringify(payload),
       })
       // The function always responds 200 success:true to avoid leaking which
       // emails are registered. We just transition the UI accordingly.
