@@ -459,6 +459,18 @@ footer{background:#141210;padding:80px 52px 48px;}
     </div>
     <div class="atc-confirm" id="atcConfirm">DECISION MADE.</div>
     <button class="atc-btn" onclick="addToCart()">MAKE IT MINE</button>
+
+    <!-- Out-of-stock notify form (hidden when in stock) -->
+    <div id="notifyStockSection" style="display:none;margin-top:18px;padding:24px;border:1px solid rgba(26,24,20,0.1);background:rgba(26,24,20,0.02);">
+      <span style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:400;letter-spacing:0.55em;color:rgba(26,24,20,0.55);text-transform:uppercase;display:block;margin-bottom:10px;">Currently sold out</span>
+      <p style="font-family:'Times New Roman',serif;font-size:15px;font-style:italic;color:rgba(26,24,20,0.65);line-height:1.7;margin-bottom:16px;">Leave your email; if this colorway returns or a new variant is announced, you will be the first to hear.</p>
+      <form onsubmit="submitStockNotify(event)" style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input id="notifyStockEmail" type="email" required placeholder="your@email.com" style="flex:1;min-width:200px;border:none;border-bottom:1px solid rgba(26,24,20,0.25);padding:10px 0;font-family:'Times New Roman',serif;font-size:15px;background:none;outline:none;"/>
+        <button type="submit" id="notifyStockBtn" style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:400;letter-spacing:0.45em;color:#f2efe9;background:#1a1814;border:none;cursor:pointer;padding:14px 22px;text-transform:uppercase;">NOTIFY ME</button>
+      </form>
+      <p id="notifyStockMsg" style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:0.35em;color:rgba(26,24,20,0.55);text-transform:uppercase;margin-top:12px;display:none;"></p>
+    </div>
+
     <span class="atc-meta">2 year warranty &nbsp;&middot;&nbsp; Complimentary worldwide shipping &nbsp;&middot;&nbsp; 30 day returns</span>
     <p class="product-description" id="productDescription">The Roma Black is the founding reference of Calcaterra. A sunburst-textured black dial set within a brushed and polished stainless steel case. Understated by design. Precise by conviction. Worn by those who have already decided.</p>
     <div class="product-specs">
@@ -643,6 +655,7 @@ footer{background:#141210;padding:80px 52px 48px;}
 
   let currentVariant = 'black'
   let variantIds = {}
+  let variantInStock = { black: true, navy: true, silver: true }
   let productPrice = 329
 
   window.addEventListener('DOMContentLoaded', async () => {
@@ -663,17 +676,29 @@ footer{background:#141210;padding:80px 52px 48px;}
 
   async function loadFromSupabase() {
     try {
-      const { data: variants } = await _supabase.from('product_variants').select('id, sku, price').in('sku', ['ROMA-BLACK-001', 'ROMA-NAVY-002', 'ROMA-SILVER-003'])
+      const { data: variants } = await _supabase.from('product_variants').select('id, sku, in_stock').in('sku', ['ROMA-BLACK-001', 'ROMA-NAVY-002', 'ROMA-SILVER-003'])
       if (variants && variants.length > 0) {
         variants.forEach(v => {
-          if (v.sku === 'ROMA-BLACK-001') variantIds.black = v.id
-          if (v.sku === 'ROMA-NAVY-002') variantIds.navy = v.id
-          if (v.sku === 'ROMA-SILVER-003') variantIds.silver = v.id
-          if (v.price) productPrice = v.price
+          if (v.sku === 'ROMA-BLACK-001') { variantIds.black = v.id; variantInStock.black = !!v.in_stock }
+          if (v.sku === 'ROMA-NAVY-002') { variantIds.navy = v.id; variantInStock.navy = !!v.in_stock }
+          if (v.sku === 'ROMA-SILVER-003') { variantIds.silver = v.id; variantInStock.silver = !!v.in_stock }
         })
         document.getElementById('productPrice').innerHTML = `€${productPrice}<span class="product-price-note">EUR</span>`
+        updateStockUI()
       }
     } catch(err) { console.error('Supabase load error:', err) }
+  }
+
+  // Toggle the Add-to-Cart button vs the "Notify me when available" form
+  // based on the currently-selected variant's in_stock flag from the server.
+  function updateStockUI() {
+    const inStock = variantInStock[currentVariant] !== false
+    const heroBtn = document.querySelector('.atc-btn')
+    const stickyBtn = document.querySelector('.sticky-atc-btn')
+    const notify = document.getElementById('notifyStockSection')
+    if (heroBtn) heroBtn.textContent = inStock ? 'MAKE IT MINE' : 'SOLD OUT · NOTIFY ME'
+    if (stickyBtn) stickyBtn.textContent = inStock ? 'Add' : 'Notify'
+    if (notify) notify.style.display = inStock ? 'none' : 'block'
   }
 
   async function initAuth() {
@@ -787,6 +812,8 @@ footer{background:#141210;padding:80px 52px 48px;}
       stickyRef.textContent = `Ref. ${refMap[key] || 'I'} · Steel on Steel`
     }
     if (stickyPrice) stickyPrice.textContent = productPrice
+    // Refresh the ATC / notify-me UI for the newly-selected variant
+    updateStockUI()
   }
 
   // Show the sticky ATC bar once the hero ATC has scrolled out of view,
@@ -803,6 +830,8 @@ footer{background:#141210;padding:80px 52px 48px;}
     stickyEl.classList.toggle('show', past && beforeFooter)
   }
 
+  const MAX_WATCHES_PER_ORDER = 5
+
   async function addToCart() {
     const { data: { session } } = await _supabase.auth.getSession()
     if (!session) {
@@ -811,8 +840,20 @@ footer{background:#141210;padding:80px 52px 48px;}
       openAccount()
       return
     }
+    // Block if this variant is out of stock (verified via the public in_stock flag)
+    if (variantInStock[currentVariant] === false) {
+      const ns = document.getElementById('notifyStockSection')
+      if (ns) { ns.style.display = 'block'; ns.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
+      return
+    }
     const v = variantData[currentVariant]
     let cart = JSON.parse(localStorage.getItem('cal_cart') || '[]')
+    // Enforce 5-watch buy limit at add-time; server-side place_order is the final guard.
+    const currentTotal = cart.reduce((s, i) => s + (Number(i.quantity) || 0), 0)
+    if (currentTotal >= MAX_WATCHES_PER_ORDER) {
+      alert(`A maximum of ${MAX_WATCHES_PER_ORDER} watches per order. Empty something from your cart first.`)
+      return
+    }
     const existing = cart.find(item => item.variantKey === currentVariant)
     if (existing) { existing.quantity += 1 }
     else { cart.push({ variantKey: currentVariant, variantId: variantIds[currentVariant] || currentVariant, name: 'Roma ' + v.name, price: productPrice, image: v.cartImg, quantity: 1 }) }
@@ -821,6 +862,44 @@ footer{background:#141210;padding:80px 52px 48px;}
     const confirm = document.getElementById('atcConfirm')
     confirm.classList.add('show')
     setTimeout(() => confirm.classList.remove('show'), 2500)
+  }
+
+  async function submitStockNotify(e) {
+    e.preventDefault()
+    const email = (document.getElementById('notifyStockEmail').value || '').trim().toLowerCase()
+    const btn = document.getElementById('notifyStockBtn')
+    const msg = document.getElementById('notifyStockMsg')
+    const variantId = variantIds[currentVariant]
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !variantId) {
+      msg.textContent = 'PLEASE PROVIDE A VALID EMAIL.'
+      msg.style.display = 'block'
+      return
+    }
+    btn.disabled = true; btn.textContent = 'SENDING…'
+    try {
+      const SUPABASE_URL = 'https://tnjuxcdcwcxoipbsowih.supabase.co'
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
+      await fetch(`${SUPABASE_URL}/functions/v1/stock-notify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ email, variant_id: variantId }),
+      })
+      // Always silent success to avoid leaking which emails are on file
+      msg.style.color = 'rgba(26,24,20,0.65)'
+      msg.textContent = '✓ WE WILL BE IN TOUCH WHEN IT RETURNS.'
+      msg.style.display = 'block'
+      btn.textContent = 'SAVED'
+      document.getElementById('notifyStockEmail').value = ''
+    } catch (_) {
+      msg.style.color = '#c0392b'
+      msg.textContent = 'COULD NOT SAVE. TRY AGAIN LATER.'
+      msg.style.display = 'block'
+      btn.disabled = false; btn.textContent = 'NOTIFY ME'
+    }
   }
 
   function updateCartBadge() {

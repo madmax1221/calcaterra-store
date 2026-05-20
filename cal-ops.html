@@ -222,6 +222,10 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
         <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         WARRANTIES
       </a>
+      <a class="ops-nav-item" data-panel="inventory" onclick="showPanel('inventory')" href="#">
+        <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4v10l8 4 8-4V7z"/><path d="M4 7l8 4 8-4"/><line x1="12" y1="11" x2="12" y2="21"/></svg>
+        INVENTORY
+      </a>
       <a class="ops-nav-item" data-panel="customers" onclick="showPanel('customers')" href="#">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
         CUSTOMERS
@@ -357,6 +361,22 @@ body{background:#0e0d0b;color:#f2efe9;font-family:'Montserrat',sans-serif;overfl
           <table class="ops-table">
             <thead><tr><th>CUSTOMER</th><th>WATCH</th><th>SERIAL</th><th>REGISTERED</th><th>WARRANTY END</th><th>STATUS</th><th></th></tr></thead>
             <tbody id="warranties-body"><tr><td colspan="7" class="ops-table-empty">LOADING...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- INVENTORY -->
+      <div class="ops-panel" id="panel-inventory">
+        <div class="ops-section-header" style="margin-bottom:32px;">
+          <div><span class="ops-section-eyebrow">STOCK</span><h1 class="ops-section-title">Inventory <em>levels.</em></h1></div>
+          <button class="ops-btn ops-btn-ghost ops-btn-sm" onclick="loadInventory()">REFRESH</button>
+        </div>
+        <p style="font-family:'Times New Roman',serif;font-size:14px;font-style:italic;color:rgba(242,239,233,0.45);max-width:640px;line-height:1.7;margin-bottom:24px;">
+          Edit the stock count for each variant. Storefront only sees whether a variant is in stock, never the exact number. Each completed order automatically decrements these.
+        </p>
+        <div class="ops-table-wrap">
+          <table class="ops-table">
+            <thead><tr><th>VARIANT</th><th>SKU</th><th>STATUS</th><th>STOCK</th><th>RESTOCK INTEREST</th><th></th></tr></thead>
+            <tbody id="inventory-body"><tr><td colspan="6" class="ops-table-empty">LOADING...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -725,6 +745,7 @@ async function initAdmin() {
   loadOrders()
   loadCodes()
   loadWarranties()
+  loadInventory()
   loadCustomers()
   loadContacts()
   loadNewsletter()
@@ -1454,6 +1475,64 @@ async function manualActivate(id) {
   if (error) { toast('Error', 'error'); return }
   toast('Warranty activated')
   loadWarranties()
+}
+
+// ── INVENTORY ────────────────────────────────────────────────────────────
+async function loadInventory() {
+  const body = document.getElementById('inventory-body')
+  if (!body) return
+  body.innerHTML = '<tr><td colspan="6" class="ops-table-empty">LOADING…</td></tr>'
+
+  // Variants via SECURITY DEFINER RPC (admin-only)
+  const { data: variants, error: vErr } = await _supabase.rpc('admin_list_variants')
+  if (vErr) {
+    body.innerHTML = `<tr><td colspan="6" class="ops-table-empty">ERROR: ${esc(vErr.message)}</td></tr>`
+    return
+  }
+
+  // Pending restock-interest counts per variant
+  const { data: notifs } = await _supabase
+    .from('stock_notifications')
+    .select('variant_id')
+    .is('notified_at', null)
+  const interest = {}
+  ;(notifs || []).forEach(n => { interest[n.variant_id] = (interest[n.variant_id] || 0) + 1 })
+
+  body.innerHTML = (variants || []).length ? (variants || []).map(v => {
+    const statusPill = v.in_stock
+      ? '<span style="display:inline-block;padding:3px 10px;font-size:8px;letter-spacing:0.4em;color:#4ade80;border:1px solid rgba(74,222,128,0.4);">IN STOCK</span>'
+      : '<span style="display:inline-block;padding:3px 10px;font-size:8px;letter-spacing:0.4em;color:#f87171;border:1px solid rgba(248,113,113,0.4);">SOLD OUT</span>'
+    const interestCount = interest[v.id] || 0
+    const interestCell = interestCount > 0
+      ? `<span style="color:#a78bfa;font-size:11px;">${interestCount} waiting</span>`
+      : '<span style="color:rgba(242,239,233,0.3);font-size:10px;">·</span>'
+    return `<tr>
+      <td>${esc(v.name || '·')}</td>
+      <td style="font-family:'SF Mono',monospace;font-size:11px;color:rgba(242,239,233,0.65);">${esc(v.sku || '·')}</td>
+      <td>${statusPill}</td>
+      <td><input class="ops-input inventory-stock-input" type="number" min="0" step="1" value="${Number(v.stock_qty) || 0}" data-variant-id="${esc(v.id)}" style="width:90px;padding:8px 10px;text-align:center;font-size:13px;"></td>
+      <td>${interestCell}</td>
+      <td><button class="ops-btn ops-btn-ship ops-btn-sm" onclick="saveVariantStock('${esc(v.id)}', this)">SAVE</button></td>
+    </tr>`
+  }).join('') : '<tr><td colspan="6" class="ops-table-empty">NO VARIANTS</td></tr>'
+}
+
+async function saveVariantStock(variantId, btn) {
+  const input = document.querySelector(`.inventory-stock-input[data-variant-id="${variantId}"]`)
+  if (!input) return
+  const qty = Math.max(0, parseInt(input.value, 10) || 0)
+  const original = btn.textContent
+  btn.disabled = true; btn.textContent = 'SAVING…'
+  const { error } = await _supabase.rpc('admin_set_variant_stock', { p_id: variantId, p_stock_qty: qty })
+  if (error) {
+    toast('Could not save: ' + error.message, 'error')
+    btn.disabled = false; btn.textContent = original
+    return
+  }
+  btn.textContent = '✓ SAVED'
+  toast(`Stock updated to ${qty}`)
+  // Refresh the row so the IN-STOCK / SOLD-OUT pill updates if it crossed 0
+  setTimeout(() => { loadInventory() }, 400)
 }
 
 async function loadCustomers() {

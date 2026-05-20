@@ -353,10 +353,28 @@ footer{background:#141210;padding:80px 52px 48px;}
     }).join('')
   }
 
+  // Per-order buy limit. Storefront cap; server-side place_order also enforces it.
+  const MAX_WATCHES_PER_ORDER = 5
+
+  function totalCartQty(cart) {
+    return cart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0)
+  }
+
   function changeQty(idx, delta) {
     const cart = getCart()
-    cart[idx].quantity += delta
-    if (cart[idx].quantity <= 0) cart.splice(idx, 1)
+    const next = (Number(cart[idx].quantity) || 0) + delta
+    if (next <= 0) {
+      cart.splice(idx, 1)
+    } else {
+      // Stop the +1 from pushing total past the buy limit
+      const projected = totalCartQty(cart) - (Number(cart[idx].quantity) || 0) + next
+      if (projected > MAX_WATCHES_PER_ORDER) {
+        if (typeof toast === 'function') toast(`A maximum of ${MAX_WATCHES_PER_ORDER} watches per order.`, 'error')
+        else alert(`A maximum of ${MAX_WATCHES_PER_ORDER} watches per order.`)
+        return
+      }
+      cart[idx].quantity = next
+    }
     saveCart(cart)
     renderCart()
   }
