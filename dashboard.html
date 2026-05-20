@@ -771,7 +771,21 @@ footer{background:#141210;padding:80px 52px 48px;}
   })
 
   function updateDisplay(firstName, lastName, email) {
-    document.getElementById('sidebarName').innerHTML = firstName + (lastName ? ' <em>' + lastName + '.</em>' : (firstName ? '.' : '·'))
+    const sn = document.getElementById('sidebarName')
+    sn.replaceChildren()
+    if (firstName) {
+      sn.appendChild(document.createTextNode(firstName))
+      if (lastName) {
+        sn.appendChild(document.createTextNode(' '))
+        const em = document.createElement('em')
+        em.textContent = lastName + '.'
+        sn.appendChild(em)
+      } else {
+        sn.appendChild(document.createTextNode('.'))
+      }
+    } else {
+      sn.textContent = '·'
+    }
     document.getElementById('disp-first').textContent = firstName || '·'
     document.getElementById('disp-last').textContent = lastName || '·'
     document.getElementById('disp-email').textContent = email || '·'

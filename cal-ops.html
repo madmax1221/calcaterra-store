@@ -1194,7 +1194,20 @@ async function saveTracking() {
 
 function generateUniqueCode(existing, collectionSlug = 'roma') {
   const prefix = 'CAL' + collectionLetter(collectionSlug)
-  const gen = () => { let c = prefix + '-'; for (let g = 0; g < 2; g++) { if (g > 0) c += '-'; for (let i = 0; i < 4; i++) c += SAFE_CHARS[Math.floor(Math.random() * SAFE_CHARS.length)] } return c }
+  // Use crypto.getRandomValues so codes are CSPRNG-derived. Math.random is
+  // not cryptographically secure and gives an attacker who learns one issued
+  // code partial predictability over the next ones.
+  const gen = () => {
+    let c = prefix + '-'
+    const buf = new Uint32Array(8)
+    crypto.getRandomValues(buf)
+    let k = 0
+    for (let g = 0; g < 2; g++) {
+      if (g > 0) c += '-'
+      for (let i = 0; i < 4; i++) c += SAFE_CHARS[buf[k++] % SAFE_CHARS.length]
+    }
+    return c
+  }
   let code; let attempts = 0
   do { code = gen(); attempts++ } while (existing.has(code) && attempts < 1000)
   return code
