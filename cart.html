@@ -298,6 +298,10 @@ footer{background:#141210;padding:80px 52px 48px;}
 
   function getCart() { return JSON.parse(localStorage.getItem('cal_cart') || '[]') }
   function saveCart(cart) { localStorage.setItem('cal_cart', JSON.stringify(cart)) }
+  // HTML escape for any value taken from localStorage / network before it
+  // hits innerHTML. Cart contents originate from admin-controlled products,
+  // but defense-in-depth: another same-origin XSS could mutate cal_cart.
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
 
   function renderCart() {
     const cart = getCart()
@@ -326,24 +330,27 @@ footer{background:#141210;padding:80px 52px 48px;}
     if (summaryEl) summaryEl.style.display = ''
     subtotalEl.textContent = `€${totalPrice}`
     totalEl.textContent = `€${totalPrice}`
-    container.innerHTML = cart.map((item, idx) => `
+    container.innerHTML = cart.map((item, idx) => {
+      const variantLabel = (item.variantKey || '').charAt(0).toUpperCase() + (item.variantKey || '').slice(1)
+      return `
       <div class="cart-item fade in">
         <div class="cart-item-img">
-          <img src="${item.image}" alt="${item.name}" loading="lazy">
+          <img src="${esc(item.image)}" alt="${esc(item.name)}" loading="lazy">
         </div>
         <div class="cart-item-details">
           <span class="cart-item-brand">CALCATERRA</span>
-          <div class="cart-item-name">Roma <em>${item.variantKey.charAt(0).toUpperCase() + item.variantKey.slice(1)}.</em></div>
+          <div class="cart-item-name">Roma <em>${esc(variantLabel)}.</em></div>
           <span class="cart-item-variant">QUARTZ &nbsp;&middot;&nbsp; 40MM &nbsp;&middot;&nbsp; STAINLESS STEEL</span>
           <div class="cart-item-qty">
             <button class="qty-btn" onclick="changeQty(${idx}, -1)">−</button>
-            <span class="qty-num">${item.quantity}</span>
+            <span class="qty-num">${Number(item.quantity) || 0}</span>
             <button class="qty-btn" onclick="changeQty(${idx}, 1)">+</button>
           </div>
           <button class="cart-item-remove" onclick="removeItem(${idx})">REMOVE</button>
         </div>
-        <div class="cart-item-price">€${item.price * item.quantity}</div>
-      </div>`).join('')
+        <div class="cart-item-price">€${(Number(item.price) || 0) * (Number(item.quantity) || 0)}</div>
+      </div>`
+    }).join('')
   }
 
   function changeQty(idx, delta) {

@@ -902,10 +902,19 @@ footer{background:#141210;padding:80px 52px 48px;}
     // Use * so unknown columns don't kill the whole query.
     // Some installs lack confirmed_at / shipped_at; we'll derive the
     // timeline from `status` plus the timestamps that DO exist.
+    //
+    // Defense-in-depth: filter by customer_id in addition to id so a
+    // crafted UUID can't return another customer's order even if RLS
+    // ever regresses. RLS is still the source of truth.
+    if (!currentCustomer?.id) {
+      body.innerHTML = `<p style="text-align:center;padding:60px 0;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:0.2em;color:rgba(26,24,20,0.5);">Please sign in to view this order.</p>`
+      return
+    }
     const { data: order, error } = await _supabase
       .from('orders')
       .select('*, order_items(id, quantity, unit_price, variant_id, serial_number, product_variants(name, attributes))')
       .eq('id', id)
+      .eq('customer_id', currentCustomer.id)
       .single()
 
     if (error || !order) {
@@ -949,7 +958,7 @@ footer{background:#141210;padding:80px 52px 48px;}
 
     // Timeline (skip if cancelled · show simple state)
     const timelineHtml = isCancelled
-      ? `<div style="text-align:center;padding:14px 0;font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:14px;">This order was cancelled on ${cancelledDate}.${cancelReasonCopy ? `<br><span style="font-size:13px;color:rgba(26,24,20,0.5);display:block;margin-top:10px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7;">${cancelReasonCopy.replace(/[<>]/g,'')}</span>` : ''}</div>`
+      ? `<div style="text-align:center;padding:14px 0;font-family:'Times New Roman',serif;font-style:italic;color:rgba(26,24,20,0.55);font-size:14px;">This order was cancelled on ${cancelledDate}.${cancelReasonCopy ? `<br><span style="font-size:13px;color:rgba(26,24,20,0.5);display:block;margin-top:10px;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7;">${esc(cancelReasonCopy)}</span>` : ''}</div>`
       : `<div class="order-timeline">
           <div class="order-timeline-step ${stepReached('pending') ? 'done' : ''}"><span class="order-timeline-name">PLACED</span><span class="order-timeline-date">${fmtDate(order.created_at) || ''}</span></div>
           <div class="order-timeline-step ${stepReached('confirmed') ? 'done' : ''}"><span class="order-timeline-name">CONFIRMED</span><span class="order-timeline-date">${fmtDate(order.confirmed_at || order.payment_verified_at) || (stepReached('confirmed') ? 'Yes' : '—')}</span></div>
@@ -1127,7 +1136,14 @@ footer{background:#141210;padding:80px 52px 48px;}
   }
 
   async function removeAddress(id) {
-    const { error } = await _supabase.from('addresses').delete().eq('id', id)
+    if (!currentCustomer?.id) return
+    // Defense-in-depth: scope the DELETE to this customer's own addresses so a
+    // crafted address UUID cannot wipe someone else's even if RLS regresses.
+    const { error } = await _supabase
+      .from('addresses')
+      .delete()
+      .eq('id', id)
+      .eq('customer_id', currentCustomer.id)
     if (!error) { const card = document.getElementById('addr-card-' + id); if (card) card.remove() }
   }
 
