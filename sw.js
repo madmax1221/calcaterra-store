@@ -31,13 +31,20 @@ self.addEventListener('push', event => {
 
 self.addEventListener('notificationclick', event => {
   event.notification.close()
-  const url = event.notification.data?.url || '/cal-ops.html'
+  // Only ever open a same-origin path. Guards against a malformed/hostile
+  // push payload steering openWindow to an external phishing page.
+  let target = '/cal-ops.html'
+  try {
+    const raw = event.notification.data?.url || '/cal-ops.html'
+    const resolved = new URL(raw, location.origin)
+    if (resolved.origin === location.origin) target = resolved.pathname + resolved.search
+  } catch (_) { /* fall back to /cal-ops.html */ }
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
       for (const client of clientList) {
         if (client.url.includes('cal-ops') && 'focus' in client) return client.focus()
       }
-      if (clients.openWindow) return clients.openWindow(url)
+      if (clients.openWindow) return clients.openWindow(target)
     })
   )
 })
