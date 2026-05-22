@@ -1,47 +1,61 @@
 // Calcaterra — public newsletter signup
-// Called by the storefront. Upserts a subscriber and sends a branded
-// "thanks for subscribing" email via Resend.
+// Upserts a subscriber and sends a branded welcome email with a tokenised
+// one-click unsubscribe link. Rate-limited per IP. CORS origin-allowlisted.
 //
-// ENV required:
-//   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY
-//   RESEND_FROM (optional, defaults to 'Calcaterra <noreply@calcaterra.co>')
-//
-// Body: { email: string, first_name?: string }
+// ENV: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY,
+//      UNSUBSCRIBE_SECRET, RESEND_FROM_NOREPLY (optional)
+// Body: { email, first_name?, source? }
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+const ALLOWED_ORIGINS = [
+  'https://calcaterra.co',
+  'https://www.calcaterra.co',
+  'https://calcaterra-store.vercel.app',
+]
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const RATE_MAX = 5            // signups per IP
+const RATE_WINDOW_MS = 60 * 60 * 1000
+
+function cors(req: Request) {
+  const origin = req.headers.get('Origin') || ''
+  const allow = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+  return {
+    'Access-Control-Allow-Origin': allow,
+    'Vary': 'Origin',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  }
 }
 
 serve(async (req) => {
+  const corsHeaders = cors(req)
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   try {
     const body = await req.json().catch(() => null)
-    if (!body?.email) return json({ error: 'Email is required' }, 400)
+    if (!body?.email) return json({ error: 'Email is required' }, 400, corsHeaders)
 
     const email = String(body.email).trim().toLowerCase()
-    const first_name = body.first_name ? String(body.first_name).trim() : null
-    // Source allows segmentation (website footer / coming_soon card / etc).
-    // Defaults to 'website' to match the table's default.
+    const first_name = body.first_name ? String(body.first_name).trim().slice(0, 80) : null
     const allowedSources = ['website', 'coming_soon', 'customer', 'register']
     const source = allowedSources.includes(body.source) ? body.source : 'website'
 
-    // Basic email shape check
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return json({ error: 'Invalid email address' }, 400)
-    }
+    if (!EMAIL_RE.test(email)) return json({ error: 'Invalid email address' }, 400, corsHeaders)
 
     const admin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      { auth: { autoRefreshToken: false, persistSession: false } },
     )
 
-    // Check if subscriber already exists (so we don't re-send welcome)
+    // Rate limit by IP. Silent success when tripped (don't reveal the limit).
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'noip'
+    if (await rateLimited(admin, 'subscribe', ip)) {
+      return json({ success: true, already_subscribed: false }, 200, corsHeaders)
+    }
+
     const { data: existing } = await admin
       .from('newsletter_subscribers')
       .select('id, email')
@@ -54,16 +68,17 @@ serve(async (req) => {
         .insert([{ email, first_name, source }])
       if (insertErr) {
         console.error('Insert error:', insertErr)
-        return json({ error: 'Failed to subscribe' }, 500)
+        return json({ error: 'Failed to subscribe' }, 500, corsHeaders)
       }
     }
 
-    // Send welcome email (best-effort — don't fail subscription if email errors)
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
     if (resendApiKey) {
       const from = Deno.env.get('RESEND_FROM_NOREPLY') ?? 'Calcaterra <noreply@calcaterra.co>'
       const name = first_name || 'there'
-      const html = welcomeNewsletterHtml(name, email)
+      const secret = Deno.env.get('UNSUBSCRIBE_SECRET') ?? ''
+      const tok = secret ? await hmacHex(email, secret) : ''
+      const html = welcomeNewsletterHtml(name, email, tok)
 
       const r = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -89,23 +104,58 @@ serve(async (req) => {
       }
     }
 
-    return json({ success: true, already_subscribed: !!existing })
-
+    return json({ success: true, already_subscribed: !!existing }, 200, corsHeaders)
   } catch (err) {
     console.error('subscribe-newsletter error:', err)
-    return json({ error: err?.message ?? 'Unexpected error' }, 500)
+    return json({ error: err?.message ?? 'Unexpected error' }, 500, corsHeaders)
   }
 })
 
-function json(body: unknown, status = 200) {
+function json(body: unknown, status = 200, corsHeaders: Record<string, string> = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   })
 }
 
-function welcomeNewsletterHtml(name: string, email: string) {
-  const unsub = `https://calcaterra.co/unsubscribe?email=${encodeURIComponent(email)}`
+async function hmacHex(message: string, secret: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'],
+  )
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(message))
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+async function sha256Hex(input: string): Promise<string> {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input))
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
+async function rateLimited(admin: ReturnType<typeof createClient>, bucket: string, ip: string): Promise<boolean> {
+  try {
+    const key = bucket + ':' + (await sha256Hex(ip))
+    const now = new Date()
+    const { data: row } = await admin.from('form_rate_limit').select('count, window_start').eq('key', key).maybeSingle()
+    if (!row) {
+      await admin.from('form_rate_limit').insert({ key, count: 1, window_start: now.toISOString() })
+      return false
+    }
+    const withinWindow = now.getTime() - new Date(row.window_start as string).getTime() < RATE_WINDOW_MS
+    if (!withinWindow) {
+      await admin.from('form_rate_limit').update({ count: 1, window_start: now.toISOString() }).eq('key', key)
+      return false
+    }
+    if ((row.count as number) >= RATE_MAX) return true
+    await admin.from('form_rate_limit').update({ count: (row.count as number) + 1 }).eq('key', key)
+    return false
+  } catch (_) { return false }
+}
+
+function welcomeNewsletterHtml(name: string, email: string, token: string) {
+  const unsub = token
+    ? `https://calcaterra.co/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`
+    : `https://calcaterra.co/unsubscribe?email=${encodeURIComponent(email)}`
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -119,35 +169,27 @@ function welcomeNewsletterHtml(name: string, email: string) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e9e5de;">
   <tr><td align="center" style="padding:0;">
     <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#f2efe9;">
-      <!-- HEADER -->
       <tr><td style="padding:64px 56px 28px;text-align:center;">
         <div style="font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:300;letter-spacing:0.2em;color:#1a1814;">CALCATERRA</div>
         <div style="height:1px;background:rgba(26,24,20,0.12);margin:28px auto 0;width:42%;"></div>
       </td></tr>
-      <!-- SPACER -->
       <tr><td style="line-height:0;font-size:0;padding:0;height:40px;">&nbsp;</td></tr>
-      <!-- EYEBROW -->
       <tr><td style="padding:0 56px;">
         <div style="font-family:Georgia,'Times New Roman',serif;font-size:11px;font-weight:300;letter-spacing:0.55em;color:rgba(26,24,20,0.42);text-transform:uppercase;margin-bottom:18px;">You're on the list</div>
       </td></tr>
-      <!-- HEADLINE -->
       <tr><td style="padding:0 56px 36px;">
         <h1 style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:42px;font-weight:300;line-height:1.12;letter-spacing:0.015em;color:#1a1814;">Welcome,<br/><em style="font-style:italic;color:rgba(26,24,20,0.4);">${escapeHtml(name)}.</em></h1>
       </td></tr>
-      <!-- BODY -->
       <tr><td style="padding:0 56px 24px;">
         <p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">Thank you for joining Calcaterra. You will be the first to learn of new releases, stories from the atelier, and limited drops.</p>
         <p style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:16px;color:rgba(26,24,20,0.78);line-height:1.95;">Never spam. Never noise. Only what is worth your attention.</p>
       </td></tr>
-      <!-- SIGN-OFF -->
       <tr><td style="padding:24px 56px 56px;">
         <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:15px;color:rgba(26,24,20,0.55);">Designed once. Worn indefinitely.</div>
       </td></tr>
-      <!-- HAIRLINE -->
       <tr><td style="padding:0 56px;">
         <div style="height:1px;background:rgba(26,24,20,0.08);"></div>
       </td></tr>
-      <!-- FOOTER — tonal cream with logo stamp -->
       <tr><td style="padding:36px 56px 56px;text-align:center;">
         <img src="https://calcaterra.co/images/calcaterra-logo.png" alt="Calcaterra" width="56" style="display:block;margin:0 auto 18px;height:auto;width:56px;max-width:56px;border:0;outline:none;text-decoration:none;"/>
         <div style="font-family:Georgia,'Times New Roman',serif;font-size:13px;letter-spacing:0.55em;color:rgba(26,24,20,0.6);margin-bottom:6px;">CALCATERRA</div>

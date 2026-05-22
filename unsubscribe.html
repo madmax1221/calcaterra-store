@@ -89,6 +89,14 @@ body{background:#f2efe9;color:#1a1814;font-family:'Times New Roman',Times,serif;
     <h1 class="un-title">Processing<br/><em>your request.</em></h1>
   </div>
 
+  <!-- STATE 5: confirmation email sent (email-only path, no token) -->
+  <div id="state-sent" style="display:none;" class="fade-in">
+    <span class="un-eyebrow">Check your inbox</span>
+    <h1 class="un-title">One more<br/><em>step.</em></h1>
+    <p class="un-subtitle">To protect your account, we have sent a confirmation link to your email. Click it to complete your unsubscribe. If you do not see it, check your spam folder.</p>
+    <a class="un-back" href="/">RETURN TO CALCATERRA</a>
+  </div>
+
 </div>
 
 <script>
@@ -99,9 +107,10 @@ const _supabase = createClient(
 )
 
 let currentEmail = null
+let currentToken = null
 
 function setState(name) {
-  ['confirm','ask','done','loading'].forEach(s => {
+  ['confirm','ask','done','loading','sent'].forEach(s => {
     document.getElementById('state-' + s).style.display = (s === name) ? 'block' : 'none'
   })
 }
@@ -112,15 +121,18 @@ function showErr(panel, msg) {
   el.classList.add('show')
 }
 
-async function callUnsubscribe(email) {
+// Calls the edge function. With a valid token the address is removed in one
+// click (returns {unsubscribed:true}). Without a token the function sends a
+// confirmation email instead (returns {confirm_sent:true}) so that no one can
+// unsubscribe an address they don't control. There is no direct-table-delete
+// fallback: that path is admin-only at the database level and would never work
+// from here anyway.
+async function callUnsubscribe(email, token) {
   try {
-    const { data, error } = await _supabase.functions.invoke('unsubscribe-newsletter', { body: { email } })
-    if (error || (data && data.error)) {
-      // Fallback: try direct table delete (works only if RLS allows it from anon)
-      const { error: tableErr } = await _supabase.from('newsletter_subscribers').delete().eq('email', email)
-      if (tableErr) throw new Error(data?.error || error?.message || tableErr.message)
-    }
-    return { ok: true }
+    const body = token ? { email, token } : { email }
+    const { data, error } = await _supabase.functions.invoke('unsubscribe-newsletter', { body })
+    if (error) throw new Error(error.message)
+    return { ok: true, unsubscribed: !!(data && data.unsubscribed) }
   } catch (e) {
     console.error('Unsubscribe failed:', e)
     return { ok: false, message: e?.message || 'Network error' }
@@ -130,23 +142,30 @@ async function callUnsubscribe(email) {
 async function doUnsubscribe() {
   if (!currentEmail) return
   setState('loading')
-  const result = await callUnsubscribe(currentEmail)
-  if (result.ok) setState('done')
-  else {
+  const result = await callUnsubscribe(currentEmail, currentToken)
+  if (!result.ok) {
     setState('confirm')
-    showErr('confirm', 'Could not unsubscribe, please try again or contact support')
+    showErr('confirm', 'Could not process that, please try again or contact support')
+    return
   }
+  // Token present + valid → removed. No token → confirmation email sent.
+  setState(result.unsubscribed ? 'done' : 'sent')
 }
 
 async function manualUnsubscribe() {
   const email = document.getElementById('ask-email').value.trim().toLowerCase()
-  if (!email) return
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showErr('ask', 'Please enter a valid email address')
+    return
+  }
   setState('loading')
-  const result = await callUnsubscribe(email)
-  if (result.ok) setState('done')
+  // Manual entry never carries a token, so this always triggers the
+  // confirmation-email path.
+  const result = await callUnsubscribe(email, null)
+  if (result.ok) setState('sent')
   else {
     setState('ask')
-    showErr('ask', 'Could not unsubscribe, please try again or contact support')
+    showErr('ask', 'Could not process that, please try again or contact support')
   }
 }
 
@@ -154,8 +173,10 @@ async function manualUnsubscribe() {
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(location.search)
   const email = (params.get('email') || '').trim().toLowerCase()
+  const token = (params.get('token') || '').trim()
   if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     currentEmail = email
+    currentToken = token || null
     document.getElementById('confirm-email').textContent = email
     setState('confirm')
   } else {

@@ -360,6 +360,10 @@ footer{background:#141210;padding:80px 52px 48px;}
         <label class="form-label" for="cf-message">MESSAGE *</label>
         <textarea class="form-input" id="cf-message" placeholder="How can we help you?" required></textarea>
       </div>
+      <!-- Honeypot: hidden from humans, bots fill it. Submissions with this set are silently dropped. -->
+      <div aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;overflow:hidden;">
+        <label>Company<input type="text" id="cf-company" tabindex="-1" autocomplete="off"></label>
+      </div>
       <p class="form-error" id="cf-error"></p>
       <button class="form-submit" id="cf-submit" onclick="submitContact()">SEND MESSAGE</button>
     </div>
@@ -618,6 +622,7 @@ footer{background:#141210;padding:80px 52px 48px;}
     const email = document.getElementById('cf-email').value.trim()
     const subject = document.getElementById('cf-subject').value
     const message = document.getElementById('cf-message').value.trim()
+    const company = document.getElementById('cf-company').value  // honeypot
     const errorEl = document.getElementById('cf-error')
     const btn = document.getElementById('cf-submit')
     errorEl.style.display = 'none'
@@ -641,7 +646,7 @@ footer{background:#141210;padding:80px 52px 48px;}
           'Content-Type': 'application/json',
           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuanV4Y2Rjd2N4b2lwYnNvd2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMzI3ODcsImV4cCI6MjA4OTkwODc4N30.EC7qsG44F41k3u1YhrlEv5eTiysDGjAmPMhy-SxVh6A'
         },
-        body: JSON.stringify({ name, email, subject, message })
+        body: JSON.stringify({ name, email, subject, message, company })
       })
       if (!res.ok) throw new Error('Function returned ' + res.status)
     } catch (err) {
