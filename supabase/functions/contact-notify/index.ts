@@ -31,6 +31,7 @@ function cors(req: Request) {
 serve(async (req) => {
   const corsHeaders = cors(req)
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
+  if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405, corsHeaders)
 
   try {
     const { name, email, subject, message, company } = await req.json().catch(() => ({}))
@@ -59,7 +60,7 @@ serve(async (req) => {
     )
 
     // Rate limit per IP. Silent success when tripped.
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'noip'
+    const ip = clientIp(req)
     if (await rateLimited(supabase, 'contact', ip)) {
       return json({ success: true }, 200, corsHeaders)
     }
@@ -136,4 +137,21 @@ async function rateLimited(admin: ReturnType<typeof createClient>, bucket: strin
     await admin.from('form_rate_limit').update({ count: (row.count as number) + 1 }).eq('key', key)
     return false
   } catch (_) { return false }
+}
+
+function clientIp(req: Request): string {
+  // CF-Connecting-IP is added by Cloudflare's edge and cannot be set by clients.
+  const cf = req.headers.get('cf-connecting-ip')
+  if (cf) return cf.trim()
+  const real = req.headers.get('x-real-ip')
+  if (real) return real.trim()
+  // x-forwarded-for: the LAST entry is what the trusted proxy appended.
+  // Attackers can prepend whatever they want, but they can't strip what
+  // the proxy adds after.
+  const xff = req.headers.get('x-forwarded-for')
+  if (xff) {
+    const parts = xff.split(',').map(s => s.trim()).filter(Boolean)
+    if (parts.length) return parts[parts.length - 1]
+  }
+  return 'noip'
 }
