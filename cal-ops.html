@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="CAL·OPS"/>
 <meta name="theme-color" content="#141210"/>
 <link rel="manifest" href="/manifest.json"/>
-<link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/0994/8715/4470/files/Untitled_design_c4295222-cdc2-4f27-b349-bc971fbf6cc8.png?v=1773510117"/>
+<link rel="apple-touch-icon" href="/icons/icon-180.png"/>
 <title>CAL·OPS · Calcaterra Operations</title>
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -967,11 +967,17 @@ async function loadDashboard() {
   document.getElementById('stat-warranties').textContent = warranties.filter(w => w.status === 'active').length
   document.getElementById('stat-codes').textContent = codes.filter(c => c.status === 'inactive').length
   document.getElementById('stat-unactivated').textContent = codes.filter(c => c.status === 'unactivated').length
-  if (pendingOrders.length > 0) {
-    const badge = document.getElementById('pending-badge')
-    badge.textContent = pendingOrders.length
-    badge.style.display = 'inline-block'
+  const pendBadge = document.getElementById('pending-badge')
+  if (pendBadge) {
+    if (pendingOrders.length > 0) {
+      pendBadge.textContent = pendingOrders.length
+      pendBadge.style.display = 'inline-block'
+    } else {
+      pendBadge.style.display = 'none'   // clear when nothing is pending
+    }
   }
+  // Drive the OS dock/taskbar badge on the installed PWA (pending order count).
+  setDockBadge(pendingOrders.length)
   const countryCounts = {}
   orders.forEach(o => { const c = o.shipping_address?.country || 'Unknown'; countryCounts[c] = (countryCounts[c] || 0) + 1 })
   const sorted = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
@@ -2652,6 +2658,19 @@ document.addEventListener('touchstart', () => {
   src.buffer = buf; src.connect(ctx.destination); src.start(0)
   audioUnlocked = true
 }, { once: true })
+
+// OS app-icon badge (dock on macOS, taskbar on Windows, home screen on mobile).
+// Only works in an INSTALLED PWA on supporting browsers; a plain browser tab
+// silently no-ops. Shows the count of pending orders so it's glanceable
+// without opening the app — the closest thing to a live widget a PWA gets.
+function setDockBadge(n) {
+  try {
+    if (!('setAppBadge' in navigator)) return
+    const count = Number(n) || 0
+    if (count > 0) navigator.setAppBadge(count)
+    else navigator.clearAppBadge()
+  } catch (_) { /* unsupported / not installed — ignore */ }
+}
 
 let swRegistration = null
 async function initPWA() {
